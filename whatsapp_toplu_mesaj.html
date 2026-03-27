@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Hızlı Gönderici Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .clicked-link { 
+            background-color: #f3f4f6 !important; 
+            color: #9ca3af !important; 
+            text-decoration: line-through;
+            border-color: #e5e7eb !important;
+        }
+        /* Scrollbar özelleştirme */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        
+        <!-- Üst Başlık -->
+        <div class="bg-green-600 p-6 text-white flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Hızlı Gönderici
+                </h1>
+                <p class="text-green-100 text-sm mt-1">Hafızalı, Hızlı ve Pratik</p>
+            </div>
+            <button onclick="clearAllData()" class="text-xs bg-green-700 hover:bg-green-800 text-white py-2 px-3 rounded transition">
+                <i class="fas fa-trash mr-1"></i> Her Şeyi Temizle
+            </button>
+        </div>
+
+        <div class="p-6 md:p-8">
+
+            <!-- EKLENEN UYARI BLOĞU (Başlangıçta gizli - 'hidden' class eklendi) -->
+            <div id="spamWarning" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-8 transition-all duration-500 ease-in-out" role="alert">
+                <h2 class="font-bold text-lg mb-2">ÇOK ÖNEMLİ UYARI: SPAM RİSKİ</h2>
+                <p>WhatsApp, kısa sürede çok sayıda tanımadığınız numaraya aynı mesajı göndermenizi "spam" olarak algılayabilir ve <strong class="underline">numaranızı geçici veya kalıcı olarak engelleyebilir.</strong></p>
+                <ul class="list-disc list-inside mt-2">
+                    <li>Bu aracı kendi sorumluluğunuzda kullanın.</li>
+                    <li>Tüm linkleri aynı anda açıp göndermeyin.</li>
+                    <li>Mesajları <strong>10-15 kişilik küçük gruplar halinde</strong> gönderin.</li>
+                    <li>Her grup arasında <strong>30-60 dakika bekleyin.</strong></li>
+                    <li>En güvenli yöntem, bu kişilerin sizin numaranızı kaydetmiş olmasıdır.</li>
+                </ul>
+            </div>
+            <!-- UYARI BLOĞU SONU -->
+            
+            <!-- İlerleme Çubuğu (Başlangıçta gizli) -->
+            <div id="progressArea" class="hidden mb-8 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <div class="flex justify-between text-sm font-semibold text-gray-600 mb-2">
+                    <span id="progressText">Gönderim Durumu: 0 / 0</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="progressBar" class="bg-green-500 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8">
+                
+                <!-- SOL PANEL: Veri Girişi (5 birim genişlik) -->
+                <div class="lg:col-span-5 space-y-6">
+                    
+                    <!-- Numaralar -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex justify-between">
+                            <span>Telefon Numaraları</span>
+                            <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded">Her satıra bir numara</span>
+                        </label>
+                        <div class="relative">
+                            <textarea id="phoneNumbers" rows="12" 
+                                class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition text-sm font-mono"
+                                placeholder="Numaraları buraya yapıştırın...&#10;0555 123 45 67&#10;532 123 45 67&#10;+90 555 123 45 67"></textarea>
+                            <div class="absolute bottom-3 right-3 text-xs text-gray-400" id="lineCount">0 Numara</div>
+                        </div>
+                    </div>
+
+                    <!-- Mesaj -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Mesaj İçeriği</label>
+                        <textarea id="message" rows="6" 
+                            class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition text-sm"
+                            placeholder="Mesajınızı buraya yazın..."></textarea>
+                    </div>
+
+                    <!-- Buton -->
+                    <button id="generateButton" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+                        <i class="fas fa-magic"></i> Linkleri Oluştur
+                    </button>
+                </div>
+
+                <!-- SAĞ PANEL: Link Listesi (7 birim genişlik) -->
+                <div class="lg:col-span-7">
+                    <div class="bg-gray-50 rounded-xl border border-gray-200 h-full flex flex-col">
+                        <div class="p-4 border-b border-gray-200 bg-white rounded-t-xl flex justify-between items-center">
+                            <h2 class="font-bold text-gray-700">Gönderim Listesi</h2>
+                            <span id="listStatus" class="text-xs font-medium text-gray-500">Henüz link oluşturulmadı</span>
+                        </div>
+                        
+                        <!-- Linklerin Listelendiği Alan -->
+                        <div id="linksContainer" class="p-4 overflow-y-auto max-h-[600px] flex-1">
+                            <div class="h-full flex flex-col items-center justify-center text-gray-400">
+                                <i class="fab fa-whatsapp text-6xl mb-4 opacity-20"></i>
+                                <p>Numaraları girip butona basın.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Bildirimi -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        İşlem Başarılı
+    </div>
+
+    <script>
+        // --- DEĞİŞKENLER VE SEÇİCİLER ---
+        const phoneInput = document.getElementById('phoneNumbers');
+        const messageInput = document.getElementById('message');
+        const generateBtn = document.getElementById('generateButton');
+        const linksContainer = document.getElementById('linksContainer');
+        const lineCountDisplay = document.getElementById('lineCount');
+        const progressArea = document.getElementById('progressArea');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const progressPercent = document.getElementById('progressPercent');
+        const warningBlock = document.getElementById('spamWarning'); // Uyarı bloğu seçici
+
+        let totalLinks = 0;
+        let clickedLinks = 0;
+
+        // --- SAYFA YÜKLENDİĞİNDE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            updateLineCount();
+        });
+
+        // --- EVENT LISTENERS ---
+        phoneInput.addEventListener('input', () => {
+            saveToStorage();
+            updateLineCount();
+        });
+
+        messageInput.addEventListener('input', saveToStorage);
+
+        generateBtn.addEventListener('click', generateLinks);
+
+        // --- ANA FONKSİYONLAR ---
+
+        function generateLinks() {
+            const rawNumbers = phoneInput.value.split('\n');
+            const message = encodeURIComponent(messageInput.value);
+            
+            // Temizlik ve filtreleme
+            const validNumbers = rawNumbers
+                .map(n => cleanNumber(n))
+                .filter(n => n.length >= 10); // En az 10 hane olmalı
+
+            if (validNumbers.length === 0) {
+                showToast("Lütfen geçerli telefon numaraları girin.", true);
+                return;
+            }
+
+            // Arayüzü Hazırla
+            linksContainer.innerHTML = '';
+            linksContainer.className = 'p-4 grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[600px] content-start';
+            
+            // İlerleme çubuğunu ve UYARIYI göster
+            progressArea.classList.remove('hidden');
+            warningBlock.classList.remove('hidden'); // Uyarıyı görünür yap
+            
+            totalLinks = validNumbers.length;
+            clickedLinks = 0;
+            updateProgress();
+
+            document.getElementById('listStatus').textContent = `${totalLinks} adet link hazırlandı`;
+
+            // Linkleri Oluştur
+            validNumbers.forEach((number, index) => {
+                const link = document.createElement('a');
+                // api.whatsapp.com masaüstü uygulaması için daha stabildir
+                link.href = `https://api.whatsapp.com/send?phone=${number}&text=${message}`;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                
+                link.className = `
+                    group flex items-center justify-between p-3 
+                    bg-white border border-green-200 rounded-lg shadow-sm 
+                    hover:bg-green-50 hover:border-green-300 hover:shadow-md 
+                    transition-all duration-200 cursor-pointer
+                `;
+
+                link.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-500 rounded-full text-xs font-bold group-hover:bg-green-100 group-hover:text-green-600 transition">
+                            ${index + 1}
+                        </span>
+                        <span class="font-mono text-gray-700 font-medium group-hover:text-green-700 transition">
+                            +${number}
+                        </span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-300 group-hover:text-green-500"></i>
+                `;
+
+                // Tıklama Olayı
+                link.addEventListener('click', function() {
+                    if (!this.classList.contains('clicked-link')) {
+                        this.classList.add('clicked-link');
+                        this.querySelector('i').classList.remove('fa-external-link-alt');
+                        this.querySelector('i').classList.add('fa-check', 'text-green-600');
+                        
+                        clickedLinks++;
+                        updateProgress();
+                    }
+                });
+
+                linksContainer.appendChild(link);
+            });
+
+            showToast(`${totalLinks} numara başarıyla hazırlandı!`);
+        }
+
+        // --- YARDIMCI FONKSİYONLAR ---
+
+        function cleanNumber(num) {
+            // Sadece rakamları bırak
+            let clean = num.replace(/\D/g, '');
+            
+            // Başında 0 varsa kaldır (0555 -> 555)
+            if (clean.startsWith('0')) {
+                clean = clean.substring(1);
+            }
+            
+            // Eğer numara 10 haneli kaldıysa (5551234567), başına 90 ekle
+            // Not: Sadece Türkiye içi varsayımı yapıyoruz. İsteğe göre değiştirilebilir.
+            if (clean.length === 10) {
+                clean = '90' + clean;
+            }
+
+            return clean;
+        }
+
+        function updateProgress() {
+            const percent = Math.round((clickedLinks / totalLinks) * 100);
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = `Gönderim Durumu: ${clickedLinks} / ${totalLinks}`;
+            progressPercent.textContent = `%${percent}`;
+            
+            if (clickedLinks === totalLinks && totalLinks > 0) {
+                progressBar.classList.add('bg-blue-500');
+                progressBar.classList.remove('bg-green-500');
+                showToast("Tüm gönderimler tamamlandı!");
+            }
+        }
+
+        function updateLineCount() {
+            const lines = phoneInput.value.split('\n').filter(line => line.trim() !== '').length;
+            lineCountDisplay.textContent = `${lines} Numara`;
+        }
+
+        // --- HAFIZA (LOCAL STORAGE) ---
+        
+        function saveToStorage() {
+            localStorage.setItem('wp_numbers', phoneInput.value);
+            localStorage.setItem('wp_message', messageInput.value);
+        }
+
+        function loadFromStorage() {
+            const savedNumbers = localStorage.getItem('wp_numbers');
+            const savedMessage = localStorage.getItem('wp_message');
+
+            if (savedNumbers) phoneInput.value = savedNumbers;
+            if (savedMessage) messageInput.value = savedMessage;
+        }
+
+        function clearAllData() {
+            if(confirm('Tüm numaraları ve mesajı silmek istediğinize emin misiniz?')) {
+                localStorage.removeItem('wp_numbers');
+                localStorage.removeItem('wp_message');
+                phoneInput.value = '';
+                messageInput.value = '';
+                linksContainer.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-gray-400">
+                        <i class="fab fa-whatsapp text-6xl mb-4 opacity-20"></i>
+                        <p>Veriler temizlendi.</p>
+                    </div>
+                `;
+                progressArea.classList.add('hidden');
+                warningBlock.classList.add('hidden'); // Veriler silinince uyarıyı da gizle
+                updateLineCount();
+                showToast("Her şey temizlendi.");
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `fixed bottom-5 right-5 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 z-50 ${isError ? 'bg-red-600' : 'bg-gray-800'} text-white`;
+            
+            // Göster
+            setTimeout(() => {
+                toast.classList.remove('translate-y-20', 'opacity-0');
+            }, 100);
+
+            // Gizle
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+    </script>
+</body>
+</html>

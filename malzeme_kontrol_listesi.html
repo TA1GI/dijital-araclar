@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İzci Malzeme Listesi</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Sayfa gövdesine özel yazı tipini ve temel stilleri uygulama */
+        body {
+            font-family: 'Nunito', sans-serif;
+            -webkit-print-color-adjust: exact; /* Yazdırma sırasında renklerin korunmasını sağlar */
+            print-color-adjust: exact;
+        }
+
+        /* YENİ EKLENEN FONT STİLİ */
+        .font-kalam {
+            font-family: 'Kalam', cursive;
+        }
+        
+        /* Liste elemanlarının sütun veya sayfa arasında bölünmesini engeller */
+        .checklist-item {
+            break-inside: avoid;
+        }
+
+        /* Yazdırma medyası için özel ayarlar */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 10pt; /* YENİ: Yazdırma için temel yazı tipi boyutunu küçült */
+            }
+            .a4-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0.8cm !important; /* GÜNCELLENDİ: Kenar boşluğunu 1cm'den 0.8cm'ye düşür */
+                width: 100% !important;
+                max-width: 100% !important;
+                border: none !important;
+            }
+            .print-hidden {
+                display: none !important; /* Yazdırma sırasında gizlenecek elemanlar */
+            }
+
+            /* YENİ: Başlık ve logo boyutlarını yazdırma için küçült */
+            header.sm\:relative {
+                margin-bottom: 0.5rem !important; /* GÜNCELLENDİ: Başlık alt boşluğunu azalt */
+                padding-bottom: 0.5rem !important; /* GÜNCELLENDİ: Başlık alt dolgusunu azalt */
+            }
+            header.sm\:relative img {
+                height: 5rem !important; /* GÜNCELLENDİ: Logo büyütüldü (4.5rem -> 7rem) */
+                top: -1.8rem !important; /* GÜNCELLENDİ: Logo yukarı taşındı (0 -> -1.5rem) */
+            }
+            header.sm\:relative h1 {
+                font-size: 1.5rem !important; /* GÜNCELLENDİ: (text-3xl -> text-2xl) */
+                line-height: 1.75rem !important;
+            }
+            header.sm\:relative h2 {
+                font-size: 1.125rem !important; /* GÜNCELLENDİ: (text-xl -> text-lg) */
+                line-height: 1.5rem !important;
+            }
+
+            /* YENİ: Sütun boşluğunu azalt */
+            div.gap-x-8 {
+                gap: 1.5rem !important; /* GÜNCELLENDİ: (gap-x-8 -> gap-x-6) */
+            }
+            
+            .checklist-item {
+                padding-top: 4px !important;    /* GÜNCELLENDİ: Normalde 10px (p-2.5) */
+                padding-bottom: 4px !important; /* GÜNCELLENDİ: Normalde 10px (p-2.5) */
+                padding-left: 2px !important;
+                padding-right: 2px !important;
+            }
+
+            /* YENİ: Madde içi boşluğu ve metin boyutunu ayarla */
+            .checklist-item span {
+                font-size: 9pt !important;
+            }
+            .checklist-item .font-semibold {
+                font-size: 9pt !important;
+                margin-right: 0.25rem !important; /* GÜNCELLENDİ: (mr-1.5 -> mr-1) */
+            }
+            .checklist-item.flex.items-center {
+                space-x: 0.5rem !important; /* GÜNCELLENDİ: (space-x-3 -> space-x-2) */
+            }
+
+            /* YENİ: Kış kampı başlığının üst boşluğunu azalt */
+            h3.font-kalam {
+                margin-top: 1rem !important; /* GÜNCELLENDİ: (mt-6 -> mt-4) */
+                padding-top: 0.5rem !important; /* GÜNCELLENDİ: (pt-4 -> pt-2) */
+                font-size: 1.25rem !important; /* GÜNCELLENDİ: (text-2xl -> text-xl) */
+            }
+        }
+
+        /* GÜNCELLENMİŞ ONAY KUTUSU STİLİ */
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: #fff;
+            position: relative;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 0.375rem;
+            border: 2px solid #9ca3af;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .custom-checkbox:focus {
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+            border-color: #22c55e;
+        }
+
+        .custom-checkbox:checked {
+            border-color: #16a34a;
+            background-color: #f0fdf4;
+        }
+
+        .custom-checkbox::after {
+            content: '';
+            position: absolute;
+            display: none;
+            
+            /* Sizin uyguladığınız değerler */
+            left: 0.3rem; 
+            top: -0.7rem;  
+            
+            width: 0.8rem;
+            height: 1.5rem;
+            
+            border: solid #16a34a;
+            border-width: 0 5px 5px 0;
+            border-radius: 3px;
+            
+            transform-origin: center center;
+            transform: rotate(40deg);
+        }
+
+        .custom-checkbox:checked::after {
+            display: block;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 print:bg-white">
+
+    
+    <div class="a4-container max-w-4xl mx-auto my-8 p-8 sm:p-12 bg-white rounded-lg shadow-lg print:shadow-none print:m-0 print:max-w-full">
+        
+        
+        <!-- DEĞİŞİKLİK: Buton hem mobilde hem masaüstünde 'absolute' oldu. -->
+        <!-- Mobilde (varsayılan) sadece ikon, masaüstünde (sm:) metinli hale gelir. -->
+        <div class="relative mb-4 sm:mb-8 print-hidden">
+            <button 
+                onclick="window.print()" 
+                class="print-hidden absolute top-0 right-0 bg-green-700 text-white p-2 sm:px-4 sm:py-2 rounded-lg shadow-md hover:bg-green-800 transition-colors duration-200">
+                
+                <!-- YENİ: Mobil için Yazıcı İkonu (Masaüstünde gizlenir) -->
+                <!-- DEĞİŞİKLİK: SVG, sizin bulduğunuz ikonla değiştirildi. -->
+                <svg class="h-6 w-6 sm:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+                    <g>
+                        <g>
+                            <path d="M435.891,174.031h-5.262V43.052c0-5.632-4.567-10.199-10.199-10.199H91.57c-5.632,0-10.199,4.567-10.199,10.199v130.979
+                                h-5.262C34.143,174.031,0,208.173,0,250.141v145.373c0,5.632,4.567,10.199,10.199,10.199h71.172v63.235
+                                c0,5.632,4.567,10.199,10.199,10.199H420.43c5.632,0,10.199-4.567,10.199-10.199v-63.235h71.172
+                                c5.632,0,10.199-4.567,10.199-10.199V250.141C512,208.173,477.857,174.031,435.891,174.031z M101.77,53.251H410.23v120.78H101.77
+                                V53.251z M410.23,458.749L410.23,458.749H101.77v-120.94H410.23V458.749z M491.602,385.315h-60.973v-47.506h24.711
+                                c5.632,0,10.199-4.567,10.199-10.199s-4.567-10.199-10.199-10.199H56.662c-5.632,0-10.199,4.567-10.199,10.199
+                                s4.567,10.199,10.199,10.199h24.711v47.506H20.398V250.141c0-30.719,24.992-55.711,55.711-55.711h359.781
+                                c30.719,0,55.711,24.992,55.711,55.711V385.315z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M434.996,215.418c-20.527,0-37.227,16.7-37.227,37.227s16.7,37.227,37.227,37.227s37.227-16.7,37.227-37.227
+                                S455.523,215.418,434.996,215.418z M434.996,269.474c-9.279,0-16.829-7.549-16.829-16.829c0-9.279,7.549-16.829,16.829-16.829
+                                s16.829,7.549,16.829,16.829C451.825,261.925,444.275,269.474,434.996,269.474z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M375.331,360.247h-7.139c-5.632,0-10.199,4.567-10.199,10.199s4.567,10.199,10.199,10.199h7.139
+                                c5.632,0,10.199-4.567,10.199-10.199S380.963,360.247,375.331,360.247z"/>
+                        </g>
+                    </g>
+                    <g>
+                        <g>
+                            <path d="M331.474,360.247H136.669c-5.632,0-10.199,4.567-10.199,10.199s4.567,10.199,10.199,10.199h194.805
+                                c5.632,0,10.199-4.567,10.199-10.199S337.106,360.247,331.474,360.247z"/>
+                        </g>
+                    </g>
+                </svg>
+                
+                <!-- GÜNCELLENDİ: Metin mobilde gizlenir (varsayılan 'hidden'), masaüstünde (sm:) görünür -->
+                <span class="hidden sm:inline">Listeyi Yazdır</span>
+            </button>
+        </div>
+
+        
+        <!-- YENİ: Header, mobilde (varsayılan) 'flex-col' (dikey) oldu. -->
+        <!-- Masaüstünde (sm:) 'relative' olur ve eski 'flex-row' yapısına döner. -->
+        <header class="sm:relative mb-4 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:border-b-2 border-gray-200 sm:pb-4">
+            
+            <!-- YENİ: Logo mobilde 'absolute' değil, normal akışta. 'sm:absolute' ile masaüstü konumu korundu. -->
+            <img src="https://istanbuldiyanetizciliksk.org/wp-content/uploads/2025/08/cropped-istanbul_diyanet_izcilik_spor_kulubu_logo.png" 
+                 alt="İstanbul Diyanet İzcilik Spor Kulübü Logosu" 
+                 class="h-24 w-auto object-contain print:h-20 sm:absolute sm:-top-6 sm:left-0 mb-4 sm:mb-0" /> 
+            
+            <!-- YENİ: Başlıklar, mobildeki 'pl-28' kaldırıldı. Mobilde tam genişlik ve alt çizgi/boşluk eklendi. -->
+            <!-- Masaüstünde (sm:) eski 'w-auto' haline döner ve çizgi/boşluk sıfırlanır. -->
+            <div class="text-center w-full sm:w-auto border-b-2 sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
+                <h1 class="text-3xl font-bold text-green-800 font-kalam">Kampa Hazırlık Başlasın!</h1> 
+                <h2 class="text-xl font-semibold text-gray-600">Her Şey Tamam Mı?</h2>
+            </div>
+        </header>
+
+        
+        <div class="mt-8 columns-1 sm:columns-2 print:columns-2 gap-x-8" id="checklist">
+            
+        </div>
+
+    </div>
+
+    <script>
+        // *** DEĞİŞİKLİK BURADA BAŞLIYOR ***
+        // 'items' dizisi, sağladığınız PDF ve metin listesine göre güncellendi.
+        const items = [
+            "Üniforma", "Sırt Çantası", "Uyku Tulumu", "Mat", "Yastık", "Eşofman Takım",
+            "Çıkış Çantası", "Sabun – Şampuan", "Büyük havlu", "Diş fırçası, macunu, krem",
+            "Ayna", "Tarak", "Panço", "Mont", "Yağmurluk", "Polar Mont", "Şapka",
+            "Kar Beresi", "Bot", "Yedek Pantolon", "Alt iç çamaşırlar", "Üst iç çamaşırlar",
+            "Yedek Çoraplar", "Tabak", "Çatal, Kaşık", "Bardak", "Bulaşık süngeri, deterjanı",
+            "Termos veya matara", "Alın Feneri", "İzci bıçağı", "Çakı", "Kibrit, çakmak",
+            "İzci düdüğü", "Pusula", "Düğüm ipi", "Tesislik ip", "Saat", "İlkyardım çantası",
+            "Özel ilaçları", "Müzik Aleti", "Not defteri, kalem", "Sivrisinek kovucu losyon",
+            "Dikiş çantası", "İzci lisansı ve kimlik", "Acil durum parası", "Güneş gözlüğü",
+            "Telsiz, yedek batarya, şarj", "Şort – mayo",
+            // Kış Kampı Malzemeleri
+            "Kışlık mont", "Kar gözlüğü veya güneş gözlüğü", "Polar eldiven", "Su geçirmez eldiven",
+            "Kar tozluğu", "Kar çizmesi", "Yün veya termal alt ve üst içlik",
+            "Kar boyunluğu (Üniforma)", "Kar beresi (Üniforma)", "Kışlık çoraplar", "Sunî ısıtıcılar"
+        ];
+        // *** DEĞİŞİKLİK BURADA BİTİYOR ***
+
+
+        const checklistContainer = document.getElementById('checklist');
+        const STORAGE_KEY = 'izciChecklistStates';
+
+        function saveStates() {
+            const states = {};
+            const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                states[cb.id] = cb.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(states));
+        }
+
+        function loadStates() {
+            const states = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (!states) return; 
+
+            for (const id in states) {
+                const checkbox = document.getElementById(id);
+                if (checkbox && states[id] === true) {
+                    checkbox.checked = true;
+                }
+            }
+        }
+
+        items.forEach((item, index) => {
+            // YENİ EKLENDİ: 49. maddeden (index 48) önce başlık ekler.
+            if (index === 48) {
+                const titleEl = document.createElement('h3');
+                // Başlığı ana başlığa (font-kalam) uygun ve sütun bölünmesini engelleyecek şekilde stillendir.
+                titleEl.className = 'text-2xl font-bold text-green-800 font-kalam mt-6 pt-4 mb-2 border-t border-gray-200 checklist-item';
+                titleEl.textContent = 'KIŞ KAMPLARI İÇİN';
+                checklistContainer.appendChild(titleEl);
+            }
+            
+            const label = document.createElement('label');
+            label.className = 'checklist-item flex items-center space-x-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `item-${index}`; 
+            checkbox.className = 'peer custom-checkbox'; 
+            
+            checkbox.addEventListener('change', saveStates); 
+
+            const itemText = document.createElement('span');
+            itemText.className = 'text-gray-700 peer-checked:text-gray-900 peer-checked:line-through peer-checked:opacity-70 transition-all duration-200';
+            itemText.innerHTML = `<span class="font-semibold mr-1.5">${index + 1}.</span> ${item}`;
+
+            label.appendChild(checkbox); 
+            label.appendChild(itemText);
+            
+            checklistContainer.appendChild(label);
+        });
+
+        loadStates();
+    </script>
+
+</body>
+</html>

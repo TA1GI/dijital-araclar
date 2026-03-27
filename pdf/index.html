@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Araç Kutusu</title>
+    <meta name="description" content="Tarayıcıda çalışan güçlü PDF düzenleme aracı - Birleştir, Böl, Döndür, Filigran ve daha fazlası">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">PDF Araç Kutusu</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="file-info" id="file-info" style="display:none">
+                <span class="file-name" id="file-name"></span>
+                <span class="file-separator">•</span>
+                <span class="file-meta" id="file-meta"></span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-ghost" id="btn-new-file" style="display:none" title="Yeni Dosya">
+                📁 Yeni Dosya
+            </button>
+            <button class="btn btn-ghost" id="btn-undo" style="display:none" title="Geri Al (Ctrl+Z)">
+                ↩️ Geri Al
+            </button>
+            <button class="btn btn-primary" id="btn-download" style="display:none">
+                💾 PDF İndir
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>🛠️ Araçlar</h3>
+            </div>
+            <nav class="tool-list" id="tool-list"></nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content" id="content">
+            <!-- Drop Zone -->
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-inner">
+                    <div class="drop-icon-wrapper">
+                        <div class="drop-icon">📄</div>
+                        <div class="drop-icon-pulse"></div>
+                    </div>
+                    <h2 class="drop-title">PDF Dosyanızı Sürükleyin</h2>
+                    <p class="drop-subtitle">veya tıklayarak dosya seçin</p>
+                    <button class="btn btn-primary btn-lg" id="btn-select-file">
+                        📁 Dosya Seç
+                    </button>
+                    <div class="drop-features">
+                        <span class="feature-badge">🔒 Güvenli</span>
+                        <span class="feature-badge">⚡ Hızlı</span>
+                        <span class="feature-badge">🌐 Çevrimdışı</span>
+                    </div>
+                    <p class="drop-hint">Tüm işlemler tarayıcınızda yapılır. Dosyalarınız hiçbir sunucuya gönderilmez.</p>
+                </div>
+            </div>
+
+            <!-- Workspace -->
+            <div id="workspace" class="workspace" style="display:none">
+                <div class="workspace-toolbar" id="workspace-toolbar">
+                    <div class="toolbar-left">
+                        <button class="btn btn-sm btn-ghost" id="btn-select-all">☑️ Tümünü Seç</button>
+                        <button class="btn btn-sm btn-ghost" id="btn-deselect-all">⬜ Seçimi Kaldır</button>
+                        <span class="selection-count" id="selection-count"></span>
+                    </div>
+                    <div class="toolbar-right">
+                        <button class="btn btn-sm btn-ghost" id="btn-zoom-out">➖</button>
+                        <span class="zoom-label" id="zoom-level">100%</span>
+                        <button class="btn btn-sm btn-ghost" id="btn-zoom-in">➕</button>
+                    </div>
+                </div>
+                <div class="thumbnail-grid" id="thumbnail-grid"></div>
+            </div>
+        </main>
+
+        <!-- Tool Settings Panel -->
+        <aside class="tool-panel" id="tool-panel">
+            <div class="tool-panel-header">
+                <h3 id="tool-panel-title"></h3>
+                <button class="btn-icon" id="btn-close-panel" title="Kapat">✕</button>
+            </div>
+            <div class="tool-panel-body" id="tool-panel-body"></div>
+            <div class="tool-panel-footer" id="tool-panel-footer">
+                <button class="btn btn-primary btn-block" id="btn-apply-tool">
+                    ✅ Uygula
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display:none">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p class="loading-text" id="loading-text">İşleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="file-input" accept=".pdf" style="display:none">
+    <input type="file" id="file-input-multi" accept=".pdf" multiple style="display:none">
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>

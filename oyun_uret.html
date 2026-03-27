@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İzcilik Oyunu Üretici</title>
+    <!-- Modern bir görünüm için Tailwind CSS kullanıyoruz -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts'tan şık bir font ekliyoruz -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            background-color: #f4f6f8; margin: 0; color: #111827;
+        }
+
+        .oyun-ureticibody { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+        .custom-select {
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>');
+            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem;
+        }
+        .spinner { border-color: #3b82f6; border-top-color: transparent; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+
+    
+    <!-- EKRAN 1: Form ve İlk Görünüm -->
+    <main id="generator-view" class="oyun-ureticibody flex justify-center items-center py-12 px-4">
+        <div class="w-full max-w-2xl">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="p-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Oyun Üretici</h1>
+                    <p class="text-gray-600 mb-8">İzcilik faaliyetleriniz için anında oyunlar üretin.</p>
+                    <form id="oyun-formu" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label for="kisi_sayisi" class="block text-sm font-medium text-gray-700">Kişi Sayısı</label>
+                                <input type="number" id="kisi_sayisi" min="2" value="10" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label for="yas_grubu" class="block text-sm font-medium text-gray-700">Yaş Grubu</label>
+                                <select id="yas_grubu" class="custom-select mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="7-11 yaş (Küme)">7-11 (Küme)</option>
+                                    <option value="11-15 yaş (Oymak)" selected>11-15 (Oymak)</option>
+                                    <option value="15-18 yaş (Ocak)">15-18 (Ocak)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                             <div>
+                                <label for="cinsiyet" class="block text-sm font-medium text-gray-700">Cinsiyet</label>
+                                <select id="cinsiyet" class="custom-select mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="Erkek">Erkek</option><option value="Kız">Kız</option>
+                                </select>
+                            </div>
+                             <div>
+                                <label for="mekan" class="block text-sm font-medium text-gray-700">Mekan</label>
+                                <select id="mekan" class="custom-select mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="Açık Alan">Açık Alan</option><option value="Kapalı Alan">Kapalı Alan</option>
+                                </select>
+                            </div>
+                        </div>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label for="durum" class="block text-sm font-medium text-gray-700">Durum</label>
+                                <select id="durum" class="custom-select mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="Ayakta">Ayakta</option><option value="Oturarak">Oturarak</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="sure" class="block text-sm font-medium text-gray-700">Tahmini Süre</label>
+                                <select id="sure" class="custom-select mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="5-10 dakika">5-10 dk</option><option value="10-20 dakika" selected>10-20 dk</option>
+                                    <option value="20-30 dakika">20-30 dk</option><option value="30+ dakika">30+ dk</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- DEĞİŞİKLİK: Uyarı metni eklendi -->
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+                            <p><strong>Önemli Uyarı:</strong> Bu oyunlar yapay zeka tarafından üretilmektedir. Herhangi bir oyunu uygulamadan önce liderler tarafından güvenlik ve uygunluk açısından kontrol edilmesi zorunludur. Oluşabilecek olumsuz durumlardan kulübümüz sorumlu değildir.</p>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="w-full flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428A1 1 0 0010 16.57l5.11 1.46A1 1 0 0016.969 17l-7-14z" /></svg>
+                                Oyunu Üret
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- EKRAN 2: Tam Ekran Sonuç (Başlangıçta Gizli) -->
+    <div id="result-view" class="oyun-ureticibody hidden">
+        <div class="w-full max-w-4xl mx-auto p-4 py-12 min-h-screen flex flex-col">
+            <button id="yeni-oyun-btn" class="mb-8 w-full flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" /></svg>
+                Yeni Oyun Üret
+            </button>
+            <div class="bg-white p-8 rounded-2xl shadow-lg flex-grow flex flex-col">
+                <div id="yukleniyor" class="text-center flex flex-col justify-center items-center h-full">
+                    <div class="spinner w-12 h-12 rounded-full border-4 border-t-4 mx-auto"></div>
+                    <p class="mt-4 text-gray-600 font-medium">Sizin için en iyi oyun tasarlanıyor...</p>
+                    <p class="mt-1 text-xs text-gray-500">(Bu işlem 30 saniyeye kadar sürebilir...)</p>
+                    <p id="ipucu-metni" class="mt-4 text-sm text-gray-500 transition-opacity duration-500 ease-in-out"></p>
+                </div>
+                 <div id="hata-mesaji" class="text-center flex flex-col justify-center items-center h-full hidden">
+                    <p class="text-red-600 font-bold">Bir hata oluştu. Lütfen tekrar deneyin.</p>
+                </div>
+                <div id="oyun-sonucu" class="prose max-w-none hidden">
+                    <!-- Üretilen oyun içeriği buraya eklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- ELEMENTLER ---
+        const generatorView = document.getElementById('generator-view');
+        const resultView = document.getElementById('result-view');
+        const yeniOyunBtn = document.getElementById('yeni-oyun-btn');
+        
+        const form = document.getElementById('oyun-formu');
+        const yukleniyor = document.getElementById('yukleniyor');
+        const hataMesaji = document.getElementById('hata-mesaji');
+        const oyunSonucu = document.getElementById('oyun-sonucu');
+        const ipucuMetni = document.getElementById('ipucu-metni');
+
+        const izcilikIpuclari = [
+            "İzci düğümlerini biliyor musun? Camadan düğümü en temel ve en çok kullanılanlardan biridir.",
+            "İzcinin parolası 'Daima Hazır Ol!' şeklindedir.",
+            "İyi bir izci, 'doğada sadece ayak izini bırakır'.",
+            "Ateş yakmanın en önemli kuralı güvenliktir.",
+            "Bir pusula ve harita, teknolojinin olmadığı yerde en iyi dostundur.",
+            "İzci çadırı kurulurken en önemli şey, gergin ve sağlam olmasıdır.",
+            "Her izcinin çantasında mutlaka bir ilk yardım çantası bulunmalıdır.",
+            "Farklı izci alkışlarını öğrenmek, motivasyonu artırmanın en eğlenceli yollarından biridir."
+        ];
+        let ipucuInterval;
+
+        // --- OLAY DİNLEYİCİLER ---
+        if(form) {
+            form.addEventListener('submit', handleFormSubmit);
+        }
+        if(yeniOyunBtn) {
+            yeniOyunBtn.addEventListener('click', showGeneratorView);
+        }
+
+        // --- FONKSİYONLAR ---
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            // Ekranları değiştir ve bekleme durumunu göster
+            generatorView.classList.add('hidden');
+            resultView.classList.remove('hidden');
+            
+            oyunSonucu.classList.add('hidden');
+            hataMesaji.classList.add('hidden');
+            yeniOyunBtn.classList.add('hidden');
+            yukleniyor.classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            startIpucuInterval();
+
+            const kisi_sayisi = document.getElementById('kisi_sayisi').value || '10';
+            const yas_grubu = document.getElementById('yas_grubu').value || '11-15 yaş (Oymak)';
+            const cinsiyet = document.getElementById('cinsiyet').value || 'Erkek';
+            const mekan = document.getElementById('mekan').value || 'Açık Alan';
+            const durum = document.getElementById('durum').value || 'Ayakta';
+            const sure = document.getElementById('sure').value || '10-20 dakika';
+
+            // 1. CLOUDFLARE WORKER ADRESİ
+            const apiUrl = 'https://oyun-uretici-api.h-abdullahyilmaz.workers.dev';
+
+
+
+            const systemPrompt = "Sen, Türkiye'deki izcilik kulüpleri için oyun üreten bir uzmansın. Cevaplarını Markdown formatında, başlıklar ve listeler kullanarak düzenli bir şekilde sun. Üreteceğin tüm oyunlar aşağıdaki kurallara %100 uymak zorundadır:\n\n1. **Güvenlik:** Oyunlar çocukların fiziksel ve zihinsel sağlığına KESİNLİKLE zarar vermemelidir. Temas, itişme, tehlikeli koşma gibi riskli hareketler içermemelidir. Güvenlik en önemli önceliktir.\n2. **Manevi ve Kültürel Uyum:** Oyunlar, İslam dininin hassasiyetlerine ve Türk aile yapısına tam uyumlu olmalıdır.\n3. **Pedagojik Değer:** Oyunlar, belirtilen yaş grubunun pedagojik gelişimine uygun, eğitici, öğretici ve takım ruhunu geliştirici olmalıdır.\n4. **Cinsiyet Kuralı:** Kız ve erkek izcilerin karışık oynamasına yönelik oyunlar ASLA üretme. Bu kuralı hiçbir koşulda çiğneme.";
+
+            const userQuery = `Şimdi, aşağıdaki özelliklere uygun, özgün, yaratıcı ve eğlenceli bir izci oyunu tasarla ve adımlarını net bir şekilde anlat:\n\n* **Yaş Grubu:** ${yas_grubu}\n* **Cinsiyet:** ${cinsiyet}\n* **Kişi Sayısı:** Yaklaşık ${kisi_sayisi} kişi\n* **Tahmini Süre:** ${sure}\n* **Mekan:** ${mekan}\n* **Fiziksel Durum:** ${durum}`;
+            
+            const payload = {
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                contents: [{ parts: [{ text: userQuery }] }]
+            };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`HTTP hatası! Durum: ${response.status}`);
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.error.message || 'Bilinmeyen API Hatası');
+                }
+
+                const oyunMetni = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (oyunMetni) {
+                    displayResult(oyunMetni);
+                } else {
+                    throw new Error('API yanıt döndürdü fakat oyun metni bulunamadı.');
+                }
+            } catch (error) {
+                console.error("API İsteği Başarısız:", error);
+                displayError();
+            }
+        }
+
+        function displayResult(text) {
+            clearInterval(ipucuInterval);
+            let html = text
+                .replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold mt-4 mb-2">$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold mt-6 mb-3 border-b pb-2">$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mt-8 mb-4">$1</h1>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/^- (.*$)/gim, '<li class="ml-5 list-disc">$1</li>')
+                .replace(/\n/g, '<br>');
+
+            oyunSonucu.innerHTML = html;
+            yukleniyor.classList.add('hidden');
+            oyunSonucu.classList.remove('hidden');
+            yeniOyunBtn.classList.remove('hidden');
+        }
+
+        function displayError() {
+            clearInterval(ipucuInterval);
+            yukleniyor.classList.add('hidden');
+            hataMesaji.classList.remove('hidden');
+            yeniOyunBtn.classList.remove('hidden');
+        }
+
+        function showGeneratorView() {
+            resultView.classList.add('hidden');
+            generatorView.classList.remove('hidden');
+        }
+
+        function startIpucuInterval() {
+            let ipucuIndex = 0;
+            ipucuMetni.style.opacity = 0;
+            setTimeout(() => {
+                ipucuMetni.innerText = izcilikIpuclari[ipucuIndex];
+                ipucuMetni.style.opacity = 1;
+            }, 500);
+
+            ipucuInterval = setInterval(() => {
+                ipucuIndex = (ipucuIndex + 1) % izcilikIpuclari.length;
+                ipucuMetni.style.opacity = 0;
+                setTimeout(() => {
+                    ipucuMetni.innerText = izcilikIpuclari[ipucuIndex];
+                    ipucuMetni.style.opacity = 1;
+                }, 500);
+            }, 6000);
+        }
+
+
+    });
+</script>
+</body>
+</html>

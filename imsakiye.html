@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İmsakiye 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Anton&family=Bebas+Neue&family=Bitter:wght@400;700&family=Caveat:wght@400;700&family=Courgette&family=Crimson+Text:wght@400;600&family=Dancing+Script:wght@400;700&family=Indie+Flower&family=Inter:wght@400;500;600;700&family=Lato:wght@400;700&family=Lobster&family=Lora:wght@400;600&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&family=Oswald:wght@400;600&family=PT+Serif:wght@400;700&family=Pacifico&family=Playfair+Display:wght@400;600&family=Poppins:wght@400;600&family=Raleway:wght@400;600&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&family=Satisfy&family=Shadows+Into+Light&family=Source+Code+Pro:wght@400;600&family=Ubuntu:wght@400;500;700&display=swap&subset=latin-ext"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E7D32;
+            --secondary-color: #4CAF50;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --header-bg: linear-gradient(135deg, #2E7D32, #1B5E20);
+            --highlight-bg: #E8F5E9;
+            /* Green 50 for Default */
+            --font-family: 'Inter', sans-serif;
+        }
+
+        /* Themes */
+        body.theme-blue {
+            --primary-color: #1565C0;
+            --secondary-color: #42A5F5;
+            --header-bg: linear-gradient(135deg, #1565C0, #0D47A1);
+            --highlight-bg: #E3F2FD;
+            /* Blue 50 */
+        }
+
+        body.theme-crimson {
+            --primary-color: #B71C1C;
+            --secondary-color: #E53935;
+            --header-bg: linear-gradient(135deg, #B71C1C, #D32F2F);
+            --highlight-bg: #FFEBEE;
+            /* Red 50 */
+        }
+
+        body.theme-purple {
+            --primary-color: #6A1B9A;
+            --secondary-color: #8E24AA;
+            --header-bg: linear-gradient(135deg, #6A1B9A, #4A148C);
+            --highlight-bg: #F3E5F5;
+            /* Purple 50 */
+        }
+
+        body.theme-black {
+            --primary-color: #212121;
+            --secondary-color: #424242;
+            --header-bg: linear-gradient(135deg, #212121, #000000);
+            --highlight-bg: #F5F5F5;
+            /* Grey 100 */
+        }
+
+        /* Fonts */
+        /* Fonts Classes */
+        body.font-roboto {
+            --font-family: 'Roboto', sans-serif;
+        }
+
+        body.font-opensans {
+            --font-family: 'Open Sans', sans-serif;
+        }
+
+        body.font-lato {
+            --font-family: 'Lato', sans-serif;
+        }
+
+        body.font-montserrat {
+            --font-family: 'Montserrat', sans-serif;
+        }
+
+        body.font-poppins {
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        body.font-raleway {
+            --font-family: 'Raleway', sans-serif;
+        }
+
+        body.font-ubuntu {
+            --font-family: 'Ubuntu', sans-serif;
+        }
+
+        body.font-inter {
+            --font-family: 'Inter', sans-serif;
+        }
+
+        body.font-merriweather {
+            --font-family: 'Merriweather', serif;
+        }
+
+        body.font-playfair {
+            --font-family: 'Playfair Display', serif;
+        }
+
+        body.font-lora {
+            --font-family: 'Lora', serif;
+        }
+
+        body.font-ptserif {
+            --font-family: 'PT Serif', serif;
+        }
+
+        body.font-bitter {
+            --font-family: 'Bitter', serif;
+        }
+
+        body.font-crimson {
+            --font-family: 'Crimson Text', serif;
+        }
+
+        body.font-oswald {
+            --font-family: 'Oswald', sans-serif;
+        }
+
+        body.font-bebas {
+            --font-family: 'Bebas Neue', cursive;
+        }
+
+        body.font-anton {
+            --font-family: 'Anton', sans-serif;
+        }
+
+        body.font-pacifico {
+            --font-family: 'Pacifico', cursive;
+        }
+
+        body.font-dancing {
+            --font-family: 'Dancing Script', cursive;
+        }
+
+        body.font-shadows {
+            --font-family: 'Shadows Into Light', cursive;
+        }
+
+        body.font-indie {
+            --font-family: 'Indie Flower', cursive;
+        }
+
+        body.font-caveat {
+            --font-family: 'Caveat', cursive;
+        }
+
+        body.font-courgette {
+            --font-family: 'Courgette', cursive;
+        }
+
+        body.font-satisfy {
+            --font-family: 'Satisfy', cursive;
+        }
+
+        body.font-lobster {
+            --font-family: 'Lobster', cursive;
+        }
+
+        body.font-amatic {
+            --font-family: 'Amatic SC', cursive;
+        }
+
+        body.font-mono {
+            --font-family: 'Roboto Mono', monospace;
+        }
+
+        body.font-source {
+            --font-family: 'Source Code Pro', monospace;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            /* Prevent body scroll, use inner scroll */
+        }
+
+        /* --- DASHBOARD LAYOUT --- */
+        .app-layout {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* SIDEBAR (Settings) */
+        .sidebar {
+            width: 350px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* MAIN CONTENT (Preview) */
+        .main-content {
+            flex: 1;
+            background: #e0e0e0;
+            /* Gray background for contrast */
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* IMSAKIYE SHEET (Paper) */
+        .container {
+            width: 210mm;
+            /* A4 width visual */
+            min-height: 297mm;
+            /* A4 height visual */
+            background: white;
+            padding: 10mm;
+            /* Visual padding for screen */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            border-radius: 0;
+            /* Sharp edges like paper */
+            transform: scale(0.9);
+            /* Slight zoom out to fit better */
+            transform-origin: top center;
+        }
+
+        /* Hide Toggle on Desktop */
+        .panel-toggle {
+            display: none !important;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+            .app-layout {
+                flex-direction: column;
+                overflow: auto;
+                height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                /* Collapsible on mobile */
+                max-height: 60px;
+                /* Collapsed */
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            .sidebar.expanded {
+                max-height: 80vh;
+            }
+
+            .sidebar-header {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .sidebar-header::after {
+                content: '▼ Ayarları Aç';
+                font-size: 0.8em;
+            }
+
+            .sidebar.expanded .sidebar-header::after {
+                content: '▲ Kapat';
+            }
+
+            .main-content {
+                padding: 10px;
+                height: auto;
+                display: block;
+            }
+
+            .container {
+                width: 100%;
+                transform: none;
+                box-shadow: none;
+                padding: 5px;
+                min-height: auto;
+            }
+
+            body {
+                overflow: auto;
+                height: auto;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+        }
+
+        /* Controls Panel */
+        .controls {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .panel-toggle {
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: bold;
+            display: block;
+            padding: 5px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            display: block;
+        }
+
+        /* Visible by default unlike previous version */
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* Dropdown Search */
+        .dropdown-container {
+            position: relative;
+        }
+
+        .dropdown-container::after {
+            content: '▼';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: #888;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-list div {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-list div:hover {
+            background-color: #e8f5e9;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Imsakiye Display */
+        .imsakiye-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        /* Band/Header in Imsakiye */
+        .brand-header {
+            display: none;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-header.active {
+            display: flex;
+        }
+
+        .brand-logo {
+            max-height: 80px;
+            margin-right: 15px;
+        }
+
+        .brand-text {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .brand-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            color: #555;
+            margin: 5px 0 0;
+        }
+
+        .imsakiye-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .imsakiye-table th {
+            color: var(--primary-color);
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            background: transparent;
+            /* Clean look */
+            font-weight: 800;
+            /* Extra bold headers */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .imsakiye-table td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            /* Very subtle horizontal lines */
+            padding: 12px 8px;
+            /* Spacious */
+            text-align: center;
+            color: #444;
+            font-weight: 600;
+            /* Readable times */
+        }
+
+        /* 1. Remove Vertical Lines (Default borders removed above) */
+
+        /* 2. Typography Contrast */
+        /* Date Columns (1 & 2) - Lighter */
+        .imsakiye-table td:nth-child(1),
+        .imsakiye-table td:nth-child(2) {
+            font-weight: 400;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        /* Left align Miladi Date Column */
+        .imsakiye-table td:nth-child(2) {
+            text-align: left;
+            padding-left: 10px;
+        }
+
+        /* 3. Highlight Important Times (Imsak & Aksam) */
+        /* Imsak is 3rd column, Aksam is 7th column */
+        .imsakiye-table th:nth-child(3),
+        .imsakiye-table td:nth-child(3),
+        .imsakiye-table th:nth-child(7),
+        .imsakiye-table td:nth-child(7) {
+            background-color: var(--highlight-bg);
+            /* Theme-based faint highlight */
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* 4. Remove Zebra Striping for cleaner look */
+        .imsakiye-table tr:nth-child(even) {
+            background-color: transparent;
+        }
+
+        /* Hover effect for row readability */
+        .imsakiye-table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .kadir-row {
+            background-color: var(--highlight-bg) !important;
+            border-left: 3px solid var(--primary-color);
+            font-weight: bold;
+        }
+
+        .kadir-separator {
+            background-color: transparent;
+            text-align: center;
+            font-weight: bold;
+            padding: 15px !important;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--primary-color);
+        }
+
+        .footer-info {
+            margin-top: 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            display: none;
+        }
+
+        .footer-info.active {
+            display: block;
+        }
+
+        .qr-image {
+            margin-top: 10px;
+            max-width: 100px;
+        }
+
+        /* PRINT STYLES - A4 FULL PAGE OPTIMIZATION */
+        @media print {
+            @page {
+                size: A4 portrait !important;
+                margin: 5mm !important;
+            }
+
+            body {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* HIDE SIDEBAR & CONTROLS */
+            .sidebar,
+            header,
+            .controls,
+            .panel-toggle,
+            .mobile-app-bar,
+            .settings-btn,
+            .btn {
+                display: none !important;
+            }
+
+            .app-layout {
+                display: block !important;
+                height: auto !important;
+                width: 100% !important;
+                overflow: visible !important;
+            }
+
+            /* RESET MAIN CONTENT FOR PRINT */
+            .main-content {
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: white !important;
+                height: auto !important;
+                width: 100% !important;
+                overflow: visible !important;
+            }
+
+            /* SHOW ONLY PRINT CONTAINER */
+            .container {
+                display: block !important;
+                position: relative !important;
+                /* absolute causes overlap */
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                /* Remove shadow line */
+                transform: none !important;
+                border: none !important;
+                background: white !important;
+            }
+
+            /* PRINT QR SIZE FIX */
+            .qr-image {
+                width: 85px !important;
+                max-width: 85px !important;
+                height: auto;
+            }
+
+            .imsakiye-container {
+                display: block !important;
+                margin: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            .imsakiye-sheet {
+                width: 100%;
+                margin: 0 auto;
+            }
+
+            .brand-header {
+                position: relative;
+                height: 80px;
+                /* Force height for absolute logo */
+                margin-bottom: 5px;
+                border-bottom: 2px solid #000;
+            }
+
+            .brand-logo {
+                position: absolute;
+                left: 0;
+                top: 0;
+                max-height: 80px;
+            }
+
+            .brand-text {
+                width: 100%;
+                text-align: center;
+                padding-top: 10px;
+                /* Vertically align text roughly */
+            }
+
+            .brand-title {
+                font-size: 20pt;
+                margin: 0;
+            }
+
+            .brand-subtitle {
+                font-size: 11pt;
+                margin: 0;
+            }
+
+            h2#defaultTitle {
+                font-size: 16pt;
+                margin: 5px 0;
+                text-align: center;
+            }
+
+            .info-header {
+                font-size: 10pt;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #000 !important;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                text-align: center;
+            }
+
+            .imsakiye-table {
+                font-size: 11pt;
+                /* Slightly compact for safety */
+                border: none !important;
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .imsakiye-table th {
+                background-color: transparent !important;
+                color: var(--primary-color) !important;
+                border: none !important;
+                border-bottom: 2px solid var(--primary-color) !important;
+                padding: 6px 4px;
+                font-weight: 900;
+                text-transform: uppercase;
+            }
+
+            .imsakiye-table td {
+                border: none !important;
+                border-bottom: 1px solid #ddd !important;
+                padding: 5px 4px;
+                text-align: center;
+                color: #000;
+            }
+
+            /* Highlight Columns in Print */
+            .imsakiye-table th:nth-child(3),
+            .imsakiye-table td:nth-child(3),
+            .imsakiye-table th:nth-child(7),
+            .imsakiye-table td:nth-child(7) {
+                background-color: var(--highlight-bg) !important;
+                font-weight: bold;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Typography adjustments */
+            .imsakiye-table td:nth-child(2) {
+                text-align: left !important;
+                padding-left: 5px;
+                font-weight: normal;
+                color: #444;
+            }
+
+            .imsakiye-table tr:nth-child(even) {
+                background-color: transparent !important;
+            }
+
+            /* Themes in Print - Use EXACT colors if Gorsel */
+            /* If SADE mode is selected, we override via JS class or specific CSS if possible.
+               But 'gorsel' is default. Let's trust print-color-adjust.
+            */
+            body.sade {
+                -webkit-print-color-adjust: economy !important;
+                print-color-adjust: economy !important;
+                filter: grayscale(100%) !important;
+            }
+
+            body.sade .imsakiye-table th {
+                background: #fff !important;
+                border-bottom: 2px solid #000 !important;
+                color: #000 !important;
+            }
+
+            body.sade .imsakiye-table tr:nth-child(even) {
+                background-color: transparent !important;
+            }
+
+            /* Remove column highlights in Sade mode */
+            body.sade .imsakiye-table th:nth-child(3),
+            body.sade .imsakiye-table td:nth-child(3),
+            body.sade .imsakiye-table th:nth-child(7),
+            body.sade .imsakiye-table td:nth-child(7) {
+                background-color: transparent !important;
+                color: #000 !important;
+            }
+
+            /* Remove Kadir row highlight */
+            body.sade .kadir-row {
+                background-color: transparent !important;
+                border: 1px solid #000 !important;
+                color: #000 !important;
+            }
+
+            body.sade .brand-header {
+                border-bottom: 1px solid #000;
+            }
+
+            /* Kadir Gecesi Print */
+            .kadir-row {
+                font-weight: bold;
+                border: 2px solid var(--primary-color);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .footer-info.active {
+                position: absolute !important;
+                bottom: -35px !important;
+                /* Push down into margin slightly */
+                right: 0 !important;
+                /* Side-by-side: Text Left | QR Right */
+                display: flex !important;
+                gap: 15px !important;
+                /* Add space between text and QR */
+                flex-direction: row !important;
+                align-items: flex-end !important;
+                /* Text aligns to bottom of QR */
+                justify-content: flex-end !important;
+
+                margin: 0;
+                text-align: right;
+                page-break-inside: avoid;
+                background: white;
+                padding: 0;
+                z-index: 1000;
+                width: auto;
+            }
+        }
+    </style>
+
+    <style>
+        @media print {
+            .qr-image {
+                width: 75px !important;
+                max-width: 75px !important;
+                height: auto;
+            }
+
+            .imsakiye-container,
+            .container,
+            .imsakiye-table {
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            /* Remove unwanted line in summary row */
+            .imsakiye-table tr:last-child td {
+                border-bottom: none !important;
+            }
+        }
+    </style>
+
+    <style>
+        /* MOBILE REDESIGN 2026 - iOS Style List */
+        /* THESE STYLES ONLY APPLY TO SCREEN WIDTHS < 768px */
+
+        /* 1. Mobile App Bar & Settings */
+        @media screen and (max-width: 768px) {
+
+            /* Hide old header */
+            .sidebar-header {
+                display: none !important;
+            }
+
+            /* Fixed App Title Bar */
+            .mobile-app-bar {
+                display: flex !important;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.98);
+                padding: 15px 20px;
+                position: sticky;
+                top: 0;
+                z-index: 900;
+                /* Below settings drawer */
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .app-title {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: #000;
+                margin: 0;
+                letter-spacing: -0.5px;
+            }
+
+            /* Fixed Floating Settings Icon (Right Top) */
+            .settings-btn {
+                background: white;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                font-size: 1.2rem;
+                color: #333;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+                position: fixed;
+                /* Always visible */
+                top: 15px;
+                right: 20px;
+                z-index: 1100;
+                /* Above everything */
+                transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+
+            .settings-btn:active {
+                transform: scale(0.9) rotate(90deg);
+            }
+
+            /* Full Screen Slide-Out Menu (Drawer) - UNCHANGED Logic */
+            .sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                right: -100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: white !important;
+                z-index: 2000 !important;
+                transition: right 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
+                box-shadow: none !important;
+                border: none !important;
+                display: flex !important;
+                flex-direction: column !important;
+                max-height: none !important;
+            }
+
+            .sidebar.expanded {
+                right: 0 !important;
+            }
+
+            .sidebar-content {
+                flex: 1;
+                padding: 90px 20px 40px 20px !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Close Button inside Drawer Header */
+            /* CSS for Desktop Sidebar Header */
+            .sidebar .sidebar-header {
+                display: flex !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 70px;
+                /* Desktop: Dark Header */
+                background: var(--primary-color) !important;
+                backdrop-filter: blur(5px);
+                color: white !important;
+                justify-content: flex-end;
+                align-items: center;
+                padding: 0 20px;
+                z-index: 2001;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .sidebar-header::after {
+                content: 'Bitti';
+                font-size: 1rem;
+                font-weight: 600;
+                color: #007AFF;
+                /* iOS Blue */
+                cursor: pointer;
+            }
+
+            .sidebar.expanded .sidebar-header::after {
+                content: '';
+            }
+
+            /* Highlight Imsak & Aksam */
+            .imsakiye-table td:nth-child(3),
+            .imsakiye-table td:nth-child(7) {
+                background-color: var(--highlight-bg);
+                font-weight: 700;
+            }
+
+            /* Mobile Close Button (Hidden on Desktop) */
+            .mobile-close-btn {
+                display: none;
+            }
+
+            /* 2. iOS LIST VIEW TRANSFORMATION */
+            .imsakiye-table {
+                display: block;
+                padding-bottom: 50px;
+            }
+
+            .imsakiye-table thead {
+                display: none;
+            }
+
+            .imsakiye-table tbody {
+                display: block;
+            }
+
+            .imsakiye-table tr {
+                display: block;
+                /* Allow standard flow */
+                position: relative;
+                background: white;
+                margin-bottom: 0;
+                padding: 12px 0;
+                border-bottom: 1px solid #f0f0f0;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+            }
+
+            .imsakiye-table td {
+                display: block;
+                text-align: left;
+                border: none;
+                padding: 0 20px;
+                width: auto;
+            }
+
+            /* DATE HEADER ROW */
+            /* Miladi Date: Top Left, Large, Bold */
+            .imsakiye-table td:nth-child(2) {
+                display: block;
+                /* Miladi on its own line */
+                width: 100%;
+                padding-right: 100px;
+                /* Space for Hicri */
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: #000;
+                padding-bottom: 4px;
+                order: 1;
+                /* First */
+                background: transparent !important;
+                margin-bottom: 2px;
+            }
+
+            /* Hicri Date: Absolute Top Right */
+            .imsakiye-table td:nth-child(1) {
+                position: absolute;
+                top: 15px;
+                /* Align with Miladi baseline approx */
+                right: 20px;
+                font-size: 0.85rem;
+                color: #8e8e93;
+                font-weight: 400;
+                background: transparent !important;
+                text-align: right;
+                padding: 0;
+                pointer-events: none;
+            }
+
+            /* PRAYER TIMES ROW (Horizontal Flex) */
+            /* We need to group cells 3-8 into a row. 
+               Since we can't add a wrapper div in CSS, we use a trick:
+               We make the TR a flex column, but we need cells 3-8 to be a row.
+               Actually, we can make the TR flex-wrap: wrap?
+               Better: set cells 3-8 to `display: inline-block` or flex items.
+               Let's create a "Times Container" feel by making cells 3-8 flow.
+            */
+
+            /* Single Row Times (6 items) */
+            .imsakiye-table td:nth-child(n+3) {
+                display: inline-block;
+                width: 16.666%;
+                margin: 0;
+                padding: 6px 0 0 0;
+                text-align: center;
+                border: none !important;
+                box-sizing: border-box;
+                font-size: 0.85rem;
+                /* Slightly smaller to fit labels */
+                vertical-align: top;
+            }
+
+            /* Restore Labels */
+            .imsakiye-table td:nth-child(n+3)::before {
+                font-size: 0.65rem;
+                margin-bottom: 2px;
+                color: #8e8e93;
+                display: block;
+                font-weight: 500;
+                content: attr(data-label);
+                /* SHOW LABEL */
+                opacity: 0.8;
+                /* Hafif silik */
+            }
+
+            /* Sidebar Title Alignment */
+            .sidebar-header h2 {
+                text-align: left;
+                width: 100%;
+            }
+        }
+
+        /* GLOBAL: Hide Mobile Close Button by default */
+        .mobile-close-btn {
+            display: none !important;
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-close-btn {
+                display: block !important;
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                z-index: 2005;
+                background: #f0f2f5;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 20px;
+                color: #007AFF;
+                font-weight: 700;
+                font-size: 0.9rem;
+                cursor: pointer;
+            }
+
+            /* Add padding to sidebar content to clear Fixed Header */
+            .sidebar-content {
+                padding-top: 80px !important;
+                /* Increased from 60px */
+            }
+
+            /* Sidebar Header Fixed */
+            .sidebar-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: white !important;
+                /* Keep Mobile White */
+                color: #333 !important;
+                /* Keep Mobile Dark Text */
+                z-index: 2010;
+                padding: 15px 20px;
+                /* Bit tighter vertically, same horizontally */
+                box-sizing: border-box;
+                /* Fix width overflow */
+                box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .sidebar-header h2 {
+                color: #ffffff !important;
+            }
+
+            /* New Close Icon (X) instead of Text */
+            .mobile-close-btn {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                /* Slightly bigger tap target */
+                height: 36px;
+                background: #f0f2f5;
+                font-size: 1.2rem;
+                color: #333;
+                border-radius: 50%;
+                border: none;
+                cursor: pointer;
+                /* Remove text styling */
+                font-weight: normal;
+                margin-left: 10px;
+                /* Space from title if needed */
+                margin-right: 5px;
+                /* Slight extra buffer from edge */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- MOBILE APP BAR (New) -->
+        <div class="mobile-app-bar" style="display:none;">
+            <h1 class="app-title">İmsakiye 2026</h1>
+            <button class="settings-btn" id="mobileSettingsBtn" aria-label="Ayarlar">
+                <span style="font-size: 24px;">⚙️</span>
+            </button>
+        </div>
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header" id="sidebarToggle">
+                <h2 style="margin:0; font-size:1.2rem;">Ayarlar & Seçenekler</h2>
+                <!-- Close Button Inside Header -->
+                <!-- Close Button Inside Header -->
+                <button id="mobileCloseBtn" class="mobile-close-btn"
+                    onclick="event.stopPropagation(); document.getElementById('sidebar').classList.remove('expanded')">✕</button>
+            </div>
+            <div class="sidebar-content">
+                <!-- SETTINGS PANEL CONTENT -->
+                <div class="controls" style="background:transparent; border:none; padding:0; margin:0;">
+                    <div class="settings-grid" id="settingsGrid" style="display:block !important;">
+
+                        <!-- 1. Location -->
+                        <div class="form-group">
+                            <label>📍 Konum Seçimi</label>
+                            <div class="dropdown-container">
+                                <input type="text" id="searchIl" placeholder="İl Ara (örn: İstanbul)..."
+                                    autocomplete="off">
+                                <div class="dropdown-list" id="listIl"></div>
+                            </div>
+                            <div class="dropdown-container" style="margin-top:10px;">
+                                <input type="text" id="searchIlce" placeholder="İlçe Seç..." disabled
+                                    autocomplete="off">
+                                <div class="dropdown-list" id="listIlce"></div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Branding (Live) -->
+                        <div class="form-group">
+                            <label>🏷️ Başlık & Logo</label>
+                            <input type="text" id="customTitle" placeholder="Kurum Adı (Canlı Önizleme)">
+                            <input type="text" id="customSubtitle" placeholder="Alt Başlık / Slogan"
+                                style="margin-top:5px;">
+                            <label style="margin-top:5px; font-size:0.8rem;">Logo Yükle:</label>
+                            <input type="file" id="logoInput" accept="image/*">
+                        </div>
+
+                        <!-- 3. Appearance (Live) -->
+                        <div class="form-group">
+                            <label>🎨 Görünüm</label>
+
+                            <label style="font-size: 0.8rem; color: #666; display:block; margin-bottom:2px;">Renk
+                                Teması:</label>
+                            <select id="themeSelect">
+                                <option value="default">Yeşil (Doğa)</option>
+                                <option value="theme-blue">Mavi (Okyanus)</option>
+                                <option value="theme-crimson">Bordo (Osmanlı)</option>
+                                <option value="theme-purple">Mor (Lale)</option>
+                                <option value="theme-black">Siyah/Beyaz (Resmi)</option>
+                            </select>
+
+                            <label
+                                style="font-size: 0.8rem; color: #666; display:block; margin-top:8px; margin-bottom:2px;">Yazı
+                                Tipi:</label>
+                            <select id="fontSelect">
+                                <option value="default" style="font-family: 'Inter', sans-serif;">Varsayılan (Modern)
+                                </option>
+                                <optgroup label="Sans Serif (Düz)">
+                                    <option value="font-roboto" style="font-family: 'Roboto', sans-serif;">Roboto
+                                    </option>
+                                    <option value="font-opensans" style="font-family: 'Open Sans', sans-serif;">Open
+                                        Sans</option>
+                                    <option value="font-lato" style="font-family: 'Lato', sans-serif;">Lato</option>
+                                    <option value="font-montserrat" style="font-family: 'Montserrat', sans-serif;">
+                                        Montserrat</option>
+                                    <option value="font-poppins" style="font-family: 'Poppins', sans-serif;">Poppins
+                                    </option>
+                                    <option value="font-raleway" style="font-family: 'Raleway', sans-serif;">Raleway
+                                    </option>
+                                    <option value="font-ubuntu" style="font-family: 'Ubuntu', sans-serif;">Ubuntu
+                                    </option>
+                                </optgroup>
+                                <optgroup label="Serif (Tırnaklı)">
+                                    <option value="font-merriweather" style="font-family: 'Merriweather', serif;">
+                                        Merriweather</option>
+                                    <option value="font-playfair" style="font-family: 'Playfair Display', serif;">
+                                        Playfair Display</option>
+                                    <option value="font-lora" style="font-family: 'Lora', serif;">Lora</option>
+                                    <option value="font-ptserif" style="font-family: 'PT Serif', serif;">PT Serif
+                                    </option>
+                                    <option value="font-bitter" style="font-family: 'Bitter', serif;">Bitter</option>
+                                    <option value="font-crimson" style="font-family: 'Crimson Text', serif;">Crimson
+                                        Text</option>
+                                </optgroup>
+                                <optgroup label="El Yazısı & Estetik">
+                                    <option value="font-pacifico" style="font-family: 'Pacifico', cursive;">Pacifico
+                                    </option>
+                                    <option value="font-dancing" style="font-family: 'Dancing Script', cursive;">Dancing
+                                        Script</option>
+                                    <option value="font-courgette" style="font-family: 'Courgette', cursive;">Courgette
+                                    </option>
+                                    <option value="font-satisfy" style="font-family: 'Satisfy', cursive;">Satisfy
+                                    </option>
+                                    <option value="font-lobster" style="font-family: 'Lobster', cursive;">Lobster
+                                    </option>
+                                    <option value="font-caveat" style="font-family: 'Caveat', cursive;">Caveat</option>
+                                    <option value="font-shadows" style="font-family: 'Shadows Into Light', cursive;">
+                                        Shadows Into Light</option>
+                                    <option value="font-indie" style="font-family: 'Indie Flower', cursive;">Indie
+                                        Flower</option>
+                                    <option value="font-amatic" style="font-family: 'Amatic SC', cursive;">Amatic SC
+                                    </option>
+                                </optgroup>
+                                <optgroup label="Başlık / Kalın">
+                                    <option value="font-oswald" style="font-family: 'Oswald', sans-serif;">Oswald
+                                    </option>
+                                    <option value="font-bebas" style="font-family: 'Bebas Neue', cursive;">Bebas Neue
+                                    </option>
+                                    <option value="font-anton" style="font-family: 'Anton', sans-serif;">Anton</option>
+                                </optgroup>
+                                <optgroup label="Monospace (Kod)">
+                                    <option value="font-mono" style="font-family: 'Roboto Mono', monospace;">Roboto Mono
+                                    </option>
+                                    <option value="font-source" style="font-family: 'Source Code Pro', monospace;">
+                                        Source Code Pro</option>
+                                </optgroup>
+                            </select>
+                            <div style="margin-top:5px; display: flex; flex-wrap: wrap; gap: 10px;">
+                                <label
+                                    style="display: flex; align-items: center; cursor: pointer; white-space: nowrap;">
+                                    <input type="radio" name="printMode" value="gorsel" checked
+                                        style="margin-right: 5px;"> Renkli
+                                </label>
+                                <label
+                                    style="display: flex; align-items: center; cursor: pointer; white-space: nowrap;">
+                                    <input type="radio" name="printMode" value="sade" style="margin-right: 5px;"> Sade
+                                    (Az Mürekkep)
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 4. Footer (Live) -->
+                        <div class="form-group">
+                            <label>ℹ️ Alt Bilgi & QR</label>
+                            <input type="text" id="customFooter" placeholder="Adres / Telefon / Mesaj">
+                            <input type="text" id="qrLink" placeholder="QR Kod Linki (http://...)"
+                                style="margin-top:5px;">
+                        </div>
+                    </div>
+
+                    <button id="generateBtn" class="btn" disabled style="margin-top:15px; background:#2E7D32;">İmsakiye
+                        Güncelle</button>
+                    <div id="loading" style="display:none; text-align:center; margin-top:10px;">Veriler
+                        yükleniyor...</div>
+                    <div id="errorMsg" style="display:none; color:red; text-align:center; margin-top:10px;"></div>
+
+                    <button onclick="window.print()" class="btn" style="background:#f57c00; margin-top:10px;">🖨️
+                        Yazdır (A4)</button>
+                    <div style="font-size:0.8rem; color:#666; margin-top:10px; text-align:center;">* Yazdırmadan
+                        önce önizlemeyi kontrol ediniz.</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN PREVIEW AREA -->
+        <main class="main-content">
+            <div class="container" id="paperContainer">
+
+                <!-- RESULT AREA -->
+                <div id="imsakiye-container" class="imsakiye-container" style="display:block;">
+                    <!-- Always block for layout -->
+
+                    <!-- Specific wrapper for print -->
+                    <div class="imsakiye-sheet">
+                        <!-- Branding Header -->
+                        <div class="brand-header" id="brandHeaderArea"
+                            style="position: relative; justify-content: center;">
+                            <img src="" id="displayLogo" class="brand-logo"
+                                style="display:none; position: absolute; left: 0; top: 0;">
+                            <div class="brand-text" style="width: 100%; text-align: center;">
+                                <h2 class="brand-title" id="displayTitle"></h2>
+                                <p class="brand-subtitle" id="displaySubtitle"></p>
+                            </div>
+                        </div>
+
+                        <!-- Default Header (Only if no custom branding) -->
+                        <h2 id="defaultTitle" style="text-align:center; display:none;"></h2>
+
+                        <table class="imsakiye-table">
+                            <thead>
+                                <tr>
+                                    <th>Hicri</th>
+                                    <th>Miladi</th>
+                                    <th>İmsak</th>
+                                    <th>Güneş</th>
+                                    <th>Öğle</th>
+                                    <th>İkindi</th>
+                                    <th>Akşam</th>
+                                    <th>Yatsı</th>
+                                </tr>
+                            </thead>
+                            <tbody id="imsakiyeBody"></tbody>
+                        </table>
+
+                        <!-- Bayram Info (Moved Bottom) -->
+                        <div style="text-align:center; margin-top:10px; margin-bottom:10px;">
+                            <div id="bayramInfo" style="font-weight:bold; color:#000;"></div>
+                            <div id="bayramNamaz" style="color:#000;"></div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="footer-info" id="footerArea">
+                            <div id="displayFooterText"></div>
+                            <img src="" id="displayQr" class="qr-image" style="display:none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                const LOCATIONS = { "Adana": { "Adana": 9146, "Aladağ": 9147, "Ceyhan": 9148, "Feke": 9149, "İmamoğlu": 9150, "Karaisalı": 9151, "Karataş": 9152, "Kozan": 9153, "Pozantı": 9154, "Saimbeyli": 9155, "Tufanbeyli": 9156, "Yumurtalık": 9157 }, "Adıyaman": { "Adıyaman": 9158, "Besni": 9159, "Çelikhan": 9160, "Gerger": 9161, "Gölbaşı": 9162, "Kahta": 9163, "Samsat": 9164, "Sincik": 9165, "Tut": 9166 }, "Afyonkarahisar": { "Afyonkarahisar": 9167, "Başmakçı": 9168, "Bayat": 9169, "Bolvadin": 9170, "Çay": 9171, "Çobanlar": 9172, "Dazkırı": 9173, "Dinar": 9174, "Emirdağ": 9175, "Evciler": 9176, "Hocalar": 9177, "İhsaniye": 9178, "İscehisar": 9179, "Kızılören": 9180, "Sandıklı": 9181, "Sinanpaşa": 9182, "Şuhut": 9183, "Sultandağı": 9184 }, "Ağrı": { "Ağrı": 9185, "Diyadin": 9186, "Doğubayazıt": 9187, "Eleşkirt": 9188, "Patnos": 9189, "Taşlıçay": 9190, "Tutak": 9191 }, "Aksaray": { "Ağaçören": 9192, "Aksaray": 9193, "Eskil": 9194, "Gülağaç": 9195, "Güzelyurt": 9196, "Sarıyahşi": 9197 }, "Amasya": { "Amasya": 9198, "Göynücek": 9199, "Gümüşhacıköy": 9200, "Hamamözü": 9201, "Merzifon": 9202, "Suluova": 9203, "Taşova": 9204 }, "Ankara": { "Akyurt": 9205, "Ankara": 9206, "Ayaş": 9207, "Bala": 9208, "Beypazarı": 9209, "Çamlıdere": 9210, "Çubuk": 9211, "Elmadağ": 9212, "Evren": 9213, "Güdül": 9214, "Haymana": 9215, "Kalecik": 9216, "Kahramankazan": 9217, "Kızılcahamam": 9218, "Nallıhan": 9219, "Polatlı": 9220, "Şereflikoçhisar": 9221 }, "Antalya": { "Akseki": 9222, "Aksu": 9223, "Alanya": 9224, "Antalya": 9225, "Demre": 9226, "Elmalı": 9227, "Finike": 9228, "Gazipaşa": 9229, "Gündoğmuş": 9230, "İbradı": 9231, "Kaş": 9232, "Kemer": 9233, "Korkuteli": 9234, "Kumluca": 9235, "Manavgat": 9236, "Serik": 9237 }, "Ardahan": { "Ardahan": 9238, "Çıldır": 9239, "Damal": 9240, "Göle": 9241, "Hanak": 9242, "Posof": 9243 }, "Artvin": { "Ardanuç": 9244, "Arhavi": 9245, "Artvin": 9246, "Borçka": 9247, "Hopa": 9248, "Murgul": 9249, "Şavşat": 9250, "Yusufeli": 9251 }, "Aydın": { "Aydın": 9252, "Bozdoğan": 9253, "Buharkent": 9254, "Çine": 9255, "Didim": 9256, "Germencik": 9257, "İncirliova": 9258, "Karacasu": 9259, "Karpuzlu": 9260, "Koçarlı": 9261, "Köşk": 9262, "Kuşadası": 9263, "Kuyucak": 9264, "Nazilli": 9265, "Söke": 9266, "Sultanhisar": 9267, "Yenipazar": 9268 }, "Balıkesir": { "Ayvalık": 9269, "Balıkesir": 9270, "Balya": 9271, "Bigadiç": 9272, "Burhaniye": 9273, "Dursunbey": 9274, "Edremit": 9275, "Gömeç": 9276, "Gönen": 9277, "Havran": 9278, "İvrindi": 9279, "Kepsut": 9280, "Marmara": 9281, "Savaştepe": 9282, "Sındırgı": 9283, "Susurluk": 9284 }, "Bartın": { "Bartın": 9285, "Kurucaşile": 9286, "Ulus": 9287 }, "Batman": { "Batman": 9288, "Beşiri": 9289, "Gercüş": 9290, "Hasankeyf": 9291, "Kozluk": 9292, "Sason": 9293 }, "Bayburt": { "Aydıntepe": 9294, "Bayburt": 9295, "Demirözü": 9296 }, "Bilecik": { "Bilecik": 9297, "Bozüyük": 9298, "Gölpazarı": 9299, "İnhisar": 9300, "Söğüt": 9301, "Yenipazar": 9302 }, "Bingöl": { "Bingöl": 9303, "Karlıova": 9304, "Kiğı": 9305, "Solhan": 9306, "Yayladere": 9307, "Yedisu": 9308 }, "Bitlis": { "Adilcevaz": 9309, "Ahlat": 9310, "Bitlis": 9311, "Hizan": 9312, "Mutki": 9313, "Tatvan": 9314 }, "Bolu": { "Bolu": 9315, "Dörtdivan": 9316, "Gerede": 9317, "Göynük": 9318, "Kıbrıscık": 9319, "Mengen": 9320, "Mudurnu": 9321, "Seben": 9322, "Yeniçağa": 9323 }, "Burdur": { "Ağlasun": 9324, "Altınyayla": 9325, "Bucak": 9326, "Burdur": 9327, "Çavdır": 9328, "Çeltikçi": 9329, "Gölhisar": 9330, "Karamanlı": 9331, "Kemer": 9332, "Tefenni": 9333, "Yeşilova": 9334 }, "Bursa": { "Bursa": 9335, "Büyükorhan": 9336, "Gemlik": 9337, "Harmancık": 9338, "İnegöl": 9339, "İznik": 9340, "Karacabey": 9341, "Keles": 9342, "Mudanya": 9343, "Mustafakemalpaşa": 9344, "Orhangazi": 9345, "Yenişehir": 9346 }, "Çanakkale": { "Ayvacık": 9347, "Bayramiç": 9348, "Biga": 9349, "Bozcaada": 9350, "Çan": 9351, "Çanakkale": 9352, "Gelibolu": 9353, "Gökçeada": 9354, "Lapseki": 9355, "Yenice": 9356 }, "Çankırı": { "Atkaracalar": 9357, "Bayramören": 9358, "Çankırı": 9359, "Çerkeş": 9360, "Ilgaz": 9361, "Kızılırmak": 9362, "Kurşunlu": 9363, "Orta": 9364, "Şabanözü": 9365, "Yapraklı": 9366 }, "Çorum": { "Alaca": 9367, "Bayat": 9368, "Boğazkale": 9369, "Çorum": 9370, "Dodurga": 9371, "İskilip": 9372, "Kargı": 9373, "Laçin": 9374, "Mecitözü": 9375, "Oğuzlar": 9376, "Ortaköy": 9377, "Osmancık": 9378, "Sungurlu": 9379, "Uğurludağ": 9380 }, "Denizli": { "Güney": 9381, "Babadağ": 9382, "Baklan": 9383, "Bekilli": 9384, "Beyağaç": 9385, "Bozkurt": 9386, "Buldan": 9387, "Çal": 9388, "Çameli": 9389, "Çardak": 9390, "Çivril": 9391, "Denizli": 9392, "Honaz": 9393, "Sarayköy": 9395, "Serinhisar": 9396 }, "Diyarbakır": { "Bismil": 9397, "Çermik": 9398, "Çınar": 9399, "Çüngüş": 9400, "Dicle": 9401, "Diyarbakır": 9402, "Eğil": 9403, "Ergani": 9404, "Hani": 9405, "Hazro": 9406, "Kocaköy": 9407, "Kulp": 9408, "Lice": 9409, "Silvan": 9410 }, "Düzce": { "Akçakoca": 9411, "Çilimli": 9412, "Cumayeri": 9413, "Düzce": 9414, "Gölyaka": 9415, "Gümüşova": 9416, "Kaynaşlı": 9417, "Yığılca": 9418 }, "Edirne": { "Edirne": 9419, "Enez": 9420, "Havsa": 9421, "İpsala": 9422, "Keşan": 9423, "Lalapaşa": 9424, "Meriç": 9425, "Süloğlu": 9426, "Uzunköprü": 9427 }, "Elazığ": { "Ağın": 9428, "Alacakaya": 9429, "Arıcak": 9430, "Baskil": 9431, "Elazığ": 9432, "Karakoçan": 9433, "Keban": 9434, "Kovancılar": 9435, "Maden": 9436, "Palu": 9437, "Sivrice": 9438 }, "Erzincan": { "Çayırlı": 9439, "Erzincan": 9440, "İliç": 9441, "Kemah": 9442, "Kemaliye": 9443, "Otlukbeli": 9444, "Refahiye": 9445, "Tercan": 9446, "Üzümlü": 9447 }, "Erzurum": { "Aşkale": 9448, "Aziziye": 9449, "Çat": 9450, "Erzurum": 9451, "Hınıs": 9452, "Horasan": 9453, "İspir": 9454, "Karaçoban": 9455, "Karayazı": 9456, "Köprüköy": 9457, "Narman": 9458, "Oltu": 9459, "Olur": 9460, "Pasinler": 9461, "Pazaryolu": 9462, "Şenkaya": 9463, "Tekman": 9464, "Tortum": 9465, "Uzundere": 9466 }, "Eskişehir": { "Alpu": 9467, "Beylikova": 9468, "Çifteler": 9469, "Eskişehir": 9470, "Günyüzü": 9471, "Han": 9472, "İnönü": 9473, "Mahmudiye": 9474, "Mihalıççık": 9475, "Seyitgazi": 9476, "Sivrihisar": 9477 }, "Gaziantep": { "Araban": 9478, "Gaziantep": 9479, "İslahiye": 9480, "Karkamış": 9481, "Nizip": 9482, "Nurdağı": 9483, "Oğuzeli": 9484, "Yavuzeli": 9485 }, "Giresun": { "Alucra": 9486, "Bulancak": 9487, "Çamoluk": 9488, "Çanakçı": 9489, "Dereli": 9490, "Doğankent": 9491, "Espiye": 9492, "Eynesil": 9493, "Giresun": 9494, "Görele": 9495, "Güce": 9496, "Keşap": 9497, "Piraziz": 9498, "Şebinkarahisar": 16706, "Tirebolu": 9499, "Yağlıdere": 9500 }, "Gümüşhane": { "Gümüşhane": 9501, "Köse": 9502, "Kürtün": 9503, "Şiran": 9504, "Torul": 9505 }, "Hakkari": { "Çukurca": 9506, "Hakkari": 9507, "Şemdinli": 9508, "Yüksekova": 9509 }, "Hatay": { "Altınözü": 9510, "Belen": 9511, "Dörtyol": 9512, "Erzin": 9513, "Hassa": 9514, "Arsuz": 9515, "İskenderun": 9516, "Kırıkhan": 9517, "Kumlu": 9518, "Reyhanlı": 9519, "Samandağ": 9520 }, "Iğdır": { "Aralık": 9521, "Iğdır": 9522, "Karakoyunlu": 9523, "Tuzluca": 9524 }, "Isparta": { "Aksu": 9525, "Eğirdir": 9526, "Gelendost": 9527, "Isparta": 9528, "Keçiborlu": 9529, "Şarkikaraağaç": 9530, "Sütçüler": 9531, "Uluborlu": 9532, "Yalvaç": 9533, "Yenişarbademli": 9534 }, "İstanbul": { "Arnavutköy": 9535, "Beylikdüzü": 9536, "Büyükçekmece": 9537, "Çatalca": 9538, "Çekmeköy": 9539, "Esenyurt": 9540, "İstanbul": 9541, "Kartal": 9542, "Küçükçekmece": 9543, "Maltepe": 9544, "Pendik": 9545, "Sancaktepe": 9546, "Şile": 9547, "Silivri": 9548, "Sultanbeyli": 9549, "Sultangazi": 9550, "Tuzla": 9551 }, "İzmir": { "Aliağa": 9552, "Bayındır": 9553, "Bergama": 9554, "Beydağ": 9555, "Çeşme": 9556, "Dikili": 9557, "Foça": 9558, "Güzelbahçe": 9559, "İzmir": 9560, "Karaburun": 9561, "Kemalpaşa": 9562, "Kınık": 9563, "Kiraz": 9564, "Ödemiş": 9565, "Seferihisar": 9566, "Selçuk": 9567, "Tire": 9568, "Torbalı": 9569, "Urla": 9570 }, "Kahramanmaraş": { "Afşin": 9571, "Andırın": 9572, "Çağlayancerit": 9573, "Ekinözü": 9574, "Elbistan": 9575, "Göksun": 9576, "Kahramanmaraş": 9577, "Nurhak": 9578, "Pazarcık": 9579 }, "Karabük": { "Eflani": 9580, "Karabük": 9581, "Ovacık": 9582, "Yenice": 9583 }, "Karaman": { "Ayrancı": 9584, "Başyayla": 9585, "Ermenek": 9586, "Karaman": 9587, "Kazımkarabekir": 9588, "Sarıveliler": 9589 }, "Kars": { "Akyaka": 9590, "Arpaçay": 9591, "Digor": 9592, "Kağızman": 9593, "Kars": 9594, "Sarıkamış": 9595, "Selim": 9596 }, "Kastamonu": { "Abana": 9597, "Ağlı": 9598, "Araç": 9599, "Azdavay": 9600, "Bozkurt": 9601, "Çatalzeytin": 9602, "Cide": 9603, "Daday": 9604, "Doğanyurt": 9605, "Hanönü": 9606, "İhsangazi": 9607, "İnebolu": 9608, "Kastamonu": 9609, "Küre": 9610, "Pınarbaşı": 9611, "Şenpazar": 9612, "Taşköprü": 9613, "Tosya": 9614 }, "Kayseri": { "Akkışla": 9615, "Bünyan": 9616, "Develi": 9617, "Felahiye": 9618, "İncesu": 9619, "Kayseri": 9620, "Özvatan": 9621, "Pınarbaşı": 9622, "Sarıoğlan": 9623, "Sarız": 9624, "Tomarza": 9625, "Yahyalı": 9626, "Yeşilhisar": 9627 }, "Kilis": { "Elbeyli": 9628, "Kilis": 9629, "Musabeyli": 9630 }, "Kırıkkale": { "Balışeyh": 9631, "Çelebi": 9632, "Delice": 9633, "Karakeçili": 9634, "Kırıkkale": 9635, "Sulakyurt": 9636 }, "Kırklareli": { "Demirköy": 9637, "Kırklareli": 9638, "Lüleburgaz": 9639, "Pehlivanköy": 9640, "Pınarhisar": 9641, "Vize": 9642 }, "Kırşehir": { "Akpınar": 9643, "Çiçekdağı": 9644, "Kaman": 9645, "Kırşehir": 9646, "Mucur": 9647 }, "Kocaeli": { "Çayırova": 9648, "Darıca": 9649, "Dilovası": 9650, "Gebze": 9651, "Kandıra": 9652, "Karamürsel": 9653, "Kocaeli": 9654, "Körfez": 9655 }, "Konya": { "Ahırlı": 9656, "Akören": 9657, "Akşehir": 9658, "Altınekin": 9659, "Beyşehir": 9660, "Bozkır": 9661, "Çeltik": 9662, "Cihanbeyli": 9663, "Çumra": 9664, "Derbent": 9665, "Derebucak": 9666, "Doğanhisar": 9667, "Emirgazi": 9668, "Ereğli": 9669, "Güneysınır": 9670, "Halkapınar": 9671, "Hüyük": 9672, "Ilgın": 9673, "Kadınhanı": 9674, "Karapınar": 9675, "Konya": 9676, "Kulu": 9677, "Seydişehir": 9678, "Tuzlukçu": 9679, "Yalıhüyük": 9680, "Yunak": 9681 }, "Kütahya": { "Altıntaş": 9682, "Aslanapa": 9683, "Çavdarhisar": 9684, "Domaniç": 9685, "Emet": 9686, "Gediz": 9687, "Hisarcık": 9688, "Kütahya": 9689, "Pazarlar": 9690, "Şaphane": 9691, "Simav": 9692, "Tavşanlı": 9693 }, "Malatya": { "Akçadağ": 9694, "Arapgir": 9695, "Arguvan": 9696, "Darende": 9697, "Doğanşehir": 9698, "Doğanyol": 9699, "Hekimhan": 9700, "Kale": 9701, "Kuluncak": 9702, "Malatya": 9703, "Pütürge": 9704, "Yazıhan": 9705, "Yeşilyurt": 9706 }, "Manisa": { "Ahmetli": 9707, "Akhisar": 9708, "Alaşehir": 9709, "Demirci": 9710, "Gölmarmara": 9711, "Gördes": 9712, "Kırkağaç": 9713, "Köprübaşı": 9714, "Kula": 9715, "Manisa": 9716, "Salihli": 9717, "Sarıgöl": 9718, "Saruhanlı": 9719, "Selendi": 9720, "Soma": 9721, "Turgutlu": 9722 }, "Mardin": { "Dargeçit": 9723, "Derik": 9724, "Kızıltepe": 9725, "Mardin": 9726, "Mazıdağı": 9727, "Midyat": 9728, "Nusaybin": 9729, "Ömerli": 9730 }, "Mersin": { "Anamur": 9731, "Aydıncık": 9732, "Bozyazı": 9733, "Çamlıyayla": 9734, "Erdemli": 9735, "Gülnar": 9736, "Mersin": 9737, "Mut": 9738, "Silifke": 9739, "Tarsus": 9740 }, "Muğla": { "Bodrum": 9741, "Dalaman": 9742, "Datça": 9743, "Fethiye": 9744, "Köyceğiz": 9745, "Milas": 9746, "Muğla": 9747, "Ortaca": 9748, "Ula": 9749, "Yatağan": 9750 }, "Muş": { "Bulanık": 9751, "Hasköy": 9752, "Korkut": 9753, "Malazgirt": 9754, "Muş": 9755, "Varto": 9756 }, "Nevşehir": { "Acıgöl": 9757, "Hacıbektaş": 9758, "Kozaklı": 9759, "Nevşehir": 9760, "Ürgüp": 9761 }, "Niğde": { "Altunhisar": 9762, "Bor": 9763, "Çamardı": 9764, "Çiftlik": 9765, "Niğde": 9766, "Ulukışla": 9767 }, "Ordu": { "Akkuş": 9768, "Aybastı": 9769, "Çamaş": 9770, "Çatalpınar": 9771, "Çaybaşı": 9772, "Fatsa": 9773, "Gölköy": 9774, "Gülyalı": 9775, "Gürgentepe": 9776, "İkizce": 9777, "Kabataş": 9778, "Korgan": 9779, "Kumru": 9780, "Mesudiye": 9781, "Ordu": 9782, "Ünye": 9783 }, "Osmaniye": { "Bahçe": 9784, "Düziçi": 9785, "Hasanbeyli": 9786, "Kadirli": 9787, "Osmaniye": 9788, "Sumbas": 9789, "Toprakkale": 9790 }, "Rize": { "Ardeşen": 9791, "Çamlıhemşin": 9792, "Çayeli": 9793, "Fındıklı": 9794, "Hemşin": 9795, "İkizdere": 9796, "İyidere": 9797, "Pazar": 9798, "Rize": 9799 }, "Sakarya": { "Akyazı": 9800, "Geyve": 9801, "Hendek": 9802, "Karasu": 9803, "Kaynarca": 9804, "Kocaali": 9805, "Pamukova": 9806, "Sakarya": 9807, "Taraklı": 9808 }, "Samsun": { "19 Mayıs": 9809, "Alaçam": 9810, "Asarcık": 9811, "Ayvacık": 9812, "Bafra": 9813, "Çarşamba": 9814, "Havza": 9815, "Kavak": 9816, "Ladik": 9817, "Salıpazarı": 9818, "Samsun": 9819, "Tekkeköy": 9820, "Terme": 9821, "Vezirköprü": 9822, "Yakakent": 9823 }, "Şanlıurfa": { "Akçakale": 9824, "Birecik": 9825, "Bozova": 9826, "Ceylanpınar": 9827, "Halfeti": 9828, "Harran": 9829, "Hilvan": 9830, "Şanlıurfa": 9831, "Siverek": 9832, "Suruç": 9833, "Viranşehir": 9834 }, "Siirt": { "Baykan": 9835, "Eruh": 9836, "Kurtalan": 9837, "Pervari": 9838, "Siirt": 9839 }, "Sinop": { "Ayancık": 9840, "Boyabat": 9841, "Dikmen": 9842, "Durağan": 9843, "Erfelek": 9844, "Gerze": 9845, "Saraydüzü": 9846, "Sinop": 9847, "Türkeli": 9848 }, "Şırnak": { "Beytüşşebap": 9849, "Cizre": 9850, "Güçlükonak": 9851, "İdil": 9852, "Silopi": 9853, "Şırnak": 9854, "Uludere": 9855 }, "Sivas": { "Akıncılar": 9856, "Altınyayla": 9857, "Divriği": 9858, "Doğanşar": 9859, "Gemerek": 9860, "Gölova": 9861, "Gürün": 9862, "Hafik": 9863, "İmranlı": 9864, "Kangal": 9865, "Koyulhisar": 9866, "Şarkışla": 9867, "Sivas": 9868, "Suşehri": 9869, "Yıldızeli": 9870, "Zara": 9871 }, "Tekirdağ": { "Çerkezköy": 9872, "Çorlu": 9873, "Hayrabolu": 9874, "Marmaraereğlisi": 9875, "Malkara": 9876, "Saray": 9877, "Şarköy": 9878, "Tekirdağ": 9879 }, "Tokat": { "Almus": 9880, "Artova": 9881, "Başçiftlik": 9882, "Niksar": 9883, "Pazar": 9884, "Reşadiye": 9885, "Sulusaray": 9886, "Tokat": 9887, "Turhal": 9888, "Yeşilyurt": 9889, "Zile": 9890 }, "Trabzon": { "Akçaabat": 9891, "Araklı": 9892, "Arsin": 9893, "Beşikdüzü": 9894, "Çarşıbaşı": 9895, "Çaykara": 9896, "Dernekpazarı": 9897, "Düzköy": 9898, "Hayrat": 9899, "Köprübaşı": 9900, "Of": 9901, "Şalpazarı": 9902, "Sürmene": 9903, "Tonya": 9904, "Trabzon": 9905, "Vakfıkebir": 9906, "Yomra": 9907 }, "Tunceli": { "Çemişgezek": 9908, "Hozat": 9909, "Nazımiye": 9910, "Ovacık": 9911, "Pertek": 9912, "Pülümür": 9913, "Tunceli": 9914 }, "Uşak": { "Banaz": 9915, "Eşme": 9916, "Karahallı": 9917, "Sivaslı": 9918, "Uşak": 9919 }, "Van": { "Bahçesaray": 9920, "Başkale": 9921, "Çaldıran": 9922, "Çatak": 9923, "Edremit": 9924, "Erciş": 9925, "Gevaş": 9926, "Muradiye": 9927, "Özalp": 9928, "Saray": 9929, "Van": 9930 }, "Yalova": { "Altınova": 9931, "Armutlu": 9932, "Çınarcık": 9933, "Termal": 9934, "Yalova": 9935 }, "Yozgat": { "Akdağmadeni": 9936, "Aydıncık": 9937, "Boğazlıyan": 9938, "Çandır": 9939, "Çayıralan": 9940, "Çekerek": 9941, "Kadışehri": 9942, "Saraykent": 943, "Sarıkaya": 9944, "Sorgun": 9946, "Yenifakılı": 9947, "Yerköy": 9948, "Yozgat": 9949 }, "Zonguldak": { "Alaplı": 9950, "Çaycuma": 9951, "Devrek": 9952, "Gökçebey": 9953, "Karadeniz Ereğli": 9954, "Zonguldak": 9955 } };
+
+                // --- 1. GLOBALS & DOM ---
+                const searchIl = document.getElementById('searchIl');
+                const listIl = document.getElementById('listIl');
+                const searchIlce = document.getElementById('searchIlce'); // Fixed ID from listIlce to searchIlce
+                const listIlce = document.getElementById('listIlce');
+                const generateBtn = document.getElementById('generateBtn');
+                const loading = document.getElementById('loading');
+                const errorMsg = document.getElementById('errorMsg');
+                const imsakiyeContainer = document.getElementById('imsakiye-container');
+
+                // Settings Elements
+                const togglePanelBtn = document.getElementById('sidebarToggle');
+                const settingsGrid = document.getElementById('sidebar');
+
+                let selectedIl = null;
+                let selectedIlce = null;
+
+                // Mobile Toggle Logic
+                if (togglePanelBtn) {
+                    togglePanelBtn.addEventListener('click', () => {
+                        settingsGrid.classList.toggle('expanded');
+                    });
+                }
+
+                // New Mobile App Bar Button Logic
+                const mobileSettingsBtn = document.getElementById('mobileSettingsBtn');
+                if (mobileSettingsBtn) {
+                    mobileSettingsBtn.addEventListener('click', () => {
+                        settingsGrid.classList.toggle('expanded');
+                    });
+                }
+
+                // --- 2. DROPDOWN SEARCH LOGIC ---
+                // --- 2. DROPDOWN SEARCH LOGIC ---
+                function setupDropdown(input, list, items, onSelect) {
+                    function filterAndShow() {
+                        let val = input.value.toLocaleLowerCase('tr');
+
+                        list.innerHTML = '';
+
+                        // Show all if empty, or filter
+                        const filtered = val ? items.filter(i => i.toLocaleLowerCase('tr').includes(val)) : items;
+
+                        if (filtered.length === 0) {
+                            list.style.display = 'none';
+                            return;
+                        }
+
+                        list.style.display = 'block';
+                        filtered.forEach(item => {
+                            const div = document.createElement('div');
+                            div.textContent = item;
+                            // Add font style to dropdown items if user wants to see them? No, keep simple.
+                            div.onclick = () => {
+                                input.value = item;
+                                list.style.display = 'none';
+                                onSelect(item);
+                            };
+                            list.appendChild(div);
+                        });
+                    }
+
+                    input.addEventListener('input', filterAndShow);
+
+                    // Click veya Focus durumunda mevcut değer tam eşleşiyorsa listeyi aç
+                    // Ve kullanıcı yeni arama yapabilsin diye input'u temizle
+                    const clearAndShow = () => {
+                        const val = input.value.toLocaleLowerCase('tr');
+                        const exactMatch = items.some(i => i.toLocaleLowerCase('tr') === val);
+
+                        if (exactMatch) {
+                            input.value = ''; // Temizle ki yeni arama yapılabilsin
+                        }
+                        filterAndShow();
+                    };
+
+                    input.addEventListener('focus', clearAndShow);
+                    input.addEventListener('click', clearAndShow);
+
+                    // Close when clicking outside
+                    document.addEventListener('click', (e) => {
+                        if (!input.contains(e.target) && !list.contains(e.target)) {
+                            list.style.display = 'none';
+                        }
+                    });
+                }
+
+                // Initialize Cities
+                const sortedCities = Object.keys(LOCATIONS).sort((a, b) => a.localeCompare(b, 'tr'));
+                setupDropdown(searchIl, listIl, sortedCities, (il) => {
+                    selectedIl = il;
+                    selectedIlce = null;
+                    searchIlce.value = '';
+                    searchIlce.disabled = false;
+
+                    // Save Setting
+                    saveSettings();
+
+                    // Setup Districts
+                    const districts = Object.keys(LOCATIONS[il]).sort((a, b) => a.localeCompare(b, 'tr'));
+                    setupDropdown(searchIlce, listIlce, districts, (ilce) => {
+                        selectedIlce = ilce;
+                        generateBtn.disabled = false;
+                        // Save Setting & Fetch
+                        saveSettings();
+                        fetchTimes(LOCATIONS[selectedIl][selectedIlce]);
+                    });
+                    // Focus on district
+                    searchIlce.focus();
+                });
+
+                // AUTO LOAD ANKARA ON START
+                // This block is now replaced by loadSettings, which handles initial loading from localStorage.
+                // If no settings are saved, it will default to an empty state or the user will select.
+                // The previous AUTO LOAD ANKARA ON START logic is removed as loadSettings takes precedence.
+
+                // --- 3. CUSTOMIZATION LOGIC ---
+                const themeSelect = document.getElementById('themeSelect');
+                const fontSelect = document.getElementById('fontSelect');
+                const printRadios = document.getElementsByName('printMode');
+
+                themeSelect.addEventListener('change', (e) => {
+                    document.body.className = document.body.className.replace(/theme-\w+/g, '');
+                    if (e.target.value !== 'default') document.body.classList.add(e.target.value);
+                    saveSettings();
+                });
+
+                fontSelect.addEventListener('change', (e) => {
+                    document.body.className = document.body.className.replace(/font-\w+/g, '');
+                    if (e.target.value !== 'default') document.body.classList.add(e.target.value);
+                    saveSettings();
+                });
+
+                Array.from(printRadios).forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        if (e.target.value === 'sade') document.body.classList.add('sade');
+                        else document.body.classList.remove('sade');
+                        saveSettings();
+                    });
+                });
+
+                // Branding
+                const customTitle = document.getElementById('customTitle');
+                const customSubtitle = document.getElementById('customSubtitle');
+                const logoInput = document.getElementById('logoInput');
+
+                const displayTitle = document.getElementById('displayTitle');
+                const displaySubtitle = document.getElementById('displaySubtitle');
+                const displayLogo = document.getElementById('displayLogo');
+                const brandHeaderArea = document.getElementById('brandHeaderArea');
+                const defaultTitle = document.getElementById('defaultTitle');
+
+                function updateBranding() {
+                    displayTitle.textContent = customTitle.value;
+                    displaySubtitle.textContent = customSubtitle.value;
+
+                    const hasBranding = customTitle.value || customSubtitle.value || displayLogo.src;
+                    if (hasBranding) {
+                        brandHeaderArea.classList.add('active');
+                        defaultTitle.style.display = 'none';
+                    } else {
+                        brandHeaderArea.classList.remove('active');
+                        defaultTitle.style.display = 'block';
+                    }
+                    saveSettings();
+                }
+                customTitle.addEventListener('input', updateBranding);
+                customSubtitle.addEventListener('input', updateBranding);
+
+                logoInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            displayLogo.src = ev.target.result;
+                            displayLogo.style.display = 'block';
+                            updateBranding();
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        displayLogo.src = '';
+                        displayLogo.style.display = 'none';
+                        updateBranding();
+                    }
+                });
+
+                // Footer
+                const customFooter = document.getElementById('customFooter');
+                const qrLink = document.getElementById('qrLink');
+                const displayFooter = document.getElementById('displayFooterText');
+                const displayQr = document.getElementById('displayQr');
+                const footerArea = document.getElementById('footerArea');
+
+                function updateFooter() {
+                    displayFooter.textContent = customFooter.value;
+                    const qrVal = qrLink.value.trim();
+                    if (qrVal) {
+                        displayQr.src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(qrVal)}`;
+                        displayQr.style.display = 'inline-block';
+                    } else {
+                        displayQr.style.display = 'none';
+                    }
+
+                    if (customFooter.value || qrVal) footerArea.classList.add('active');
+                    else footerArea.classList.remove('active');
+                    saveSettings();
+                }
+                customFooter.addEventListener('input', updateFooter);
+                qrLink.addEventListener('input', updateFooter);
+
+
+                // --- 4. GENERATION LOGIC ---
+                // Character Map for filenames
+                // Character Map for filenames (Uppercase)
+                const charMap = { 'ç': 'C', 'ğ': 'G', 'ı': 'I', 'ö': 'O', 'ş': 'S', 'ü': 'U', 'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U', 'i': 'I' };
+                function convertToFilename(text) {
+                    // Convert to Uppercase English characters, replace spaces with underscores
+                    return text.split('').map(c => charMap[c] || c).join('').toUpperCase().replace(/\s+/g, '_');
+                }
+
+                generateBtn.addEventListener('click', async () => {
+                    if (!selectedIl || !selectedIlce) return;
+                    fetchTimes(LOCATIONS[selectedIl][selectedIlce]);
+                });
+
+                async function fetchTimes(ilceId) {
+                    loading.style.display = 'block';
+                    errorMsg.style.display = 'none';
+                    generateBtn.disabled = true;
+
+                    const filename = convertToFilename(selectedIlce);
+
+                    const prayerUrl = `https://ta1gi.github.io/namaz_vakitleri/${filename}_${ilceId}.json`;
+                    const bayramUrl = `https://ta1gi.github.io/namaz_vakitleri/bayram_namazi.json`;
+
+                    try {
+                        const [pRes, bRes] = await Promise.allSettled([fetch(prayerUrl), fetch(bayramUrl)]);
+
+                        if (pRes.status === 'rejected' || !pRes.value.ok) throw new Error("Namaz vakitleri alınamadı (İnternet bağlantısını kontrol edin).");
+                        const data = await pRes.value.json();
+
+                        let bayramTime = null;
+                        if (bRes.status === 'fulfilled' && bRes.value.ok) {
+                            try {
+                                const bData = await bRes.value.json();
+                                if (bData[ilceId]) bayramTime = bData[ilceId].ramazan;
+                            } catch (e) { }
+                        }
+
+                        renderImsakiye(selectedIlce, data, bayramTime);
+                        imsakiyeContainer.style.display = 'block';
+                        // Auto Hide Settings on Mobile or Desktop? Let's hide to focus on result
+                        // settingsGrid.style.display = 'none'; // Optional
+
+                        // Scroll to result
+                        imsakiyeContainer.scrollIntoView({ behavior: 'smooth' });
+
+                    } catch (e) {
+                        errorMsg.textContent = e.message;
+                        errorMsg.style.display = 'block';
+                    } finally {
+                        loading.style.display = 'none';
+                        generateBtn.disabled = false;
+                    }
+                }
+
+                function renderImsakiye(ilceName, data, bayramTime) {
+                    // Update default title if no custom branding
+                    if (!customTitle.value && !customSubtitle.value && !displayLogo.src) {
+                        defaultTitle.textContent = ilceName.toUpperCase() + " / " + selectedIl.toUpperCase() + " HİCRİ 1447 / MİLADİ 2026";
+                        defaultTitle.style.display = 'block';
+                    } else {
+                        defaultTitle.style.display = 'none';
+                    }
+
+                    // Add Info Header (Location + Year)
+                    const brandHeader = document.getElementById('brandHeaderArea');
+                    let infoHeader = document.getElementById('infoHeader');
+                    if (!infoHeader) {
+                        infoHeader = document.createElement('div');
+                        infoHeader.id = 'infoHeader';
+                        infoHeader.className = 'info-header';
+                        infoHeader.style.textAlign = 'center';
+                        infoHeader.style.fontWeight = 'bold';
+                        infoHeader.style.marginBottom = '5px';
+                        // Insert after brand header or default title
+                        brandHeader.parentNode.insertBefore(infoHeader, brandHeader.nextSibling);
+                    }
+                    infoHeader.textContent = `HİCRİ 1447 / MİLADİ 2026 - ${ilceName.toUpperCase()} / ${selectedIl ? selectedIl.toUpperCase() : ''}`;
+
+                    const tbody = document.getElementById('imsakiyeBody');
+                    tbody.innerHTML = '';
+
+                    const now = new Date();
+                    const currentDay = now.getDate();
+                    const currentMonthIndex = now.getMonth(); // 0-11
+
+                    // Turkish Month Names for matching
+                    const trMonths = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+                    // Filter for Ramazan ONLY
+                    const ramazanDays = data.filter(d => d.hicriTarih.includes("Ramazan"));
+
+                    // Initialize rows with Ramazan Days Only
+                    ramazanDays.forEach((d) => {
+                        const tr = document.createElement('tr');
+                        // Clean Text
+                        let hicriText = d.hicriTarih.replace(/\s+\d{4}/, '');
+                        let miladiText = d.miladiTarih.replace(/\s+\d{4}/, '');
+
+                        // Check if Today
+                        // Format example: "18 Şubat Çarşamba"
+                        const todayString = `${currentDay} ${trMonths[currentMonthIndex]}`;
+                        if (d.miladiTarih.includes(todayString)) {
+                            tr.classList.add('today-row');
+                        }
+
+                        // Kadir check
+                        if (d.hicriTarih.startsWith("26 Ramazan")) {
+                            tr.classList.add('kadir-row');
+                            miladiText += " (KADİR GECESİ)";
+                        }
+
+                        // Cell Order: Hicri, Miladi, Imsak, Gunes, Ogle, Ikindi, Aksam, Yatsi
+                        // Mobile List View relies on DOM order: Miladi(2), Hicri(1), then Times(3-8) via CSS order
+                        const cells = [hicriText, miladiText, d.imsak, d.gunes, d.ogle, d.ikindi, d.aksam, d.yatsi];
+
+                        // Add data-label for CSS ::before
+                        const timeLabels = ["", "", "İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı"];
+
+                        cells.forEach((c, idx) => {
+                            const td = document.createElement('td');
+                            td.textContent = c;
+                            if (idx >= 2) td.setAttribute('data-label', timeLabels[idx]);
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+
+                    // Bayram Info Logic
+                    const bayramInfo = document.getElementById('bayramInfo');
+                    const bayramNamaz = document.getElementById('bayramNamaz');
+
+                    // Find 1 Sevval (End of Ramazan)
+                    // We assume Ramazan ends when entries stop or we check for non-Ramazan? 
+                    // Let's filter for Ramazan rows first to find the last one.
+                    // Reuse ramazanDays from above
+                    if (ramazanDays.length > 0) {
+                        const lastRamDay = ramazanDays[ramazanDays.length - 1];
+                        const lastRamIdx = data.lastIndexOf(lastRamDay);
+
+                        if (lastRamIdx < data.length - 1) {
+                            const bayramDay = data[lastRamIdx + 1];
+                            bayramInfo.textContent = `${bayramDay.miladiTarih} - Ramazan Bayramının 1. Günü`;
+
+                            const time = bayramTime || bayramDay.gunes; // Fallback to Gunes if API fails
+                            bayramNamaz.textContent = `Bayram Namazı Vakti: ${time}`;
+                        }
+                    }
+
+                    // --- 6. AUTO-SCROLL TO TODAY (MOBILE) ---
+                    if (window.innerWidth <= 768) {
+                        setTimeout(() => {
+                            const todayRow = document.querySelector('.today-row');
+                            if (todayRow) {
+                                todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }, 500);
+                    }
+                }
+
+                // --- 7. PERSISTENT SETTINGS (LOCAL STORAGE) ---
+                function saveSettings() {
+                    const settings = {
+                        il: selectedIl,
+                        ilce: selectedIlce,
+                        customTitle: document.getElementById('customTitle').value,
+                        customSubtitle: document.getElementById('customSubtitle').value,
+                        theme: document.getElementById('themeSelect').value,
+                        font: document.getElementById('fontSelect').value,
+                        printMode: document.querySelector('input[name="printMode"]:checked').value,
+                        customFooter: document.getElementById('customFooter').value,
+                        qrLink: document.getElementById('qrLink').value
+                    };
+                    localStorage.setItem('imsakiyeSettings_v2', JSON.stringify(settings));
+                }
+
+                function loadSettings() {
+                    const saved = localStorage.getItem('imsakiyeSettings_v2');
+                    if (!saved) {
+                        // DEFAULT LOAD: İstanbul / İstanbul
+                        if (LOCATIONS['İstanbul'] && LOCATIONS['İstanbul']['İstanbul']) {
+                            selectedIl = 'İstanbul';
+                            document.getElementById('searchIl').value = 'İstanbul';
+                            document.getElementById('searchIlce').disabled = false;
+
+                            const districts = Object.keys(LOCATIONS['İstanbul']).sort();
+                            setupDropdown(
+                                document.getElementById('searchIlce'),
+                                document.getElementById('listIlce'),
+                                districts,
+                                (dist) => {
+                                    selectedIlce = dist;
+                                    saveSettings();
+                                    fetchTimes(LOCATIONS[selectedIl][selectedIlce]);
+                                }
+                            );
+
+                            selectedIlce = 'İstanbul';
+                            document.getElementById('searchIlce').value = 'İstanbul';
+                            fetchTimes(LOCATIONS['İstanbul']['İstanbul']);
+                        }
+                        return;
+                    }
+
+                    try {
+                        const settings = JSON.parse(saved);
+
+                        // 1. Restore Texts & Values
+                        if (settings.customTitle) document.getElementById('customTitle').value = settings.customTitle;
+                        if (settings.customSubtitle) document.getElementById('customSubtitle').value = settings.customSubtitle;
+                        if (settings.customFooter) document.getElementById('customFooter').value = settings.customFooter;
+                        if (settings.qrLink) document.getElementById('qrLink').value = settings.qrLink;
+
+                        // 2. Restore Theme & Font
+                        if (settings.theme) {
+                            document.getElementById('themeSelect').value = settings.theme;
+                            // Trigger change to apply
+                            document.getElementById('themeSelect').dispatchEvent(new Event('change'));
+                        }
+                        if (settings.font) {
+                            document.getElementById('fontSelect').value = settings.font;
+                            // Trigger change to apply
+                            document.getElementById('fontSelect').dispatchEvent(new Event('change'));
+                        }
+
+                        // 3. Restore Print Mode
+                        if (settings.printMode) {
+                            const radio = document.querySelector(`input[name="printMode"][value="${settings.printMode}"]`);
+                            if (radio) {
+                                radio.checked = true;
+                                radio.dispatchEvent(new Event('change'));
+                            }
+                        }
+
+                        // 4. Restore Location (Complex Logic)
+                        if (settings.il && LOCATIONS[settings.il]) {
+                            selectedIl = settings.il;
+                            document.getElementById('searchIl').value = settings.il;
+
+                            // Enable District
+                            document.getElementById('searchIlce').disabled = false;
+
+                            // Populate Districts
+                            const districts = Object.keys(LOCATIONS[selectedIl]).sort();
+                            setupDropdown(
+                                document.getElementById('searchIlce'),
+                                document.getElementById('listIlce'),
+                                districts,
+                                (dist) => {
+                                    selectedIlce = dist;
+                                    saveSettings();
+                                    fetchTimes(LOCATIONS[selectedIl][selectedIlce]);
+                                    // Update display if needed or trigger generate
+                                }
+                            );
+
+                            // If District was also saved
+                            if (settings.ilce && LOCATIONS[selectedIl][settings.ilce]) {
+                                selectedIlce = settings.ilce;
+                                document.getElementById('searchIlce').value = settings.ilce;
+
+                                // Auto-Load Times
+                                fetchTimes(LOCATIONS[selectedIl][selectedIlce]);
+                            }
+                        }
+
+                        // Trigger Preview Update for Texts
+                        updateBranding(); // Renamed from updatePreview
+                        updateFooter();
+
+                    } catch (e) {
+                        console.warn("Settings Load Error:", e);
+                    }
+                }
+
+                // Add Event Listeners for Saving
+                const inputsToSave = [
+                    'customTitle', 'customSubtitle', 'themeSelect', 'fontSelect',
+                    'customFooter', 'qrLink'
+                ];
+                inputsToSave.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.addEventListener('change', saveSettings);
+                        el.addEventListener('input', saveSettings); // For text inputs
+                    }
+                });
+
+                // Radio Buttons
+                document.querySelectorAll('input[name="printMode"]').forEach(radio => {
+                    radio.addEventListener('change', saveSettings);
+                });
+
+                // Location Saving is handled in onSelect callbacks of setupDropdown
+
+                // Load on Init
+                window.addEventListener('DOMContentLoaded', loadSettings);
+            </script>
+    </div><!-- End sheet -->
+    </div><!-- End imsakiye container -->
+    </div><!-- End paper container -->
+    </main>
+
+</html>

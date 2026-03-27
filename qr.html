@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Kod Oluşturucu - İndir & Paylaş</title>
+    <!-- Tailwind CSS CDN'i --><script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- ARTIK GEREKLİ DEĞİL: 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    -->
+    <style>
+        /* Inter font ailesini ve temel stilleri ayarla */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* QR kod img etiketine stil vermek için bu stili koruyoruz */
+        #qrcode img {
+            margin: 0 auto;
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* İndir ve Paylaş düğmeleri varsayılan olarak gizli olacak */
+        #downloadShareButtons {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Ana Kart --><div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            QR Kod Oluşturucu
+        </h1>
+        
+        <!-- URL Girdi Alanı --><div class="mb-4">
+            <label for="urlInput" class="block text-sm font-medium text-gray-700 mb-2">
+                Link (URL)
+            </label>
+            <input type="text" id="urlInput" 
+                   placeholder="https://www.ornek.com" 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <!-- Oluştur Düğmesi --><button id="generateBtn" 
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded-md font-semibold shadow-md
+                       hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+                       transition duration-200 ease-in-out">
+            QR Kodu Oluştur
+        </button>
+        
+        <!-- Mesaj Alanı --><p id="message" class="text-center text-red-500 mt-4 text-sm"></p>
+        
+        <!-- QR Kod Görüntüleme Alanı --><div id="qrcode" class="mt-6 flex justify-center items-center min-h-[256px]">
+            <!-- QR kod buraya eklenecek --></div>
+
+        <!-- İndirme ve Paylaşım Butonları --><div id="downloadShareButtons" class="mt-6 flex flex-col sm:flex-row gap-4">
+            
+            <!-- GÜNCELLEME: <a> etiketini <button> ile değiştirdim -->
+            <button id="downloadBtn" 
+               class="flex-1 bg-green-500 text-white py-2 px-4 rounded-md font-semibold text-center shadow-md
+                      hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50
+                      transition duration-200 ease-in-out cursor-pointer">
+                QR Kodu İndir
+            </button>
+            
+            <button id="shareBtn" 
+                    class="flex-1 bg-purple-500 text-white py-2 px-4 rounded-md font-semibold shadow-md
+                           hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
+                           transition duration-200 ease-in-out">
+                QR Kodu Paylaş
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const generateBtn = document.getElementById('generateBtn');
+        const urlInput = document.getElementById('urlInput');
+        const qrcodeDiv = document.getElementById('qrcode');
+        const messageDiv = document.getElementById('message');
+        const downloadShareButtons = document.getElementById('downloadShareButtons');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const shareBtn = document.getElementById('shareBtn');
+
+        // ARTIK GEREKLİ DEĞİL:
+        // const qrcode = new QRCode(qrcodeDiv, { ... });
+
+        // QR kodu oluşturulduğunda bu fonksiyon çalışacak
+        function createQRCodeAndHandleButtons() {
+            const url = urlInput.value.trim();
+            
+            messageDiv.textContent = '';
+            // qrcode.clear(); // Eski kütüphane kodunu temizle
+            qrcodeDiv.innerHTML = ''; // QR kod alanını temizle
+            downloadShareButtons.style.display = 'none'; // Butonları gizle
+
+            if (url) {
+                try {
+                    // GÜNCELLEME: QR Kodunu bir API üzerinden oluştur
+                    const encodedUrl = encodeURIComponent(url);
+                    // qrserver.com API'sini kullanarak QR kod URL'si oluştur
+                    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodedUrl}&format=png`;
+
+                    // Yeni bir resim (img) elementi oluştur
+                    const qrImg = document.createElement('img');
+                    qrImg.src = qrApiUrl; // Kaynağı API URL'si yap
+                    qrImg.width = 256;
+                    qrImg.height = 256;
+                    qrImg.alt = "Oluşturulan QR Kodu";
+                    // Stil sınıfını CSS'deki #qrcode img ile eşleşmesi için ekle
+                    qrImg.className = "rounded-lg shadow-md"; 
+                    
+                    // Resim başarıyla yüklendiğinde butonları göster
+                    qrImg.onload = () => {
+                        
+                        // GÜNCELLEME: Bu satırlar artık gerekli değil, çünkü indirme işlemini
+                        //             JavaScript ile yapacağız.
+                        // downloadBtn.href = qrApiUrl;
+                        // downloadBtn.download = 'qr_kod.png'; 
+                        
+                        // Paylaşım ve İndirme butonlarını göster
+                        downloadShareButtons.style.display = 'flex';
+                    };
+                    
+                    // API hatası olursa mesaj göster
+                    qrImg.onerror = () => {
+                        messageDiv.textContent = "QR kodu oluşturulamadı. İnternet bağlantınızı kontrol edin.";
+                    };
+                    
+                    // Resmi div'e ekle
+                    qrcodeDiv.appendChild(qrImg);
+
+                } catch (error) {
+                    console.error("QR Kod oluşturma hatası:", error);
+                    messageDiv.textContent = "Geçersiz girdi. Lütfen tekrar deneyin.";
+                }
+            } else {
+                messageDiv.textContent = 'Lütfen bir link (URL) girin.';
+            }
+        }
+
+        generateBtn.addEventListener('click', createQRCodeAndHandleButtons);
+
+        urlInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                generateBtn.click();
+            }
+        });
+
+        // GÜNCELLEME: İndir butonu için yeni tıklama olayı
+        downloadBtn.addEventListener('click', async () => {
+            const qrImg = qrcodeDiv.querySelector('img');
+            if (!qrImg || !qrImg.src.startsWith('https://api.qrserver.com')) {
+                messageDiv.textContent = "Önce bir QR kodu oluşturun.";
+                return;
+            }
+
+            try {
+                // 1. Resmi API'den çek (Blob olarak)
+                const response = await fetch(qrImg.src);
+                if (!response.ok) throw new Error('API\'den resim alınamadı');
+                const blob = await response.blob();
+
+                // 2. Resim verisi için geçici bir yerel URL oluştur
+                const blobUrl = URL.createObjectURL(blob);
+
+                // 3. Geçici bir <a> etiketi oluştur
+                const tempLink = document.createElement('a');
+                tempLink.href = blobUrl;
+                tempLink.download = 'qr_kod.png'; // İndirilecek dosya adı
+                
+                // 4. Etiketi gizle ve DOM'a ekle
+                tempLink.style.display = 'none';
+                document.body.appendChild(tempLink);
+                
+                // 5. Etikete tıkla (indirme işlemini başlat)
+                tempLink.click();
+                
+                // 6. Geçici etiketi ve URL'yi temizle
+                document.body.removeChild(tempLink);
+                URL.revokeObjectURL(blobUrl);
+
+            } catch (error) {
+                console.error('Resim indirme hatası:', error);
+                messageDiv.textContent = "Resim indirilemedi. Lütfen tekrar deneyin.";
+            }
+        });
+
+
+        // Paylaşım düğmesi işlevselliği
+        shareBtn.addEventListener('click', async () => {
+            const qrImg = qrcodeDiv.querySelector('img');
+            const url = urlInput.value.trim(); // Linkin kendisi
+
+            if (!qrImg || !qrImg.src.startsWith('https://api.qrserver.com')) {
+                messageDiv.textContent = "Önce bir QR kodu oluşturun.";
+                return;
+            }
+            
+            const qrApiUrl = qrImg.src; // Resmin API URL'si
+
+            // Kademeli Paylaşım Mantığı (En Güvenilir Yöntem)
+            try {
+                // 1. Resmi API'den çek (Blob olarak)
+                const response = await fetch(qrApiUrl);
+                if (!response.ok) throw new Error('API\'den resim alınamadı');
+                const blob = await response.blob();
+                
+                // 2. Blob'u File nesnesine dönüştür
+                const file = new File([blob], 'qr_kod.png', { type: 'image/png' });
+                
+                // 3. Paylaşım verileri
+                const shareData_FileOnly = { files: [file] };
+                const shareData_LinkOnly = {
+                    title: 'QR Kod Linki',
+                    text: `Bu QR kodun içerdiği link:`,
+                    url: url
+                };
+                
+                // 4. 'navigator.canShare' ile dosya paylaşımını kontrol et
+                if (navigator.canShare && navigator.canShare(shareData_FileOnly)) {
+                    // 4a. Dosya paylaşabilir -> SADECE RESMİ DENE
+                    try {
+                        await navigator.share(shareData_FileOnly);
+                        console.log('Resim başarıyla paylaşıldı.');
+                    } catch (fileShareError) {
+                        // 4b. Başarısız olursa (örn. WhatsApp) -> LİNKİ PAYLAŞ
+                        console.warn('Sadece resim paylaşımı başarısız oldu, link paylaşımına geçiliyor:', fileShareError);
+                        await navigator.share(shareData_LinkOnly);
+                    }
+                } else {
+                    // 5. Dosya paylaşamaz -> DOĞRUDAN LİNKİ PAYLAŞ
+                    console.log('Tarayıcı dosya paylaşımını desteklemiyor, link paylaşılıyor.');
+                    await navigator.share(shareData_LinkOnly);
+                }
+
+            } catch (error) {
+                console.error('Paylaşım işlemi sırasında bir hata oluştu:', error);
+                if (!navigator.share) {
+                    messageDiv.textContent = "Paylaşım özelliği tarayıcınız tarafından desteklenmiyor.";
+                } else {
+                    // API'den fetch hatası vb. olursa son çare olarak linki paylaş
+                    try {
+                        await navigator.share({
+                            title: 'QR Kod Linki',
+                            text: `Bu QR kodun içerdiği link:`,
+                            url: url
+                        });
+                    } catch (fallbackError) {
+                        console.error('Link paylaşımı da başarısız oldu:', fallbackError);
+                        messageDiv.textContent = "Paylaşım özelliği kullanılamadı.";
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+

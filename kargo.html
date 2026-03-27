@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr" class=""> <!-- Karanlık mod için 'dark' sınıfı buraya eklenecek -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Kargo Takip Aracı</title>
+    <!-- Tailwind CSS CDN'i -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind'in karanlık modu 'class' bazlı (HTML tag'ine eklenen 'dark' sınıfı)
+        // olarak algılaması için yapılandırma.
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        /* Inter font ailesi */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Kaydırma çubuğu stilleri */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* dark:bg-gray-600 */
+            border-radius: 3px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-start justify-center p-4 pt-10 transition-colors duration-300">
+
+    <!-- Ana Kart -->
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-lg transition-colors duration-300">
+        
+        <!-- Üst Kısım: Başlık ve Karanlık Mod Butonu -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
+                Hızlı Kargo Takip
+            </h1>
+            <button id="themeToggle" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
+                <!-- SVG ikonlar -->
+                <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M12 12a5 5 0 11-10 0 5 5 0 0110 0z" />
+                </svg>
+                <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form id="trackingForm">
+            <!-- 1. ÖZELLİK: Özel Arama Yapılabilir Kargo Seçimi -->
+            <div class="mb-5 relative">
+                <label for="companySearch" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Kargo Firması (Arama Yapın)
+                </label>
+                <input type="text" id="companySearch" placeholder="Firma seçmek için tıklayın veya arayın..." class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 bg-white dark:bg-gray-700 dark:text-white">
+                <input type="hidden" id="companyUrl" name="companyUrl">
+                
+                <!-- Arama Sonuçları / Dropdown Listesi -->
+                <div id="companyList" class="hidden absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                    <!-- Firmalar JavaScript ile buraya yüklenecek -->
+                </div>
+            </div>
+
+            <!-- Takip Numarası Girişi -->
+            <div class="mb-6">
+                <label for="trackingNumber" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Takip Numarası
+                </label>
+                <input type="text" id="trackingNumber" name="trackingNumber" placeholder="Kargo takip kodunuzu girin" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 bg-white dark:bg-gray-700 dark:text-white">
+            </div>
+
+            <!-- Buton -->
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                SORGULA
+            </button>
+
+            <!-- Hata Mesajı Alanı -->
+            <div id="errorMessage" class="text-red-500 text-center mt-4 text-sm font-medium h-5">
+                <!-- Hata mesajları buraya gelecek -->
+            </div>
+        </form>
+
+        <!-- 3. ÖZELLİK: Son Aramalar Bölümü -->
+        <div id="recentSearches" class="mt-8">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Son Aramalar</h2>
+                <button id="clearRecentButton" class="text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-200 hidden">
+                    Hepsini Temizle
+                </button>
+            </div>
+            <div id="recentList" class="flex flex-col space-y-2">
+                <!-- Son aramalar buraya eklenecek -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- VERİ ---
+        // Her firmaya benzersiz bir 'key' ekledik. Bu, favorilere eklerken isim
+        // değişikliğinden etkilenmemek için önemli.
+        const cargoCompanies = [
+            { key: 'ptt', name: "PTT Kargo", url: "https://gonderitakip.ptt.gov.tr/Track/Verify?q={TRACKING_CODE}" },
+            { key: 'yurtici_eski', name: "Yurtiçi Kargo", url: "https://selfservis.yurticikargo.com/reports/SSWDocumentDetail.aspx?DocId={TRACKING_CODE}" },
+            { key: 'yurtici_yeni', name: "Yurtiçi Kargo (Yeni)", url: "https://www.yurticikargo.com/tr/online-servisler/gonderi-sorgula?code={TRACKING_CODE}" },
+            { key: 'surat', name: "Sürat Kargo", url: "https://www.suratkargo.com.tr/KargoTakip/?kargotakipno={TRACKING_CODE}" },
+            { key: 'aras', name: "Aras Kargo", url: "http://kargotakip.araskargo.com.tr/mainpage.aspx?code={TRACKING_CODE}" },
+            { key: 'mng', name: "MNG Kargo", url: "https://kargotakip.mngkargo.com.tr/?takipNo={TRACKING_CODE}" },
+            { key: 'ups', name: "UPS Kargo", url: "https://www.ups.com.tr/WaybillSorgu.aspx?Waybill={TRACKING_CODE}" },
+            { key: 'dhl', name: "DHL", url: "https://kargotakip.dhlecommerce.com.tr/?takipNo={TRACKING_CODE}" },
+            { key: 'tnt', name: "TNT", url: "https://www.tnt.com/express/tr_tr/site/shipping-tools/tracking.html?searchType=CON&cons={TRACKING_CODE}" },
+            { key: 'trendyolex', name: "Trendyol Express", url: "https://kargotakip.trendyol.com/?orderNumber={TRACKING_CODE}" },
+            { key: 'hepsijet', name: "Hepsijet", url: "https://www.hepsijet.com/gonderi-takibi/{TRACKING_CODE}" },
+            { key: 'jetteslim', name: "Jetteslim", url: "https://jetteslim.net/kargom-nerede?tracking_code={TRACKING_CODE}" },
+            { key: 'fedex', name: "FedEx", url: "https://www.fedex.com/apps/fedextrack/index.html?tracknumbers={TRACKING_CODE}&cntry_code=tr" },
+            { key: 'interglobal', name: "Inter Global Cargo", url: "https://www.globalkargo.com/tr/KargoDetay/{TRACKING_CODE}" },
+            { key: 'fastex', name: "Fast Express", url: "https://www.fast-express.com/tr/action/tracking/{TRACKING_CODE}" },
+            { key: 'kargoist', name: "Kargoist", url: "http://kargotakip.kargoist.com/hareket.asp?har_kod={TRACKING_CODE}&tip=2" },
+            { key: 'ukgs', name: "UKGS", url: "https://host1.selectoptimus.com:2070/PublishedPages/QueryBookingStatus.aspx?tenantCode=UKGS&bookingNo={TRACKING_CODE}" },
+            { key: 'gitkargo', name: "Git Kargo", url: "https://takip.gitkargo.com/kargo-takip?tracking_number={TRACKING_CODE}" },
+            { key: 'kargoturk', name: "KargoTürk Kargo", url: "http://online.kargoturk.com.tr:88/hareket.asp?har_kod={TRACKING_CODE}" },
+            { key: 'ekol', name: "Ekol Logistics (ShipsGo)", url: "https://shipsgo.com/live-map-container-tracking?query={TRACKING_CODE}" },
+            { key: 'igc_siparis', name: "IGC (Sipariş No)", url: "http://www.globalkargo.com/tr/KargoDetay/{TRACKING_CODE}" }
+        ];
+
+        // --- DOM ELEMENTLERİ ---
+        const trackingForm = document.getElementById('trackingForm');
+        const companySearch = document.getElementById('companySearch');
+        const companyUrlInput = document.getElementById('companyUrl');
+        const companyList = document.getElementById('companyList');
+        const trackingInput = document.getElementById('trackingNumber');
+        const errorMessage = document.getElementById('errorMessage');
+        const recentList = document.getElementById('recentList');
+        const clearRecentButton = document.getElementById('clearRecentButton'); // YENİ EKLEDİ
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIconSun = document.getElementById('themeIconSun');
+        const themeIconMoon = document.getElementById('themeIconMoon');
+        const htmlTag = document.documentElement;
+
+        // --- STATE (DURUM) YÖNETİMİ ---
+        let favorites = []; // 2. Özellik
+        let recentSearches = []; // 3. Özellik
+
+        // --- 4. ÖZELLİK: KARANLIK MOD FONKSİYONLARI ---
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                htmlTag.classList.add('dark');
+                themeIconSun.classList.remove('hidden');
+                themeIconMoon.classList.add('hidden');
+            } else {
+                htmlTag.classList.remove('dark');
+                themeIconSun.classList.add('hidden');
+                themeIconMoon.classList.remove('hidden');
+            }
+        };
+
+        const toggleTheme = () => {
+            const currentTheme = htmlTag.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+            // Kargo listesini tema değişikliğine göre yeniden render et
+            renderCompanyList(companySearch.value);
+        };
+
+        const loadTheme = () => {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else if (systemPrefersDark) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        };
+
+        // --- 2. ÖZELLİK: SIK KULLANILANLAR FONKSİYONLARI ---
+        const loadFavorites = () => {
+            favorites = JSON.parse(localStorage.getItem('cargoFavorites') || '[]');
+        };
+
+        const toggleFavorite = (companyKey) => {
+            if (favorites.includes(companyKey)) {
+                favorites = favorites.filter(key => key !== companyKey);
+            } else {
+                favorites.push(companyKey);
+            }
+            localStorage.setItem('cargoFavorites', JSON.stringify(favorites));
+            // Arama kutusundaki metni koruyarak listeyi yenile
+            renderCompanyList(companySearch.value);
+        };
+
+        // --- 1. & 2. ÖZELLİK: ARAMA & FİRMA LİSTESİ OLUŞTURMA ---
+        const renderCompanyList = (filter = '') => {
+            companyList.innerHTML = ''; // Listeyi temizle
+            const lowerFilter = filter.toLowerCase();
+
+            // 1. Favorileri filtrele ve ayır
+            const favoriteCompanies = cargoCompanies
+                .filter(c => favorites.includes(c.key))
+                .filter(c => c.name.toLowerCase().includes(lowerFilter));
+
+            // 2. Diğer firmaları filtrele
+            const otherCompanies = cargoCompanies
+                .filter(c => !favorites.includes(c.key))
+                .filter(c => c.name.toLowerCase().includes(lowerFilter));
+
+            // Favoriler grubunu oluştur
+            if (favoriteCompanies.length > 0) {
+                const group = document.createElement('div');
+                group.innerHTML = `<div class="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Sık Kullanılanlar</div>`;
+                favoriteCompanies.forEach(company => {
+                    group.appendChild(createCompanyItem(company, true));
+                });
+                companyList.appendChild(group);
+            }
+
+            // Diğer firmalar grubunu oluştur
+            if (otherCompanies.length > 0) {
+                const group = document.createElement('div');
+                if(favoriteCompanies.length > 0) { // Sadece favoriler varsa bir ayraç ekle
+                    group.innerHTML = `<div class="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Tüm Firmalar</div>`;
+                }
+                otherCompanies.forEach(company => {
+                    group.appendChild(createCompanyItem(company, false));
+                });
+                companyList.appendChild(group);
+            }
+
+            // Hiç sonuç yoksa
+            if (favoriteCompanies.length === 0 && otherCompanies.length === 0) {
+                companyList.innerHTML = `<div class="p-3 text-sm text-gray-500 dark:text-gray-400 text-center">Firma bulunamadı.</div>`;
+            }
+        };
+
+        const createCompanyItem = (company, isFavorite) => {
+            const item = document.createElement('div');
+            item.className = 'flex justify-between items-center p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600';
+            item.dataset.name = company.name;
+            item.dataset.url = company.url;
+
+            item.innerHTML = `<span class="text-sm text-gray-800 dark:text-gray-200">${company.name}</span>`;
+            
+            // Favori yıldızı
+            const star = document.createElement('button');
+            star.type = 'button'; // Formu submit etmesini engelle
+            star.className = `p-1 rounded-full ${isFavorite ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-500'} hover:text-yellow-500`;
+            star.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.96a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.446a1 1 0 00-.364 1.118l1.287 3.96c.3.921-.755 1.688-1.54 1.118l-3.368-2.446a1 1 0 00-1.176 0l-3.368 2.446c-.784.57-1.838-.197-1.54-1.118l1.287-3.96a1 1 0 00-.364-1.118L2.07 9.387c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.96z" />
+                </svg>`;
+            
+            star.addEventListener('click', (e) => {
+                e.stopPropagation(); // Arka plandaki item'a tıklanmasını engelle
+                toggleFavorite(company.key);
+            });
+            
+            item.appendChild(star);
+
+            // Firma seçildiğindeki olay
+            item.addEventListener('click', () => {
+                companySearch.value = company.name;
+                companyUrlInput.value = company.url;
+                companyList.classList.add('hidden');
+            });
+            
+            return item;
+        };
+
+        // --- 3. ÖZELLİK: SON ARAMALAR FONKSİYONLARI ---
+        const loadRecentSearches = () => {
+            recentSearches = JSON.parse(localStorage.getItem('cargoRecentSearches') || '[]');
+            renderRecentSearches();
+        };
+
+        const addRecentSearch = (companyName, trackingNumber, url) => {
+            // Önce aynı aramayı listeden çıkar (varsa)
+            recentSearches = recentSearches.filter(s => !(s.tracking === trackingNumber && s.name === companyName));
+            
+            // Başa ekle
+            recentSearches.unshift({ name: companyName, tracking: trackingNumber, url: url });
+            
+            // Listeyi 5 ile sınırla
+            recentSearches = recentSearches.slice(0, 5);
+            
+            localStorage.setItem('cargoRecentSearches', JSON.stringify(recentSearches));
+            renderRecentSearches();
+        };
+
+        // YENİ FONKSİYON: Tek bir aramayı sil
+        const removeRecentSearch = (index) => {
+            recentSearches.splice(index, 1); // Array'den index'e göre sil
+            localStorage.setItem('cargoRecentSearches', JSON.stringify(recentSearches)); // localStorage'ı güncelle
+            renderRecentSearches(); // Listeyi yeniden çiz
+        };
+
+        // YENİ FONKSİYON: Tüm aramaları temizle
+        const clearAllRecentSearches = () => {
+            recentSearches = []; // Array'i boşalt
+            localStorage.removeItem('cargoRecentSearches'); // localStorage'dan sil
+            renderRecentSearches(); // Listeyi yeniden çiz
+        };
+
+        const renderRecentSearches = () => {
+            recentList.innerHTML = ''; // Listeyi temizle
+            if (recentSearches.length === 0) {
+                recentList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">Henüz arama yapılmadı.</p>`;
+                clearRecentButton.classList.add('hidden'); // "Hepsini Temizle" butonunu gizle
+                return;
+            }
+            
+            clearRecentButton.classList.remove('hidden'); // "Hepsini Temizle" butonunu göster
+
+            recentSearches.forEach((search, index) => { // 'index' eklendi
+                const item = document.createElement('div'); // 'a' tag'i yerine 'div' kullanıyoruz
+                item.className = "flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg";
+                
+                // Tıklanabilir arama alanı
+                const searchLink = document.createElement('a');
+                searchLink.href = "#";
+                searchLink.className = "flex-grow cursor-pointer group";
+                searchLink.innerHTML = `
+                    <div>
+                        <span class="font-semibold text-sm text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">${search.name}</span>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">${search.tracking}</p>
+                    </div>
+                `;
+                
+                searchLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Bu aramayı tekrar yap
+                    companySearch.value = search.name;
+                    trackingInput.value = search.tracking;
+                    companyUrlInput.value = search.url;
+                    trackingForm.dispatchEvent(new Event('submit')); // Formu tetikle
+                });
+
+                // Silme Butonu (X)
+                const deleteButton = document.createElement('button');
+                deleteButton.className = "ml-2 p-1 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors rounded-full flex-shrink-0";
+                deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
+                deleteButton.dataset.index = index; // Silinecek öğenin index'ini sakla
+
+                deleteButton.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Link'in tıklanmasını engelle
+                    // Güncel DOM elementinden index'i al
+                    const itemIndex = parseInt(e.currentTarget.dataset.index, 10);
+                    removeRecentSearch(itemIndex);
+                });
+                
+                item.appendChild(searchLink);
+                item.appendChild(deleteButton);
+                recentList.appendChild(item);
+            });
+        };
+
+        // --- BAŞLANGIÇ (INIT) VE OLAY DİNLEYİCİLER ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadFavorites();
+            loadRecentSearches();
+            renderCompanyList(); // Başlangıçta tüm listeyi yükle
+
+            // Form gönderimi
+            trackingForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const selectedUrlTemplate = companyUrlInput.value;
+                const trackingNumber = trackingInput.value.trim();
+                const companyName = companySearch.value;
+
+                errorMessage.textContent = ''; // Hata mesajını temizle
+
+                // Doğrulama
+                if (!selectedUrlTemplate || !companyName) {
+                    errorMessage.textContent = 'Lütfen geçerli bir kargo firması seçin.';
+                    return;
+                }
+                if (!trackingNumber) {
+                    errorMessage.textContent = 'Lütfen takip numaranızı girin.';
+                    return;
+                }
+                
+                const finalUrl = selectedUrlTemplate.replace('{TRACKING_CODE}', encodeURIComponent(trackingNumber));
+                
+                // Yeni sekmede aç
+                window.open(finalUrl, '_blank');
+                
+                // Son aramalara ekle (3. Özellik)
+                addRecentSearch(companyName, trackingNumber, selectedUrlTemplate);
+
+                // Formu temizle
+                trackingInput.value = '';
+            });
+
+            // --- Arama Kutusu Olayları (1. Özellik) ---
+            companySearch.addEventListener('input', () => {
+                renderCompanyList(companySearch.value);
+                companyList.classList.remove('hidden');
+            });
+            
+            companySearch.addEventListener('focus', () => {
+                renderCompanyList(companySearch.value);
+                companyList.classList.remove('hidden');
+            });
+
+            // Dışarı tıklayınca listeyi kapat
+            document.addEventListener('click', (e) => {
+                if (!companySearch.contains(e.target) && !companyList.contains(e.target)) {
+                    companyList.classList.add('hidden');
+                }
+            });
+
+            // Tema Değiştirme Butonu (4. Özellik)
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // YENİ DİNLEYİCİ: "Hepsini Temizle" butonu
+            clearRecentButton.addEventListener('click', clearAllRecentSearches);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijital Araçlar - İstanbul Diyanet İzcilik SK</title>
+    <meta name="description" content="İzcilerimiz ve liderlerimiz için geliştirilmiş dijital araçlar ve uygulamalar.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome (İkonlar için) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts: Inter ve Kalam (Başlıklar için) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kalam:wght@700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .font-kalam {
+            font-family: 'Kalam', cursive;
+        }
+
+        .tool-card {
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen text-slate-800">
+
+    <!-- Ana İçerik -->
+    <main class="flex-grow container mx-auto px-4 py-12">
+
+        <!-- Sayfa Başlığı -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-slate-900 font-kalam mb-4">Dijital Araç Kutusu</h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Faaliyetlerimizi kolaylaştırmak, eğitimlerimize katkı sağlamak ve hayatı pratikleştirmek için
+                geliştirdiğimiz araçlar.
+            </p>
+        </div>
+
+        <!-- Arama / Filtreleme (Opsiyonel - Çok araç olunca işe yarar) -->
+        <div class="max-w-md mx-auto mb-12 relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fa-solid fa-search text-slate-400"></i>
+            </div>
+            <input type="text" id="searchInput" placeholder="Araç ara (Örn: Oyun, Kargo...)"
+                class="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-sm transition-all">
+        </div>
+
+        <!-- Araçlar Grid Yapısı -->
+        <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <!-- Araçlar JavaScript ile buraya doldurulacak -->
+        </div>
+
+    </main>
+
+    <!-- Alt Bilgi (Footer) -->
+    <footer class="bg-slate-900 text-white py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm mb-2">
+                &copy; <span id="year"></span> İstanbul Diyanet İzcilik Spor Kulübü. Tüm Hakları Saklıdır.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript: Araç Verileri ve Mantığı -->
+    <script>
+        // --- ARAÇ LİSTESİ ---
+        // Yeni bir araç eklemek için bu listeye bir { ... } bloğu eklemeniz yeterlidir.
+        const tools = [
+            {
+                title: "Oyun Üretici",
+                description: "Yapay zeka desteğiyle yaş grubu, mekan ve kişi sayısına uygun izcilik oyunları üretin.",
+                url: "oyun_uret.html",
+                icon: "fa-dice",
+                color: "text-blue-600",
+                bg: "bg-blue-50",
+                badge: "Yapay Zeka"
+            },
+            {
+                title: "Malzeme Kontrol Listesi",
+                description: "Kamplar için interaktif hazırlık listesi. Hazırlıklarınızı işaretleyin, eksiğiniz kalmasın.",
+                url: "malzeme_kontrol_listesi.html",
+                icon: "fa-clipboard-check",
+                color: "text-green-600",
+                bg: "bg-green-50",
+                badge: "Kamp"
+            },
+            {
+                title: "Kargo Takip",
+                description: "Tüm kargo firmalarını tek ekrandan sorgulayın. PTT, Yurtiçi, Aras ve daha fazlası.",
+                url: "kargo.html",
+                icon: "fa-truck-fast",
+                color: "text-orange-500",
+                bg: "bg-orange-50",
+                badge: "Pratik"
+            },
+            {
+                title: "QR Kod Oluşturucu",
+                description: "Web siteleri veya metinler için hızlıca QR kod oluşturun, indirin ve paylaşın.",
+                url: "qr.html",
+                icon: "fa-qrcode",
+                color: "text-purple-600",
+                bg: "bg-purple-50",
+                badge: "Araç"
+            },
+            {
+                title: "WhatsApp Link Üretici",
+                description: "Rehbere kaydetmeye gerek kalmadan hızlıca WhatsApp mesaj linki oluşturun.",
+                url: "whatsapp_toplu_mesaj.html",
+                icon: "fab fa-whatsapp",
+                color: "text-emerald-500",
+                bg: "bg-emerald-50",
+                badge: "İletişim"
+            },
+            {
+                title: "DMR Contact Listesi Oluşturucu",
+                description: "RadioID veritabanından güncel kullanıcı listesini indirir, filtreler ve telsizler için contact list hazırlar.",
+                url: "contact_list.html",
+                icon: "fa-walkie-talkie",
+                color: "text-red-600",
+                bg: "bg-red-50",
+                badge: "Haberleşme"
+            },
+            {
+                title: "İmsakiye Oluşturucu",
+                description: "Şehrinize özel Ramazan imsakiyesi hazırlayın, özelleştirin ve PDF olarak çıktı alın.",
+                url: "imsakiye.html",
+                icon: "fa-mosque",
+                color: "text-teal-600",
+                bg: "bg-teal-50",
+                badge: "Ramazan"
+            },
+            {
+                title: "PDF Sayfa Birleştirici",
+                description: "Landscape yönlendirmeli PDF dosyalarını, sayfaları ikişer ikişer birleştirerek portrait bir tasarıma dönüştürün.",
+                url: "pdf/index.html",
+                icon: "fa-file-pdf",
+                color: "text-red-500",
+                bg: "bg-red-50",
+                badge: "Belge"
+            }
+            // Yeni araç eklemek için buraya virgül koyup altına yeni objeyi yapıştırın
+        ];
+
+        // --- SAYFA YÜKLENİNCE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTools(tools);
+            document.getElementById('year').textContent = new Date().getFullYear();
+        });
+
+        // --- ARAMA FONKSİYONU ---
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredTools = tools.filter(tool =>
+                tool.title.toLowerCase().includes(searchTerm) ||
+                tool.description.toLowerCase().includes(searchTerm)
+            );
+            renderTools(filteredTools);
+        });
+
+        // --- KARTLARI OLUŞTURMA FONKSİYONU ---
+        function renderTools(toolsList) {
+            const grid = document.getElementById('toolsGrid');
+            grid.innerHTML = ''; // Temizle
+
+            if (toolsList.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fa-regular fa-face-frown text-4xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-500">Aradığınız kriterlere uygun araç bulunamadı.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            toolsList.forEach(tool => {
+                // Eğer URL "http" ile başlamıyorsa ve başta "/" yoksa, güvenli bir şekilde relative path yapalım
+                // Not: Sizin dosyalar ana dizinde olduğu için direkt dosya adını kullanıyoruz.
+                const safeUrl = tool.url;
+
+                const card = document.createElement('a');
+                card.href = safeUrl;
+                card.className = "tool-card bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col h-full relative overflow-hidden group hover:border-green-200";
+
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
+                        <i class="fa-solid ${tool.icon} text-9xl ${tool.color}"></i>
+                    </div>
+                    
+                    <div class="flex items-start justify-between mb-4 relative z-10">
+                        <div class="w-12 h-12 rounded-xl ${tool.bg} flex items-center justify-center text-xl ${tool.color}">
+                            <i class="fa-solid ${tool.icon}"></i>
+                        </div>
+                        ${tool.badge ? `<span class="px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-semibold">${tool.badge}</span>` : ''}
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-green-700 transition-colors relative z-10">
+                        ${tool.title}
+                    </h3>
+                    
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-grow relative z-10">
+                        ${tool.description}
+                    </p>
+                    
+                    <div class="flex items-center text-sm font-semibold ${tool.color} group-hover:underline relative z-10">
+                        Aracı Kullan <i class="fa-solid fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+
+</html>
