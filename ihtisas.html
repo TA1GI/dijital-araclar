@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İhtisas Sınavı Konu Analizi (2009-2025)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0f1a;
+  --bg-card: #141829;
+  --bg-card-hover: #1a1f37;
+  --bg-tab: #1e2340;
+  --bg-tab-active: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-bright: #f8fafc;
+  --accent: #818cf8;
+  --accent-2: #a78bfa;
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.15);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.12);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,0.12);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.12);
+  --border: rgba(148,163,184,0.1);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --glow: 0 0 40px rgba(99,102,241,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== BACKGROUND EFFECTS ===== */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(99,102,241,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 80%, rgba(139,92,246,0.05) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 50%, rgba(6,182,212,0.03) 0%, transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== HERO ===== */
+.hero {
+  text-align: center;
+  padding: 50px 20px 40px;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.15));
+  border: 1px solid rgba(129,140,248,0.25);
+  padding: 6px 18px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #e2e8f0, #818cf8, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.hero p {
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== EXAM INFO STRIP ===== */
+.info-strip {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 30px 0;
+}
+
+.info-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.info-pill .icon { font-size: 1.1rem; }
+.info-pill .val { color: var(--accent); font-weight: 700; }
+
+/* ===== ALERT BOXES ===== */
+.alert {
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin: 24px 0;
+  border-left: 4px solid;
+  font-size: 0.92rem;
+}
+.alert-warn {
+  background: rgba(251,146,60,0.08);
+  border-color: var(--orange);
+}
+.alert-warn .alert-title { color: var(--orange); }
+.alert-tip {
+  background: rgba(52,211,153,0.08);
+  border-color: var(--green);
+}
+.alert-tip .alert-title { color: var(--green); }
+.alert-note {
+  background: rgba(96,165,250,0.08);
+  border-color: var(--blue);
+}
+.alert-note .alert-title { color: var(--blue); }
+.alert-danger {
+  background: rgba(248,113,113,0.08);
+  border-color: var(--red);
+}
+.alert-danger .alert-title { color: var(--red); }
+.alert-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.alert p { color: var(--text-dim); line-height: 1.65; }
+.alert strong { color: var(--text-bright); }
+
+/* ===== TABS ===== */
+.tabs-wrapper {
+  margin-top: 10px;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(129,140,248,0.3) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-nav::-webkit-scrollbar { height: 4px; }
+.tab-nav::-webkit-scrollbar-track { background: transparent; }
+.tab-nav::-webkit-scrollbar-thumb { background: rgba(129,140,248,0.3); border-radius: 4px; }
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-dim);
+  border-radius: 10px 10px 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.tab-btn:hover {
+  background: var(--bg-tab);
+  color: var(--text);
+}
+
+.tab-btn.active {
+  background: var(--bg-tab-active);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+}
+
+.tab-btn .tab-emoji {
+  margin-right: 4px;
+  font-size: 0.95rem;
+}
+
+.tab-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 0 var(--radius) var(--radius) var(--radius);
+  padding: 32px 28px;
+  box-shadow: var(--shadow);
+  animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ===== SECTION/CARD ===== */
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-subtitle {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 22px;
+}
+
+.card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 18px;
+  transition: background 0.2s;
+}
+.card:hover { background: rgba(255,255,255,0.05); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-orange { background: var(--orange-dim); color: var(--orange); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
+.badge-green { background: var(--green-dim); color: var(--green); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); }
+
+/* ===== TABLES ===== */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.88rem;
+  margin: 14px 0;
+}
+
+thead th {
+  background: rgba(99,102,241,0.1);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid rgba(99,102,241,0.2);
+}
+
+thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+
+tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+tbody tr:hover td { background: rgba(129,140,248,0.04); }
+
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:last-child td:first-child { border-radius: 0 0 0 var(--radius-sm); }
+tbody tr:last-child td:last-child { border-radius: 0 0 var(--radius-sm) 0; }
+
+.t-center { text-align: center; }
+.t-right { text-align: right; }
+.t-bold { font-weight: 700; color: var(--text-bright); }
+.t-dim { color: var(--text-dim); }
+.t-accent { color: var(--accent); font-weight: 700; }
+.t-green { color: var(--green); font-weight: 700; }
+.t-orange { color: var(--orange); font-weight: 700; }
+.t-red { color: var(--red); font-weight: 700; }
+
+/* ===== PROGRESS BARS ===== */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.progress-label {
+  flex: 0 0 160px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: right;
+  color: var(--text);
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 26px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  transition: width 1s ease;
+  min-width: 38px;
+}
+
+.fill-indigo { background: linear-gradient(90deg, #6366f1, #818cf8); }
+.fill-emerald { background: linear-gradient(90deg, #059669, #34d399); }
+.fill-sky { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+.fill-amber { background: linear-gradient(90deg, #d97706, #fbbf24); }
+.fill-violet { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+.fill-rose { background: linear-gradient(90deg, #e11d48, #fb7185); }
+.fill-teal { background: linear-gradient(90deg, #0d9488, #2dd4bf); }
+.fill-orange { background: linear-gradient(90deg, #ea580c, #fb923c); }
+.fill-slate { background: linear-gradient(90deg, #475569, #94a3b8); }
+.fill-pink { background: linear-gradient(90deg, #db2777, #f472b6); }
+.fill-cyan { background: linear-gradient(90deg, #0891b2, #22d3ee); }
+
+.progress-val {
+  flex: 0 0 55px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+/* ===== LISTS ===== */
+.topic-list {
+  list-style: none;
+  padding: 0;
+}
+
+.topic-list li {
+  position: relative;
+  padding: 6px 0 6px 22px;
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.topic-list li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ===== CHECKLIST ===== */
+.checklist { list-style: none; padding: 0; }
+
+.checklist li {
+  padding: 8px 0 8px 30px;
+  position: relative;
+  font-size: 0.88rem;
+  color: var(--text);
+  border-bottom: 1px solid rgba(148,163,184,0.06);
+}
+
+.checklist li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 11px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  background: transparent;
+}
+
+.checklist li:last-child { border-bottom: none; }
+
+/* ===== PRIORITY GROUPS ===== */
+.priority-group {
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.priority-1 { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.15); }
+.priority-2 { background: rgba(251,146,60,0.06); border: 1px solid rgba(251,146,60,0.12); }
+.priority-3 { background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.10); }
+
+.priority-header {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priority-1 .priority-header { color: var(--red); }
+.priority-2 .priority-header { color: var(--orange); }
+.priority-3 .priority-header { color: var(--yellow); }
+
+.sub-section {
+  margin-bottom: 14px;
+  padding-left: 10px;
+}
+
+.sub-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-bright);
+  margin-bottom: 6px;
+}
+
+/* ===== TREND LIST ===== */
+.trend-list {
+  list-style: none;
+  padding: 0;
+  counter-reset: trend;
+}
+
+.trend-list li {
+  counter-increment: trend;
+  padding: 12px 0 12px 40px;
+  position: relative;
+  font-size: 0.88rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.trend-list li::before {
+  content: counter(trend);
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 26px;
+  height: 26px;
+  background: var(--bg-tab-active);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.trend-list li:last-child { border-bottom: none; }
+
+/* ===== GOLDEN TABLE ===== */
+.gold-table { margin-top: 10px; }
+.gold-table thead th {
+  background: rgba(251,191,36,0.12);
+  color: var(--yellow);
+}
+.gold-table tbody tr.total-row td {
+  background: rgba(251,191,36,0.07);
+  font-weight: 800;
+  color: var(--yellow);
+  border-top: 2px solid rgba(251,191,36,0.3);
+}
+
+/* ===== DONUT CHART (CSS only) ===== */
+.donut-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.donut {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: relative;
+  /* We'll use conic-gradient */
+}
+
+.donut-center {
+  position: absolute;
+  inset: 30px;
+  background: var(--bg-card);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-center .big { font-size: 1.6rem; font-weight: 900; color: var(--text-bright); }
+.donut-center .small { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legend-label { color: var(--text); }
+.legend-val { color: var(--text-dim); margin-left: auto; font-weight: 600; }
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 30px 0 10px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* All tables scrollable on mobile */
+table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+thead, tbody, tr { min-width: 100%; }
+
+/* Touch-friendly taps */
+button, .tab-btn { -webkit-tap-highlight-color: transparent; }
+
+@media (max-width: 768px) {
+  .container { padding: 10px 12px 40px; }
+  .hero { padding: 30px 10px 24px; }
+  .hero h1 { font-size: 1.5rem; }
+  .hero p { font-size: 0.9rem; }
+
+  .tab-content { padding: 18px 14px; }
+  .tab-btn { padding: 9px 14px; font-size: 0.76rem; }
+
+  .section-title { font-size: 1.1rem; flex-wrap: wrap; }
+  .section-subtitle { font-size: 0.82rem; }
+
+  .progress-label { flex: 0 0 90px; font-size: 0.76rem; }
+  .progress-val { flex: 0 0 44px; font-size: 0.76rem; }
+  .progress-bar-bg { height: 22px; }
+  .progress-bar-fill { font-size: 0.68rem; min-width: 30px; }
+
+  .info-strip { gap: 8px; }
+  .info-pill { padding: 7px 12px; font-size: 0.78rem; }
+
+  .donut-wrapper { flex-direction: column; gap: 16px; }
+  .donut { width: 170px; height: 170px; }
+  .donut-center { inset: 26px; }
+  .donut-center .big { font-size: 1.4rem; }
+  .donut-legend { flex-direction: row; flex-wrap: wrap; gap: 6px 16px; justify-content: center; }
+  .legend-item { font-size: 0.75rem; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; }
+
+  .card { padding: 14px; margin-bottom: 14px; }
+  .card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .card-title { font-size: 0.95rem; }
+
+  .alert { padding: 14px 16px; font-size: 0.85rem; }
+  .alert-title { font-size: 0.78rem; }
+
+  .priority-group { padding: 14px; }
+  .priority-header { font-size: 0.9rem; flex-wrap: wrap; }
+  .sub-title { font-size: 0.85rem; }
+
+  .arabic-grid { grid-template-columns: 1fr; gap: 8px; }
+  .arabic-item { padding: 10px 12px; gap: 10px; }
+  .arabic-info .ar-label { font-size: 0.78rem; }
+  .arabic-info .ar-desc { font-size: 0.7rem; }
+
+  .topic-list li { font-size: 0.82rem; padding-left: 18px; }
+  .checklist li { font-size: 0.82rem; padding-left: 28px; }
+
+  .trend-list li { padding-left: 36px; font-size: 0.82rem; }
+  .trend-list li::before { width: 22px; height: 22px; font-size: 0.7rem; }
+
+  thead th { font-size: 0.7rem; padding: 8px 10px; white-space: nowrap; }
+  tbody td { font-size: 0.8rem; padding: 8px 10px; white-space: nowrap; }
+
+  .footer { font-size: 0.72rem; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 6px 8px 30px; }
+  .hero { padding: 20px 6px 18px; }
+  .hero h1 { font-size: 1.25rem; }
+  .hero p { font-size: 0.82rem; }
+  .hero-badge { font-size: 0.7rem; padding: 5px 12px; }
+
+  .tab-content { padding: 14px 10px; border-radius: 0 10px 10px 10px; }
+  .tab-btn { padding: 8px 10px; font-size: 0.7rem; }
+  .tab-btn .tab-emoji { font-size: 0.82rem; margin-right: 2px; }
+
+  .info-strip { gap: 6px; }
+  .info-pill { padding: 6px 10px; font-size: 0.72rem; gap: 5px; }
+
+  .progress-label { flex: 0 0 72px; font-size: 0.7rem; }
+  .progress-val { flex: 0 0 36px; font-size: 0.7rem; }
+
+  .section-title { font-size: 0.98rem; }
+  .donut { width: 140px; height: 140px; }
+  .donut-center { inset: 20px; }
+  .donut-center .big { font-size: 1.2rem; }
+  .donut-center .small { font-size: 0.62rem; }
+
+  .card { padding: 12px; }
+  .card-title { font-size: 0.88rem; }
+  .alert { padding: 12px 12px; }
+  .priority-group { padding: 12px; }
+  .priority-header { font-size: 0.82rem; }
+}
+
+/* mini stat cards */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-align: center;
+}
+
+.stat-card .stat-val {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card .stat-label {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* divider */
+.divider {
+  border: none;
+  height: 1px;
+  background: var(--border);
+  margin: 28px 0;
+}
+
+/* arabic highlight section */
+.arabic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.arabic-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.arabic-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.arabic-info { flex: 1; }
+.arabic-info .ar-label { font-size: 0.82rem; font-weight: 600; color: var(--text-bright); }
+.arabic-info .ar-desc { font-size: 0.76rem; color: var(--text-dim); }
+.arabic-val { font-size: 1.1rem; font-weight: 800; color: var(--accent); flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="hero-badge">📊 17 YILLIK VERİ ANALİZİ</div>
+  <h1>Diyanet Yüksek İhtisas Sınavı<br>Konu Analizi</h1>
+  <p>2009–2025 yılları arasındaki tüm çıkmış soruların kapsamlı analizi ve son gün tekrar stratejisi</p>
+</div>
+
+<!-- ===== INFO STRIP ===== -->
+<div class="info-strip">
+  <div class="info-pill"><span class="icon">📝</span> Soru: <span class="val">100</span></div>
+  <div class="info-pill"><span class="icon">⏱️</span> Süre: <span class="val">150 dk</span></div>
+  <div class="info-pill"><span class="icon">✅</span> Değerlendirme: <span class="val">Sadece doğrular</span></div>
+  <div class="info-pill"><span class="icon">📅</span> Veri: <span class="val">2009–2025</span></div>
+</div>
+
+<!-- ===== CRITICAL ARABIC ALERT ===== -->
+<div class="alert alert-warn">
+  <div class="alert-title">⚠️ KRİTİK BULGU: ARAPÇA İÇERİKLİ SORULAR</div>
+  <p>Sınavda sadece "Arapça dil bilgisi" başlığı altında ~30 soru çıkmaz. <strong>Soruların yaklaşık %35-40'ı Arapça metin içerir!</strong> Tefsir, Hadis ve Fıkıh sorularının önemli bir kısmında da Arapça okuma becerisi gerekir. Arapça metin okuma pratiği, konu bilgisinden bağımsız olarak en az 10 ek soru kazandırabilir.</p>
+</div>
+
+<!-- ===== ARABIC CONTENT BREAKDOWN ===== -->
+<div class="card" style="margin-bottom:28px;">
+  <div class="card-header">
+    <div class="card-title">Arapça İçerikli Soruların Dağılımı <span style="color:var(--text-dim);font-weight:400;font-size:0.85rem;">(Son 5 Yıl Ortalaması)</span></div>
+    <span class="badge badge-orange">~%40</span>
+  </div>
+  <div class="arabic-grid">
+    <div class="arabic-item">
+      <div class="arabic-dot" style="background:#34d399;"></div>
+      <div class="arabic-info"><div class="ar-label">Arapça Çeviri/Paragraf</div><div class="ar-desc">Cümle tamamlama, eş/zıt anlam, Türkçe↔Arapça</div></div>
+      <div class="arabic-val">~12</div>
+    </div>
+    <div class="arabic-item">
+      <div class="arabic-dot" style="background:#60a5fa;"></div>
+      <div class="arabic-info"><div class="ar-label">Ayet Okuma/Meali</div><div class="ar-desc">Ayet meali, kelimelerin anlamları, sûre eşleştirme</div></div>
+      <div class="arabic-val">~11</div>
+    </div>
+    <div class="arabic-item">
+      <div class="arabic-dot" style="background:#a78bfa;"></div>
+      <div class="arabic-info"><div class="ar-label">Nahiv/Sarf (Arapça metin)</div><div class="ar-desc">İrab, bab tayini, kelime türü belirleme</div></div>
+      <div class="arabic-val">~8</div>
+    </div>
+    <div class="arabic-item">
+      <div class="arabic-dot" style="background:#fbbf24;"></div>
+      <div class="arabic-info"><div class="ar-label">Hadis Tercümesi/Anlama</div><div class="ar-desc">Hadis çevirisi, altı çizili kelimelerin anlamı</div></div>
+      <div class="arabic-val">~4</div>
+    </div>
+    <div class="arabic-item">
+      <div class="arabic-dot" style="background:#94a3b8;"></div>
+      <div class="arabic-info"><div class="ar-label">Diğer Arapça İçerikli</div><div class="ar-desc">Fıkhî metinler, kelâmî ibâreler, tecvid</div></div>
+      <div class="arabic-val">~6</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TABS ===== -->
+<div class="tabs-wrapper">
+  <div class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="overview"><span class="tab-emoji">📈</span>Genel Bakış</button>
+    <button class="tab-btn" data-tab="arapca"><span class="tab-emoji">🔤</span>Arapça</button>
+    <button class="tab-btn" data-tab="fikih"><span class="tab-emoji">⚖️</span>Fıkıh</button>
+    <button class="tab-btn" data-tab="tefsir"><span class="tab-emoji">📖</span>Tefsir</button>
+    <button class="tab-btn" data-tab="hadis"><span class="tab-emoji">📜</span>Hadis</button>
+    <button class="tab-btn" data-tab="kelam"><span class="tab-emoji">🧠</span>Kelam</button>
+    <button class="tab-btn" data-tab="diger"><span class="tab-emoji">🌍</span>Diğer</button>
+    <button class="tab-btn" data-tab="strateji"><span class="tab-emoji">⚡</span>Son Gün</button>
+    <button class="tab-btn" data-tab="trendler"><span class="tab-emoji">📌</span>Trendler</button>
+  </div>
+
+  <div class="tab-content">
+
+    <!-- ====== TAB: OVERVIEW ====== -->
+    <div class="tab-panel active" id="tab-overview">
+      <div class="section-title">📈 Ana Konu Dağılımı</div>
+      <div class="section-subtitle">Tüm yıllar birlikte değerlendirildiğinde (2009–2025)</div>
+
+      <!-- Donut -->
+      <div class="donut-wrapper">
+        <div class="donut" style="background: conic-gradient(
+          #818cf8 0% 30%,
+          #34d399 30% 50%,
+          #38bdf8 50% 65%,
+          #fbbf24 65% 77%,
+          #a78bfa 77% 84%,
+          #fb923c 84% 87%,
+          #f472b6 87% 89%,
+          #22d3ee 89% 91%,
+          #fb7185 91% 93%,
+          #94a3b8 93% 95%,
+          #475569 95% 100%
+        );">
+          <div class="donut-center">
+            <div class="big">100</div>
+            <div class="small">soru/yıl</div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#818cf8;"></div><span class="legend-label">Arapça</span><span class="legend-val">~30%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#34d399;"></div><span class="legend-label">Fıkıh</span><span class="legend-val">~20%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#38bdf8;"></div><span class="legend-label">Tefsir</span><span class="legend-val">~15%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fbbf24;"></div><span class="legend-label">Hadis</span><span class="legend-val">~12%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#a78bfa;"></div><span class="legend-label">Kelam</span><span class="legend-val">~7%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fb923c;"></div><span class="legend-label">Siyer</span><span class="legend-val">~3%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f472b6;"></div><span class="legend-label">Tasavvuf</span><span class="legend-val">~2%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#22d3ee;"></div><span class="legend-label">Dinler Tarihi</span><span class="legend-val">~2%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fb7185;"></div><span class="legend-label">İsl. Felsefesi</span><span class="legend-val">~2%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#94a3b8;"></div><span class="legend-label">Diyanet/Mevzuat</span><span class="legend-val">~2%</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#475569;"></div><span class="legend-label">Kültürel/Güncel</span><span class="legend-val">~1%</span></div>
+        </div>
+      </div>
+
+      <!-- Bar chart -->
+      <div style="margin-top:30px;">
+        <div class="progress-row"><div class="progress-label">Arapça</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-indigo" style="width:100%;">~30</div></div><div class="progress-val">~30%</div></div>
+        <div class="progress-row"><div class="progress-label">Fıkıh</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-emerald" style="width:66%;">~20</div></div><div class="progress-val">~20%</div></div>
+        <div class="progress-row"><div class="progress-label">Tefsir</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-sky" style="width:50%;">~15</div></div><div class="progress-val">~15%</div></div>
+        <div class="progress-row"><div class="progress-label">Hadis</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-amber" style="width:40%;">~12</div></div><div class="progress-val">~12%</div></div>
+        <div class="progress-row"><div class="progress-label">Kelam</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-violet" style="width:23%;">~7</div></div><div class="progress-val">~7%</div></div>
+        <div class="progress-row"><div class="progress-label">Siyer</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-orange" style="width:10%;">~3</div></div><div class="progress-val">~3%</div></div>
+        <div class="progress-row"><div class="progress-label">Tasavvuf</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-pink" style="width:7%;">~2</div></div><div class="progress-val">~2%</div></div>
+        <div class="progress-row"><div class="progress-label">Dinler Tarihi</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-cyan" style="width:7%;">~2</div></div><div class="progress-val">~2%</div></div>
+        <div class="progress-row"><div class="progress-label">İsl. Felsefesi</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-rose" style="width:7%;">~2</div></div><div class="progress-val">~2%</div></div>
+        <div class="progress-row"><div class="progress-label">Diyanet/Mevzuat</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-slate" style="width:7%;">~2</div></div><div class="progress-val">~2%</div></div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Year table -->
+      <div class="section-title" style="margin-top:10px;">📋 Son 5 Yıl – Yıl Bazlı Soru Dağılımı</div>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Konu</th><th class="t-center">2021</th><th class="t-center">2022</th><th class="t-center">2023</th><th class="t-center">2024</th><th class="t-center">2025</th><th class="t-center">Ort</th></tr></thead>
+        <tbody>
+          <tr><td class="t-bold">Arapça</td><td class="t-center">38</td><td class="t-center">36</td><td class="t-center">38</td><td class="t-center">30</td><td class="t-center">34</td><td class="t-center t-accent">35</td></tr>
+          <tr><td class="t-bold">Fıkıh</td><td class="t-center">21</td><td class="t-center">20</td><td class="t-center">26</td><td class="t-center">24</td><td class="t-center">22</td><td class="t-center t-accent">23</td></tr>
+          <tr><td class="t-bold">Tefsir</td><td class="t-center">18</td><td class="t-center">18</td><td class="t-center">14</td><td class="t-center">16</td><td class="t-center">19</td><td class="t-center t-accent">17</td></tr>
+          <tr><td class="t-bold">Hadis</td><td class="t-center">11</td><td class="t-center">10</td><td class="t-center">6</td><td class="t-center">14</td><td class="t-center">16</td><td class="t-center t-accent">11</td></tr>
+          <tr><td class="t-bold">Kelam</td><td class="t-center">8</td><td class="t-center">10</td><td class="t-center">8</td><td class="t-center">14</td><td class="t-center">3</td><td class="t-center t-accent">9</td></tr>
+          <tr><td class="t-bold">Siyer</td><td class="t-center">4</td><td class="t-center">3</td><td class="t-center">4</td><td class="t-center">4</td><td class="t-center">2</td><td class="t-center t-accent">3</td></tr>
+          <tr><td class="t-bold">Tasavvuf</td><td class="t-center">3</td><td class="t-center">2</td><td class="t-center">3</td><td class="t-center">1</td><td class="t-center">1</td><td class="t-center t-accent">2</td></tr>
+          <tr><td class="t-bold">Dinler Tarihi</td><td class="t-center">1</td><td class="t-center">1</td><td class="t-center">2</td><td class="t-center">4</td><td class="t-center">2</td><td class="t-center t-accent">2</td></tr>
+          <tr><td class="t-bold">İsl. Felsefesi</td><td class="t-center">2</td><td class="t-center">2</td><td class="t-center">3</td><td class="t-center">2</td><td class="t-center">4</td><td class="t-center t-accent">3</td></tr>
+          <tr><td class="t-bold">Diyanet/Mevzuat</td><td class="t-center">1</td><td class="t-center">1</td><td class="t-center">3</td><td class="t-center">3</td><td class="t-center">2</td><td class="t-center t-accent">2</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- ====== TAB: ARAPÇA ====== -->
+    <div class="tab-panel" id="tab-arapca">
+      <div class="section-title">🔤 Arapça – Her sınavda ~30 soru (%30)</div>
+      <div class="section-subtitle">Sınavın en büyük bölümünü oluşturur. Tek başına neredeyse üçte birini kapsar.</div>
+
+      <div class="alert alert-note">
+        <div class="alert-title">💡 ÖNEMLİ</div>
+        <p>Arapça soruları sadece "dil bilgisi" başlığıyla sınırlı değildir. Sınavdaki <strong>~41 sorunun Arapça metin içerdiği</strong> unutulmamalıdır. Ayet meali, hadis tercümesi ve fıkhî Arapça metinler de bu kapsamdadır.</p>
+      </div>
+
+      <table>
+        <thead><tr><th>Alt Konu</th><th class="t-center">Son 5 Yıl</th><th class="t-center">Ort/Yıl</th><th>Detay</th></tr></thead>
+        <tbody>
+          <tr><td class="t-bold">Nahiv (Sentaks)</td><td class="t-center t-red">102</td><td class="t-center t-red">20.4</td><td><span class="badge badge-red">EN ÇOK</span> Açık ara en çok sorulan konu</td></tr>
+          <tr><td class="t-bold">Sarf (Morfoloji)</td><td class="t-center">35</td><td class="t-center">7.0</td><td>Bablar, aksam-ı seb'a, fiil çekimleri</td></tr>
+          <tr><td class="t-bold">Okuma-Anlama / Çeviri</td><td class="t-center">33</td><td class="t-center">6.6</td><td>Paragraf, eş/zıt anlam, Türkçe-Arapça çeviri</td></tr>
+          <tr><td class="t-bold">Belagat</td><td class="t-center">5</td><td class="t-center">1.0</td><td>Az ama her yıl 1-2 soru</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <div class="card-title">Nahiv'den En Sık Gelen Konular</div>
+        <ul class="topic-list">
+          <li>İrab (kelime konumları: mübteda, haber, fail, meful çeşitleri)</li>
+          <li>Hal, Temyiz, Bedel, Atıf, Sıfat farkları</li>
+          <li>İstisna kuralları (muttasıl, munkatı)</li>
+          <li>Şart edatları ve cezm kuralları</li>
+          <li>İnne ve kardeşleri, kâne ve kardeşleri</li>
+          <li>Sayı-temyiz uyumu</li>
+          <li>Gayri munsarif isimler</li>
+          <li>Mefulü mutlak, mefulü leh, mefulü fih ayrımları</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sarf'tan En Sık Gelen Konular</div>
+        <ul class="topic-list">
+          <li>Aksam-ı seb'a (misâl, ecvef, nâkıs, mehmuz, lefîf, sahîh)</li>
+          <li>Fiil babları (if'âl, tef'îl, tefâul, iftiâl, infial, istif'âl)</li>
+          <li>Fiil çekim tabloları (mazi, muzari, emir)</li>
+          <li>İsm-i fail, ism-i meful, ism-i tafdil, mübalağalı ism-i fail</li>
+          <li>Binâ-i meçhûl yapıları</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ====== TAB: FIKIH ====== -->
+    <div class="tab-panel" id="tab-fikih">
+      <div class="section-title">⚖️ Fıkıh – Her sınavda ~20 soru (%20)</div>
+      <div class="section-subtitle">Son yıllarda fıkıh soruları önemli ölçüde artmıştır. 2022-2025 arasında yıllık 20-26 soru sorulmuştur.</div>
+
+      <table>
+        <thead><tr><th>Alt Konu</th><th class="t-center">Son 5 Yıl</th><th class="t-center">Ort/Yıl</th><th>Önem</th></tr></thead>
+        <tbody>
+          <tr><td class="t-bold">Fıkıh Usulü</td><td class="t-center t-red">46</td><td class="t-center t-red">9.3</td><td><span class="badge badge-red">EN ÇOK</span></td></tr>
+          <tr><td class="t-bold">İbadet (Namaz/Oruç/Abdest)</td><td class="t-center t-orange">20</td><td class="t-center t-orange">4.0</td><td><span class="badge badge-orange">ÇOK ÖNEMLİ</span></td></tr>
+          <tr><td class="t-bold">Fıkıh Mezhepleri / Tarihi</td><td class="t-center">10</td><td class="t-center">1.9</td><td><span class="badge badge-yellow">ÖNEMLİ</span></td></tr>
+          <tr><td class="t-bold">Güncel Fıkhî Meseleler (DIYK)</td><td class="t-center">8</td><td class="t-center">1.5</td><td><span class="badge badge-yellow">ARTIYOR</span></td></tr>
+          <tr><td class="t-bold">Zekât / Mali İbadetler</td><td class="t-center">6</td><td class="t-center">1.3</td><td></td></tr>
+          <tr><td class="t-bold">Hac / Umre</td><td class="t-center">6</td><td class="t-center">1.1</td><td></td></tr>
+          <tr><td class="t-bold">Muamelat / Ticaret</td><td class="t-center">4</td><td class="t-center">0.8</td><td><span class="badge badge-blue">ARTIŞ</span></td></tr>
+          <tr><td class="t-bold">Aile Hukuku / Nikah</td><td class="t-center">4</td><td class="t-center">0.8</td><td></td></tr>
+          <tr><td class="t-bold">Kurban / Adak</td><td class="t-center">4</td><td class="t-center">0.8</td><td></td></tr>
+          <tr><td class="t-bold">Miras / Feraiz</td><td class="t-center">4</td><td class="t-center">0.7</td><td></td></tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <div class="card-title">Fıkıh Usulü'nden En Sık Gelen Konular</div>
+        <ul class="topic-list">
+          <li>Vacibin kısımları (muayyen, gayr-ı muayyen, mutlak, mudayyak, kifâî)</li>
+          <li>İstishab, istihsan, maslahat-ı mürsele, sedd-i zerâi'</li>
+          <li>İllet ve kıyas konuları</li>
+          <li>Delalet çeşitleri (ibârenin, işâretin, nassın, iktizânın delâleti)</li>
+          <li>Örf şartları, icmâ şartları</li>
+          <li>Külli kaideler (şek ile yakîn zail olmaz, meşakkat teysiri celp eder vb.)</li>
+          <li>Âm-Has, Mutlak-Mukayyed, Müşterek</li>
+          <li>Ehliyet arızaları (semavî-müktesep)</li>
+          <li>Azimet-Ruhsat</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Güncel Fıkhî Meseleler (DIYK Görüşleri)</div>
+        <ul class="topic-list">
+          <li>Orucu bozan/bozmayan durumlar (enjeksiyon, göz/burun/kulak damlası, sprey)</li>
+          <li>Zekât hesaplaması (borçların düşülmesi, taşınmaz mallar)</li>
+          <li>Tüp bebek, cenine müdahale, gebeliğe son verme</li>
+          <li>Faiz/ribâ konuları (kredi, vade farkı, taksit, altın alım-satım)</li>
+          <li>Anne sütünün kullanımı, organ nakli</li>
+          <li>Kurban/adak meseleleri</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ====== TAB: TEFSİR ====== -->
+    <div class="tab-panel" id="tab-tefsir">
+      <div class="section-title">📖 Tefsir ve Kur'an İlimleri – Her sınavda ~15 soru (%15)</div>
+
+      <table>
+        <thead><tr><th>Alt Konu</th><th class="t-center">Son 5 Yıl</th><th class="t-center">Ort/Yıl</th><th>Detay</th></tr></thead>
+        <tbody>
+          <tr><td class="t-bold">Ayet Meali / Anlama</td><td class="t-center t-orange">42</td><td class="t-center t-orange">8.3</td><td>Ayet çevirisi, kelime anlamları</td></tr>
+          <tr><td class="t-bold">Ulûm-ul Kur'an</td><td class="t-center">24</td><td class="t-center">4.9</td><td>Nâsih-Mensûh, Müşkil, Garîb</td></tr>
+          <tr><td class="t-bold">Tefsir Tarihi / Kaynakları</td><td class="t-center">12</td><td class="t-center">2.5</td><td>Tefsir türleri, müellifler</td></tr>
+          <tr><td class="t-bold">Tecvid</td><td class="t-center">8</td><td class="t-center">1.6</td><td>İdgâm, izhâr, ihfâ kuralları</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <div class="card-title">Tefsir'den En Sık Gelen Konular</div>
+        <ul class="topic-list">
+          <li>Ayet meali doğru/yanlış eşleştirme</li>
+          <li>Kelimelerin lügat anlamlarının sıralanması</li>
+          <li>Tefsir türleri (rivayet, dirayet, işarî, fıkhî, bilimsel, ictimâî, lügavî)</li>
+          <li>Konu-Sûre eşleştirmeleri (klasik sorular!)</li>
+          <li>Mekkî-Medenî sûre özellikleri</li>
+          <li>Müşkilü'l-Kur'ân, Garîbü'l-Kur'ân</li>
+          <li>Nâsih-Mensûh</li>
+          <li>İ'câzü'l-Kur'ân, Tehaddi</li>
+          <li>Emsâlü'l-Kur'ân</li>
+          <li>Esbâb-ı Nüzûl</li>
+          <li>Kur'an'ın cem'i ve çoğaltılması</li>
+          <li>Kıraatler ve yedi harf</li>
+          <li>Tecvid kuralları (idgâm, izhâr, ihfâ, kalkale, gunne)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ====== TAB: HADİS ====== -->
+    <div class="tab-panel" id="tab-hadis">
+      <div class="section-title">📜 Hadis – Her sınavda ~12 soru (%12)</div>
+
+      <table>
+        <thead><tr><th>Alt Konu</th><th class="t-center">Son 5 Yıl</th><th class="t-center">Ort/Yıl</th><th>Detay</th></tr></thead>
+        <tbody>
+          <tr><td class="t-bold">Hadis Usulü</td><td class="t-center t-orange">33</td><td class="t-center t-orange">6.6</td><td><span class="badge badge-orange">ÖNEMLİ</span> Terimler, ravi, isnad</td></tr>
+          <tr><td class="t-bold">Hadis Kaynakları / Şerhler</td><td class="t-center">14</td><td class="t-center">2.7</td><td>Kitaplar, müellifler</td></tr>
+          <tr><td class="t-bold">Hadis Metin / Tercüme</td><td class="t-center">10</td><td class="t-center">2.0</td><td>Hadis çevirisi, kelime anlamları</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <div class="card-title">Hadis'ten En Sık Gelen Konular</div>
+        <ul class="topic-list">
+          <li>Hadis terimleri (sahih, hasen, zayıf, mevzû, mütevatir, ahad, meşhur)</li>
+          <li>Mürsel, mu'dal, muallak, müdrec, maklub, musahhaf, müdelles</li>
+          <li>Cerh-Ta'dil terimleri ve kuralları</li>
+          <li>Tahammül-Eda yolları (semâ, kıraat, icâzet, münâvele, kitâbe, vicâde)</li>
+          <li>Hadis kitaplarının tasnif sistemi (ale'r-ricâl / ale'l-ebvâb)</li>
+          <li>Sahîh-i Buhârî ve Müslim karşılaştırması</li>
+          <li>Hadis kaynakları (Kütüb-i Sitte, Muvattâ, Müsned, Musannef)</li>
+          <li>Hadis şerhleri ve müellifleri</li>
+          <li>Metin tenkidi kavramları</li>
+          <li>Sahîfe sahibi sahabîler</li>
+          <li>Tedvin tarihi</li>
+          <li>Hadis/sünnet tanımları (farklı ilimlere göre)</li>
+          <li>Hadislerin Kur'an'a arzı</li>
+          <li>Hadis kelime anlamları ve tercümeleri</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ====== TAB: KELAM ====== -->
+    <div class="tab-panel" id="tab-kelam">
+      <div class="section-title">🧠 Kelam / Akaid – Her sınavda ~7 soru (%7)</div>
+
+      <table>
+        <thead><tr><th>Alt Konu</th><th class="t-center">Son 5 Yıl</th><th class="t-center">Ort/Yıl</th></tr></thead>
+        <tbody>
+          <tr><td class="t-bold">Kelam İlmi / Akaid</td><td class="t-center">24</td><td class="t-center">4.7</td></tr>
+          <tr><td class="t-bold">Kelam Mezhepleri</td><td class="t-center">13</td><td class="t-center">2.6</td></tr>
+          <tr><td class="t-bold">Kelam Tarihi / Eserleri</td><td class="t-center">3</td><td class="t-center">0.6</td></tr>
+          <tr><td class="t-bold">Mantık</td><td class="t-center">3</td><td class="t-center">0.6</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <div class="card-title">Kelam'dan En Sık Gelen Konular</div>
+        <ul class="topic-list">
+          <li>Eş'arî - Mâtürîdî farkları (teklif-i mâ lâ yutâk, rüyetullah, ehl-i fetret, kadın peygamber)</li>
+          <li>Mutezile'nin beş esası (usûl-i hamse)</li>
+          <li>Ef'âl-i ibâd (kulların fiilleri)</li>
+          <li>Kelam mezhepleri - alim eşleştirmeleri</li>
+          <li>Kelam eserleri ve dönemleri (mütekaddimûn/müteahhirûn)</li>
+          <li>Mürtekib-i kebire meselesi</li>
+          <li>Aklın hükümleri (vâcib, mümkin, mümteni')</li>
+          <li>İmamiyye Şia'nın ilkeleri</li>
+          <li>Nizamiye Medreseleri</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ====== TAB: DİĞER ====== -->
+    <div class="tab-panel" id="tab-diger">
+      <div class="section-title">🌍 Diğer Konular</div>
+      <div class="section-subtitle">Her biri ~2-3 soru/yıl</div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">⚔️ Siyer / İslam Tarihi (~3 soru/yıl)</div></div>
+        <ul class="topic-list">
+          <li>Gazvelerin kronolojisi (özellikle Bedir, Uhud, Hendek, Huneyn, Tebük)</li>
+          <li>Hudeybiye antlaşması</li>
+          <li>Yermük, Nihavend, Kâdisiye savaşları</li>
+          <li>Önemli sahâbîler ve görevleri</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">🙏 Tasavvuf (~2 soru/yıl)</div></div>
+        <ul class="topic-list">
+          <li>Zühd dönemi mutasavvıfları</li>
+          <li>Temel tasavvuf eserleri (Kûtü'l-kulûb, Keşfü'l-mahcûb, İhyâ, Fusûs)</li>
+          <li>İbn Arabî, Gazzâlî, Kuşeyrî</li>
+          <li>Vahdet-i vücûd</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">✝️ Dinler Tarihi (~2 soru/yıl)</div></div>
+        <ul class="topic-list">
+          <li>Hristiyanlık (inkarnasyon, reform, Martin Luther, Protestan-Katolik)</li>
+          <li>Yahudilik (mesih, seçilmişlik, Arz-ı Mev'ûd, Siyonizm)</li>
+          <li>Yeni dini akımlar (Yehova Şahitleri, Mormonlar, Evanjelizm)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">💭 İslam Felsefesi (~2 soru/yıl)</div></div>
+        <ul class="topic-list">
+          <li>Meşşâîyyûn (Fârâbî, İbn Sînâ, İbn Rüşd)</li>
+          <li>Modern inkârcı akımlar (ateizm, deizm, nihilizm, agnostisizm, pozitivizm)</li>
+          <li>Evrim eleştirisi</li>
+          <li>Transhümanizm, reenkarnasyon</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">🏛️ Diyanet Teşkilatı / Mevzuat (~2 soru/yıl)</div></div>
+        <ul class="topic-list">
+          <li>633 sayılı kanun</li>
+          <li>657 sayılı kanun (hizmet sınıfları)</li>
+          <li>Diyanet Akademisi yapısı</li>
+          <li>DIYK görevleri</li>
+          <li>Güncel Diyanet faaliyetleri (Ramazan teması, yeni açılan camiler vb.)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ====== TAB: SON GÜN STRATEJİSİ ====== -->
+    <div class="tab-panel" id="tab-strateji">
+      <div class="section-title">⚡ Son Gün Tekrar Stratejisi</div>
+      <div class="section-subtitle">Son 1 gün kala hepsini çalışmak mümkün değildir. Aşağıdaki öncelik sıralamasıyla çalışın.</div>
+
+      <!-- PRIORITY 1 -->
+      <div class="priority-group priority-1">
+        <div class="priority-header">🔴 BİRİNCİ ÖNCELİK — 60 puan kapasitesi — Mutlaka tekrar edin!</div>
+
+        <div class="sub-section">
+          <div class="sub-title">1. Arapça Nahiv Kuralları (~20 soru)</div>
+          <ul class="checklist">
+            <li>İrab kuralları (mübtedâ, haber, fail, meful'ler, hâl, temyiz, bedel)</li>
+            <li>İnne ve kardeşleri, kâne ve kardeşleri</li>
+            <li>Şart edatları (cezm edenler/etmeyenler)</li>
+            <li>İstisna kuralları (müfevvağ/tam/nâkıs)</li>
+            <li>Sayı-temyiz uyumu (3-10, 11-99, 100, 1000)</li>
+            <li>Gayri munsarif isimler</li>
+            <li>Esmâ-i hamse</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">2. Fıkıh Usulü (~9 soru)</div>
+          <ul class="checklist">
+            <li>Vacibin kısımları tablo halinde (mutlak/mudayyak, muayyen/muhayyer, aynî/kifâî)</li>
+            <li>Deliller: İstihsan, istishab, maslahat-ı mürsele, sedd-i zerâi, örf</li>
+            <li>Külli kaideler</li>
+            <li>Delalet çeşitleri</li>
+            <li>Âm/Hâs, Mutlak/Mukayyed</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">3. Arapça Sarf (~7 soru)</div>
+          <ul class="checklist">
+            <li>Aksam-ı seb'a tablosu (misâl, ecvef, nâkıs, mehmuz, lefîf-i mefrûk/makrûn, sahîh)</li>
+            <li>Fiil babları (sülâsî mücerred/mezîd, rubâî)</li>
+            <li>İsm-i fail, ism-i meful, ism-i tafdil, mübalağalı ism-i fail kalıpları</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">4. Ayet Meali / Çeviri (~8 soru)</div>
+          <ul class="checklist">
+            <li>Kelime hazinesi: Sık çıkan Kur'an kelimelerinin anlamları</li>
+            <li>Ayetlerdeki altı çizili kelimelerin türlerini belirleme</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">5. Hadis Usulü (~7 soru)</div>
+          <ul class="checklist">
+            <li>Terimler listesi: sahih, hasen, zayıf, mevzû, mütevatir, ahad...</li>
+            <li>Mürsel, mu'dal, muallak, müdrec, maklub, musahhaf, müdelles farkları</li>
+            <li>Tahammül-eda yolları</li>
+            <li>Cerh-Ta'dil terimleri</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PRIORITY 2 -->
+      <div class="priority-group priority-2">
+        <div class="priority-header">🟠 İKİNCİ ÖNCELİK — ~25 puan kapasitesi</div>
+
+        <div class="sub-section">
+          <div class="sub-title">6. Arapça Okuma-Anlama / Çeviri (~7 soru)</div>
+          <ul class="checklist">
+            <li>Arapça paragraf anlama stratejileri</li>
+            <li>Eş/zıt anlamlı kelimeler</li>
+            <li>Türkçe ↔ Arapça çeviri kalıpları</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">7. İbadet Fıkhı (~4 soru)</div>
+          <ul class="checklist">
+            <li>Abdestin farzları (mezhep farkları)</li>
+            <li>Orucu bozan/bozmayan şeyler</li>
+            <li>Namaz kıraati (mezhep farkları)</li>
+            <li>Nâfile namaz mekruh vakitler</li>
+            <li>Teravih namazı hükümleri</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">8. Tefsir Usulü / Ulûm-ul Kur'an (~5 soru)</div>
+          <ul class="checklist">
+            <li>Tefsir türleri (rivayet, dirayet, işarî, fıkhî, bilimsel, ictimâî)</li>
+            <li>Konu-Sûre eşleştirmeleri</li>
+            <li>Mekkî/Medenî sûre özellikleri</li>
+            <li>Nâsih-Mensûh, müşkil, garîb kavramları</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">9. Kelam / Mezhepleri (~5 soru)</div>
+          <ul class="checklist">
+            <li>Eş'arî - Mâtürîdî ihtilaflı konular</li>
+            <li>Mutezile'nin beş esası</li>
+            <li>Kelam mezhepleri - alim eşleştirme tablosu</li>
+            <li>Ef'âl-i ibâd (her bir mezhebin görüşü)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PRIORITY 3 -->
+      <div class="priority-group priority-3">
+        <div class="priority-header">🟡 ÜÇÜNCÜ ÖNCELİK — ~15 puan kapasitesi</div>
+
+        <div class="sub-section">
+          <div class="sub-title">10. Hadis Kaynakları (~3 soru)</div>
+          <ul class="checklist">
+            <li>Kütüb-i Sitte ve müellifleri</li>
+            <li>Hadis şerhleri eşleştirmesi</li>
+            <li>Tasnif sistemi (ale'r-ricâl / ale'l-ebvâb)</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">11. Siyer / İslam Tarihi (~3 soru)</div>
+          <ul class="checklist">
+            <li>Gazve kronolojisi</li>
+            <li>Önemli antlaşmalar</li>
+            <li>Fetihler ve komutanlar</li>
+          </ul>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-title">12. Diğer: Tasavvuf, Dinler Tarihi, Felsefe, Diyanet (~8-10 soru)</div>
+          <ul class="checklist">
+            <li>Zühd dönemi isimleri</li>
+            <li>Temel tasavvuf eserleri</li>
+            <li>Hristiyanlık/Yahudilik temel kavramları</li>
+            <li>Modern felsefi akımlar (nihilizm, deizm, ateizm vb.)</li>
+            <li>Diyanet Akademisi yapısı</li>
+            <li>633/657 sayılı kanun temel maddeleri</li>
+            <li>Güncel Diyanet faaliyetleri</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- GOLDEN RULE TABLE -->
+      <div class="section-title">🏆 Altın Kural: 65+ Puan İçin Mutlaka Bilmeniz Gerekenler</div>
+      <div style="overflow-x:auto;">
+      <table class="gold-table">
+        <thead><tr><th>Konu</th><th class="t-center">Min Beklenen Soru</th><th class="t-center">Hedef Doğru</th></tr></thead>
+        <tbody>
+          <tr><td>Arapça (Nahiv + Sarf + Çeviri)</td><td class="t-center">30</td><td class="t-center">20+</td></tr>
+          <tr><td>Fıkıh (Usulü + İbadet + Güncel)</td><td class="t-center">20</td><td class="t-center">14+</td></tr>
+          <tr><td>Tefsir (Usulü + Meali)</td><td class="t-center">15</td><td class="t-center">10+</td></tr>
+          <tr><td>Hadis (Usulü + Kaynaklar)</td><td class="t-center">12</td><td class="t-center">8+</td></tr>
+          <tr><td>Kelam</td><td class="t-center">7</td><td class="t-center">5+</td></tr>
+          <tr><td>Diğer (Siyer, Tasavvuf, Dinler, Felsefe, Diyanet)</td><td class="t-center">16</td><td class="t-center">10+</td></tr>
+          <tr class="total-row"><td><strong>TOPLAM</strong></td><td class="t-center"><strong>100</strong></td><td class="t-center"><strong>67+</strong></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- ====== TAB: TRENDLER ====== -->
+    <div class="tab-panel" id="tab-trendler">
+      <div class="section-title">📌 Son Yıllarda Öne Çıkan Trendler</div>
+      <div class="section-subtitle">2023-2025 yıllarında belirgin trendler</div>
+
+      <ol class="trend-list">
+        <li><strong>Fıkıh Usulü soruları artıyor</strong> — 2021'de 6 soru, 2024'te 12 soru. Deliller, külli kaideler, delalet çeşitleri mutlaka çalışılmalı.</li>
+        <li><strong>Güncel DIYK fetvaları her yıl soruluyor</strong> — Oruç, zekât, tıbbi meseleler, finansal konular.</li>
+        <li><strong>Hadis soruları 2024-2025'te belirgin artış</strong> gösterdi (14-16 soru). Özellikle hadis usulü terimleri ve hadis tercümesi.</li>
+        <li><strong>Kelam soruları dalgalı</strong> — 2024'te 14 soru, 2025'te sadece 3. Mutezile ve Eş'arî-Mâtürîdî ihtilaflı konular her zaman çıkıyor.</li>
+        <li><strong>Dinler tarihi ve İslam felsefesi soruları istikrarlı</strong> — Her yıl 2-4 soru.</li>
+        <li><strong>Diyanet mevzuatı soruları artış eğiliminde</strong> — 633 sayılı kanun, Diyanet Akademisi, DIYK görevleri.</li>
+        <li><strong>Muamelat/ticaret fıkhı</strong> 2024'te belirgin artışla 3 soru oldu.</li>
+      </ol>
+
+      <div class="alert alert-note" style="margin-top:24px;">
+        <div class="alert-title">ℹ️ NOT</div>
+        <p>Bu analiz 2009-2025 yılları arasındaki 17 yıllık sınav sorularından elde edilen verilerle yapılmıştır. Soru dağılımları yaklaşık değerlerdir ve yıldan yıla farklılık gösterebilir.</p>
+      </div>
+    </div>
+
+  </div><!-- /tab-content -->
+</div><!-- /tabs-wrapper -->
+
+<!-- ===== SECTION DIVIDER ===== -->
+<div style="margin:50px 0 10px; text-align:center;">
+  <div style="width:60px;height:4px;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:2px;margin:0 auto 20px;"></div>
+  <h2 style="font-size:clamp(1.4rem,3.5vw,2rem);font-weight:900;background:linear-gradient(135deg,#34d399,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;">📚 Referans Bilgi Kartları</h2>
+  <p style="color:var(--text-dim);font-size:0.92rem;max-width:550px;margin:0 auto;">Sınavda en çok çıkan konuların örnekli özetleri, Diyanet başkanları, güncel konular ve şahıslar</p>
+</div>
+
+<!-- ===== SECOND TAB GROUP ===== -->
+<div class="tabs-wrapper" data-group="ref">
+  <div class="tab-nav" id="tabNav2">
+    <button class="tab-btn active" data-tab="referans" data-group="ref"><span class="tab-emoji">📚</span>Konu Özeti</button>
+    <button class="tab-btn" data-tab="baskanlar" data-group="ref"><span class="tab-emoji">🏛️</span>Başkanlar</button>
+    <button class="tab-btn" data-tab="guncel" data-group="ref"><span class="tab-emoji">🎯</span>Güncel / Şahıslar</button>
+  </div>
+
+  <div class="tab-content">
+
+    <!-- ====== TAB: REFERANS BİLGİ ====== -->
+    <div class="tab-panel active" id="tab-referans">
+      <div class="section-title">📚 Sınavda En Çok Çıkan Konuların Özeti</div>
+      <div class="section-subtitle">Her konudan kısa, özlü bilgi ve örneklerle hazırlanmış referans kartları</div>
+
+      <!-- KÜLLI KAİDELER -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚖️ Külli Kaideler (Mecelle)</div>
+          <span class="badge badge-red">NEREDEYSE HER YIL</span>
+        </div>
+        <div class="alert alert-tip" style="margin-top:0">
+          <div class="alert-title">💡 Not</div>
+          <p>2012-2025 arası neredeyse her yıl külli kaide sorusu çıkmıştır. Özellikle 2024'te 6 farklı kaide ile ilgili soru sorulmuştur.</p>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Kaide</th><th>Madde</th><th>Açıklama</th><th>Örnek</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">1</td><td class="t-bold">Bir işten maksat ne ise hüküm ona göredir</td><td class="t-center">md. 2</td><td>Hüküm niyete göre şekillenir</td><td class="t-dim">Eşyayı verme → niyet hediyeyse hibe, satışsa bey hükmü</td></tr>
+            <tr><td class="t-bold">2</td><td class="t-bold">Şek ile yakîn zâil olmaz</td><td class="t-center">md. 4</td><td>Kesin bilgi şüpheyle bozulmaz</td><td class="t-dim">Abdestli olduğundan emin → şüphe abdesti bozmaz</td></tr>
+            <tr><td class="t-bold">3</td><td class="t-bold">Meşakkat teysiri celbeder</td><td class="t-center">md. 17</td><td>Zorluk kolaylaştırmayı getirir</td><td class="t-dim">Seferde oruç ertelenebilir, namaz kısaltılabilir</td></tr>
+            <tr><td class="t-bold">4</td><td class="t-bold">Zarar izâle olunur</td><td class="t-center">md. 20</td><td>Zarar giderilir</td><td class="t-dim">Komşu mülküne zarar veren duvar → yıkılması gerekir</td></tr>
+            <tr><td class="t-bold">5</td><td class="t-bold">Âdet muhakkemdir</td><td class="t-center">md. 36</td><td>Örf hüküm kaynağıdır</td><td class="t-dim">Sözleşmede belirsizlik → yerel ticaret geleneği esas</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;">
+          <div class="sub-title">Diğer Sık Çıkan Kaideler:</div>
+          <ul class="topic-list">
+            <li><strong>"Beraat-i zimmet asıldır"</strong> (md. 8) — Suçsuzluk esastır, ispat yükü iddia edene aittir</li>
+            <li><strong>"Eşyada asıl olan ibahadır"</strong> — Haram olduğuna dair delil olmadıkça her şey mubahtır</li>
+            <li><strong>"Iztırar, gayrın hakkını iptal etmez"</strong> — Zaruret başkasının hakkını düşürmez</li>
+            <li><strong>"İbtidaen caiz olmayan şey, tebaan caiz olur"</strong> — Asıl olarak caiz olmayan, başka bir şeye tabi olarak caiz olabilir</li>
+            <li><strong>"Zarar-ı âmmı def' için zarar-ı hâs ihtiyar olunur"</strong> — Genel zararı önlemek için bireysel zarar kabul edilir</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- EŞ'ARÎ - MÂTÜRÎDî KARŞILAŞTIRMA -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🧠 Eş'arî – Mâtürîdî Karşılaştırması</div>
+          <span class="badge badge-red">HER YIL ÇIKIYOR</span>
+        </div>
+        <div class="alert alert-warn" style="margin-top:0">
+          <div class="alert-title">⚠️ DİKKAT</div>
+          <p>2009'dan beri neredeyse her yıl bir Eş'arî-Mâtürîdî karşılaştırma sorusu çıkmıştır. 2024'te <strong>5 farklı ihtilaflı konu</strong> sorulmuştur.</p>
+        </div>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Mesele</th><th>Mâtürîdî</th><th>Eş'arî</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Teklîf-i mâ lâ yutâk</td><td>Caiz <strong>değildir</strong> (hikmete aykırı)</td><td>Aklen <strong>caizdir</strong> (Allah yapmayacağını bildirmiş)</td></tr>
+            <tr><td class="t-bold">Hüsün-Kubuh</td><td>İyi/kötü <strong>eşyanın kendisinde</strong>dir, akıl bilebilir</td><td>İyi/kötü <strong>şer'in bildirmesine bağlıdır</strong></td></tr>
+            <tr><td class="t-bold">Rüyetullah</td><td>Allah görülecek ama <strong>cihetsiz/keyfiyet</strong>siz</td><td>Allah görülecek, <strong>cihet mümkün</strong></td></tr>
+            <tr><td class="t-bold">Tekvin sıfatı</td><td>Müstakil <strong>zatî sıfattır</strong></td><td>Kudretin <strong>taallukudur</strong> (ayrı değil)</td></tr>
+            <tr><td class="t-bold">Kadın peygamber</td><td><strong>Caiz değildir</strong> (erkeklik şarttır)</td><td><strong>Caiz olabilir</strong></td></tr>
+            <tr><td class="t-bold">Ehl-i fetret</td><td>Akılla Allah'ı <strong>bulabilir</strong>, sorumludur</td><td>Peygamber gelmeden <strong>sorumlu değildir</strong></td></tr>
+            <tr><td class="t-bold">İmanın artıp eksilmesi</td><td>Özünde <strong>artmaz-eksilmez</strong>, yakîn güçlenir</td><td><strong>Artıp eksilebilir</strong></td></tr>
+            <tr><td class="t-bold">Kelâmullahın işitilmesi</td><td>Nefsî kelam <strong>doğrudan işitilemez</strong></td><td>Bizzat <strong>işitilebilir</strong></td></tr>
+            <tr><td class="t-bold">Fıkhi bağlantı</td><td>Genellikle <strong>Hanefî</strong> fıkhıyla</td><td>Genellikle <strong>Şâfiî/Mâlikî</strong> fıkhıyla</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- MUTEZİLE -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔶 Mutezile'nin Beş Esası (Usûl-i Hamse)</div>
+          <span class="badge badge-orange">SIK ÇIKIYOR</span>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Esas</th><th>Açıklama</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="t-bold">Tevhid</td><td>Allah'ın sıfatları zatının aynısıdır (sıfat inkârı), Kur'an mahluktur</td></tr>
+            <tr><td>2</td><td class="t-bold">Adalet</td><td>Kul kendi fiilini yaratır (hürriyet), Allah kötülük yaratmaz</td></tr>
+            <tr><td>3</td><td class="t-bold">Va'd ve Vaîd</td><td>Allah vaadinden dönmez; büyük günah işleyen tevbe etmezse cehenneme girer</td></tr>
+            <tr><td>4</td><td class="t-bold">el-Menzile beyne'l-menzileteyn</td><td>Büyük günah işleyen ne mümin ne kâfirdir, ara konumdadır (fâsık)</td></tr>
+            <tr><td>5</td><td class="t-bold">Emr-i bi'l-ma'rûf nehy-i ani'l-münker</td><td>İyiliği emretmek ve kötülükten nehyetmek farzdır</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TEFSİR TÜRLERİ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📖 Tefsir Türleri ve Temsilcileri</div>
+          <span class="badge badge-orange">SIK ÇIKIYOR</span>
+        </div>
+        <table>
+          <thead><tr><th>Tefsir Türü</th><th>Özelliği</th><th>Örnek Eser / Müfessir</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Rivayet (Me'sûr) Tefsiri</td><td>Kur'an'ı Sünnet, sahabe ve tâbiîn sözleriyle açıklar</td><td>Taberî – <em>Câmiu'l-Beyân</em></td></tr>
+            <tr><td class="t-bold">Dirayet (Re'y) Tefsiri</td><td>Akıl ve içtihada dayalı</td><td>Zemahşerî – <em>el-Keşşâf</em></td></tr>
+            <tr><td class="t-bold">İşarî (Tasavvufî) Tefsir</td><td>Bâtınî/irfanî anlamları arar</td><td>Sülemî – <em>Hakâiku't-Tefsîr</em></td></tr>
+            <tr><td class="t-bold">Fıkhî Tefsir</td><td>Ahkâm ayetlerini fıkhî açıdan yorumlar</td><td>Kurtubî – <em>el-Câmi' li-Ahkâmi'l-Kur'ân</em></td></tr>
+            <tr><td class="t-bold">Lügavî Tefsir</td><td>Dil bilimi merkezli</td><td>Ebû Hayyân – <em>el-Bahru'l-Muhît</em></td></tr>
+            <tr><td class="t-bold">Bilimsel (İlmî) Tefsir</td><td>Kur'an'ı bilimsel verilerle açıklar</td><td>Tantâvî Cevherî – <em>el-Cevâhir</em></td></tr>
+            <tr><td class="t-bold">İctimâî (Toplumsal) Tefsir</td><td>Toplumsal sorunlara çözüm odaklı</td><td>M. Abduh / Reşid Rızâ – <em>Tefsîru'l-Menâr</em></td></tr>
+            <tr><td class="t-bold">Konulu Tefsir</td><td>Belirli konuları tüm Kur'an'dan toplar</td><td>Modern dönem (çeşitli)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- HADİS TERİMLERİ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📜 Hadis Usulü – Temel Terimler</div>
+          <span class="badge badge-red">HER YIL ÇIKIYOR</span>
+        </div>
+        <table>
+          <thead><tr><th>Terim</th><th>Tanım</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Mürsel</td><td>Tâbiînin sahabîyi atlayarak doğrudan Hz. Peygamber'e nispet ettiği hadis</td></tr>
+            <tr><td class="t-bold">Mu'dal</td><td>İsnadından peş peşe iki veya daha fazla ravi düşmüş hadis</td></tr>
+            <tr><td class="t-bold">Muallak</td><td>İsnadının başından (musannif tarafından) bir veya daha fazla ravi düşen hadis</td></tr>
+            <tr><td class="t-bold">Müdrec</td><td>Hadis metnine veya senedine aslında ona ait olmayan bir ekleme yapılmış hadis</td></tr>
+            <tr><td class="t-bold">Maklûb</td><td>İsnad veya metindeki bir kelimenin/ismin yer değiştirmesiyle oluşan hadis</td></tr>
+            <tr><td class="t-bold">Musahhaf</td><td>Noktalamanın (harf benzerliği) değiştirilmesiyle aktarılan hadis</td></tr>
+            <tr><td class="t-bold">Müdelles</td><td>Ravinin kusurunu gizlediği hadis (tedlîs-i isnâd veya tedlîs-i şuyûh)</td></tr>
+            <tr><td class="t-bold">Şâz</td><td>Sika ravinin kendinden daha sika olan raviye muhalefet etmesiyle oluşan hadis</td></tr>
+            <tr><td class="t-bold">Mütevatir</td><td>Yalan üzere birleşmeleri aklen mümkün olmayan toplulukların rivayet ettiği hadis</td></tr>
+            <tr><td class="t-bold">Meşhur (Müstefîz)</td><td>Her tabakada en az üç ravinin rivayet ettiği hadis</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px;">
+          <div class="sub-title">Tahammül-Eda Yolları (Sırasıyla):</div>
+          <ul class="topic-list">
+            <li><strong>Semâ</strong> — Hocanın okuduğunu dinleme (en üstün)</li>
+            <li><strong>Kıraat (Arz)</strong> — Talebenin okuduğunu hocanın onaylaması</li>
+            <li><strong>İcâzet</strong> — Hocanın rivayet izni vermesi</li>
+            <li><strong>Münâvele</strong> — Hocanın kitabını talebeye vermesi</li>
+            <li><strong>Kitâbet (Mükâtebe)</strong> — Hocanın yazılı olarak göndermesi</li>
+            <li><strong>İ'lâm</strong> — Hocanın "bu benim hadisimdir" demesi</li>
+            <li><strong>Vasiyyet</strong> — Hocanın ölüm/yolculuk öncesi kitabını vasiyet etmesi</li>
+            <li><strong>Vicâde</strong> — Hocanın yazısını bulup okuma (en zayıf)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- HADİS KAYNAKLARI -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📚 Hadis Kaynakları ve Şerhler</div>
+          <span class="badge badge-yellow">ÖNEMLİ</span>
+        </div>
+        <table>
+          <thead><tr><th>Kaynak</th><th>Müellif</th><th>Önemli Şerhler</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Sahîh-i Buhârî</td><td>İmam Buhârî (ö.256)</td><td>Fethu'l-Bârî (İbn Hacer), Umdetu'l-Kârî (Aynî)</td></tr>
+            <tr><td class="t-bold">Sahîh-i Müslim</td><td>İmam Müslim (ö.261)</td><td>el-Minhâc (Nevevî), Fethu'l-Mülhim (Şebbîr Ahmed)</td></tr>
+            <tr><td class="t-bold">Sünen-i Ebû Dâvûd</td><td>Ebû Dâvûd (ö.275)</td><td>Meâlimu's-Sünen (Hattâbî), Bezlü'l-Mechûd</td></tr>
+            <tr><td class="t-bold">Sünen-i Tirmizî</td><td>Tirmizî (ö.279)</td><td>Tuhfetü'l-Ahvezî</td></tr>
+            <tr><td class="t-bold">Sünen-i Nesâî</td><td>Nesâî (ö.303)</td><td>—</td></tr>
+            <tr><td class="t-bold">Sünen-i İbn Mâce</td><td>İbn Mâce (ö.273)</td><td>—</td></tr>
+            <tr><td class="t-bold">Muvattâ</td><td>İmam Mâlik (ö.179)</td><td>el-İstizkâr (İbn Abdilber)</td></tr>
+            <tr><td class="t-bold">Müsned</td><td>Ahmed b. Hanbel (ö.241)</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MEZHEP ESERLERİ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📕 Fıkıh Mezhepleri ve Temel Eserleri</div>
+          <span class="badge badge-yellow">ÖNEMLİ</span>
+        </div>
+        <table>
+          <thead><tr><th>Mezhep</th><th>İmam</th><th>Temel Eserler</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Hanefî</td><td>Ebû Hanîfe (ö.150)</td><td>el-Mebsût (Serahsî), el-Hidâye (Merginânî), Bedâiu's-Sanâi' (Kâsânî)</td></tr>
+            <tr><td class="t-bold">Mâlikî</td><td>İmam Mâlik (ö.179)</td><td>el-Müdevvene (Sahnûn), el-Kâfî (İbn Abdilber)</td></tr>
+            <tr><td class="t-bold">Şâfiî</td><td>İmam Şâfiî (ö.204)</td><td>el-Ümm (Şâfiî), el-Mühezzeb (Şîrâzî), el-Vecîz (Gazzâlî)</td></tr>
+            <tr><td class="t-bold">Hanbelî</td><td>Ahmed b. Hanbel (ö.241)</td><td>el-Muğnî (İbn Kudâme)</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;">
+          <div class="sub-title">Karşılaştırmalı Fıkıh Eserleri:</div>
+          <ul class="topic-list">
+            <li><strong>Bidâyetü'l-Müctehid</strong> — İbn Rüşd (4 mezhep karşılaştırması)</li>
+            <li><strong>el-Fıkhu ale'l-Mezâhibi'l-Erbaa</strong> — Abdurrahman el-Cezîrî</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GAZVE KRONOLOJİSİ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚔️ Gazve Kronolojisi</div>
+          <span class="badge badge-orange">SIK ÇIKIYOR</span>
+        </div>
+        <div class="alert alert-note" style="margin-top:0">
+          <div class="alert-title">ℹ️ Not</div>
+          <p>2011'den beri neredeyse her yıl kronolojik sıralama sorusu çıkmıştır.</p>
+        </div>
+        <table>
+          <thead><tr><th>Sıra</th><th>Gazve/Olay</th><th>Yıl (H)</th><th>Yıl (M)</th><th>Not</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="t-bold">Bedir</td><td class="t-center">2</td><td class="t-center">624</td><td>İlk büyük zafer, 313 vs 1000</td></tr>
+            <tr><td>2</td><td class="t-bold">Benî Kaynukâ</td><td class="t-center">2</td><td class="t-center">624</td><td>İlk sürgün edilen Yahudi kabilesi</td></tr>
+            <tr><td>3</td><td class="t-bold">Uhud</td><td class="t-center">3</td><td class="t-center">625</td><td>Okçuların mevziyi terk etmesi</td></tr>
+            <tr><td>4</td><td class="t-bold">Benî Nadîr</td><td class="t-center">4</td><td class="t-center">625</td><td>2. sürgün edilen Yahudi kabilesi</td></tr>
+            <tr><td>5</td><td class="t-bold">Hendek (Ahzâb)</td><td class="t-center">5</td><td class="t-center">627</td><td>Selmân-ı Fârisî'nin hendek fikri</td></tr>
+            <tr><td>6</td><td class="t-bold">Benî Kurayza</td><td class="t-center">5</td><td class="t-center">627</td><td>Hendek sonrası</td></tr>
+            <tr><td>7</td><td class="t-bold">Hudeybiye</td><td class="t-center">6</td><td class="t-center">628</td><td>"Fethu'l-mübîn" — barış antlaşması</td></tr>
+            <tr><td>8</td><td class="t-bold">Hayber</td><td class="t-center">7</td><td class="t-center">628</td><td>Yahudi kalelerinin fethi</td></tr>
+            <tr><td>9</td><td class="t-bold">Mekke'nin Fethi</td><td class="t-center">8</td><td class="t-center">630</td><td>Kâbe'nin putlardan temizlenmesi</td></tr>
+            <tr><td>10</td><td class="t-bold">Huneyn</td><td class="t-center">8</td><td class="t-center">630</td><td>Fetihten hemen sonra</td></tr>
+            <tr><td>11</td><td class="t-bold">Tâif Kuşatması</td><td class="t-center">8</td><td class="t-center">630</td><td>Başarısız kuşatma</td></tr>
+            <tr><td>12</td><td class="t-bold">Tebük</td><td class="t-center">9</td><td class="t-center">630</td><td>Son gazve, Bizans'a karşı</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FIKIH USULÜ DELİLLERİ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📐 Fıkıh Usulü – Şer'î Deliller ve Fer'î Deliller</div>
+          <span class="badge badge-red">ÇOK SIK</span>
+        </div>
+        <table>
+          <thead><tr><th>Delil</th><th>Tanım</th><th>Kabul Eden Mezhep</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Kitap (Kur'an)</td><td>Birinci asıl kaynak</td><td>Tüm mezhepler</td></tr>
+            <tr><td class="t-bold">Sünnet</td><td>Hz. Peygamber'in söz, fiil ve takrirleri</td><td>Tüm mezhepler</td></tr>
+            <tr><td class="t-bold">İcmâ</td><td>Müctehidlerin bir konuda ittifak etmesi</td><td>Tüm mezhepler</td></tr>
+            <tr><td class="t-bold">Kıyas</td><td>Bilinen bir hükmü benzer meseleye uygulamak</td><td>Cumhur (Zâhirîler hariç)</td></tr>
+            <tr><td class="t-bold">İstihsan</td><td>Açık kıyası bırakıp daha güçlü delile yönelmek</td><td>Özellikle Hanefîler</td></tr>
+            <tr><td class="t-bold">Maslahat-ı Mürsele</td><td>Nass'ta delili olmayan maslahat</td><td>Özellikle Mâlikîler</td></tr>
+            <tr><td class="t-bold">İstishab</td><td>Mevcut durumun devam ettiğini kabul etmek</td><td>Tüm mezhepler (derece farkıyla)</td></tr>
+            <tr><td class="t-bold">Sedd-i Zerâi'</td><td>Harama giden yolları kapatmak</td><td>Özellikle Mâlikî ve Hanbelî</td></tr>
+            <tr><td class="t-bold">Örf</td><td>Toplumda yerleşmiş meşrû adetler</td><td>Tüm mezhepler</td></tr>
+            <tr><td class="t-bold">Sahâbe Kavli</td><td>Sahâbîlerin ictihâdî görüşleri</td><td>Hanefî ve Hanbelî</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DELALET ÇEŞİTLERİ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📐 Nassın Delâlet Çeşitleri (Hanefî Usulü)</div>
+          <span class="badge badge-orange">SIK ÇIKIYOR</span>
+        </div>
+        <table>
+          <thead><tr><th>Delâlet</th><th>Tanım</th><th>Örnek</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">İbârenin delâleti</td><td>Nassın doğrudan ifade ettiği anlam</td><td class="t-dim">"Alışveriş helal, faiz haram" → alışveriş helal</td></tr>
+            <tr><td class="t-bold">İşâretin delâleti</td><td>Nassın dolaylı olarak işaret ettiği anlam</td><td class="t-dim">"Alışveriş helal" → faiz ile alışveriş farklıdır</td></tr>
+            <tr><td class="t-bold">Nassın delâleti</td><td>Hükmün illeti aracılığıyla başka şeye uygulanması</td><td class="t-dim">"Öf deme" → dövmek de haramdır (evleviyetle)</td></tr>
+            <tr><td class="t-bold">İktizânın delâleti</td><td>Sözün doğruluğu için zorunlu takdirî anlam</td><td class="t-dim">"Ümmetimden hata kaldırıldı" → hatanın günahı</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ====== TAB: DİYANET BAŞKANLARI ====== -->
+    <div class="tab-panel" id="tab-baskanlar">
+      <div class="section-title">🏛️ Diyanet İşleri Başkanları (1924–Günümüz)</div>
+      <div class="section-subtitle">Tüm başkanlar, görev süreleri ve sınavda çıkma durumları</div>
+
+      <div class="alert alert-warn">
+        <div class="alert-title">⚠️ SINAV VERİSİ</div>
+        <p>Diyanet başkanları sorusu <strong>2015, 2017, 2018, 2019, 2020, 2022, 2024 ve 2025</strong> yıllarında sorulmuştur. Özellikle <strong>2025 sınavında 5 ayrı başkan</strong> adı geçmiştir (Rifat Börekçi, Ahmet Hamdi Akseki, Ömer Nasuhi Bilmen, Hasan Hüsnü Erdem). Bu konuyu mutlaka çalışın!</p>
+      </div>
+
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>#</th><th>Başkan</th><th>Görev Süresi</th><th>Bilinmesi Gerekenler</th><th>Sınavda</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="t-bold">Mehmet Rifat Börekçi</td><td>1924–1941</td><td>İlk başkan, Kurtuluş Savaşı'nda fetva veren Ankara Müftüsü, en uzun görev yapan başkan (17 yıl)</td><td><span class="badge badge-red">2025 ✓</span></td></tr>
+          <tr><td>2</td><td class="t-bold">M. Şerafettin Yaltkaya</td><td>1942–1947</td><td>Felsefe ve kelam alanında çalışmalar, "Kelâm Tarihi" eseri</td><td></td></tr>
+          <tr><td>3</td><td class="t-bold">Ahmet Hamdi Akseki</td><td>1947–1951</td><td>"Askere Din Dersleri", "İslam Dini" kitapları, din hizmetlerinde reform</td><td><span class="badge badge-red">2025 ✓</span></td></tr>
+          <tr><td>4</td><td class="t-bold">Eyüp Sabri Hayırlıoğlu</td><td>1951–1960</td><td>Demokrat Parti döneminde görev, Kur'an kurslarının yaygınlaşması</td><td><span class="badge badge-orange">2022 ✓</span></td></tr>
+          <tr><td>5</td><td class="t-bold">Ömer Nasuhi Bilmen</td><td>1960–1961</td><td>"Hukuk-ı İslâmiyye ve Istılâhât-ı Fıkhiyye Kâmûsu", "Büyük İslam İlmihali", en kısa görev (10 ay)</td><td><span class="badge badge-red">2022, 2024, 2025 ✓</span></td></tr>
+          <tr><td>6</td><td class="t-bold">Hasan Hüsnü Erdem</td><td>1961–1964</td><td>"Risâle-i Kudsiyye"nin şerhini yapmış, Elmalılı tefsirinin sadeleştirilmesi çalışması</td><td><span class="badge badge-red">2022, 2025 ✓</span></td></tr>
+          <tr><td>7</td><td class="t-bold">M. Tevfik Gerçeker</td><td>1964–1965</td><td>Kısa süreli görev</td><td></td></tr>
+          <tr><td>8</td><td class="t-bold">İbrahim B. Elmalılı</td><td>1965–1966</td><td>Kısa süreli görev</td><td></td></tr>
+          <tr><td>9</td><td class="t-bold">Ali Rıza Hakses</td><td>1966–1971</td><td>—</td><td></td></tr>
+          <tr><td>10</td><td class="t-bold">Lütfi Doğan</td><td>1971–1976</td><td>Yurtdışı din hizmetlerinin temellerini attı</td><td></td></tr>
+          <tr><td>11</td><td class="t-bold">Süleyman Ateş</td><td>1976–1978</td><td>Ünlü tefsir profesörü, "Çağdaş Kur'an Tefsiri" (Yüce Kur'ânın Çağdaş Tefsiri)</td><td></td></tr>
+          <tr><td>12</td><td class="t-bold">Tayyar Altıkulaç</td><td>1978–1986</td><td>En uzun görev yapan başkanlardan biri (8 yıl), Kur'an araştırmaları, mushaf neşirleri</td><td></td></tr>
+          <tr><td>13</td><td class="t-bold">M. Said Yazıcıoğlu</td><td>1987–1992</td><td>Kelam profesörü</td><td></td></tr>
+          <tr><td>14</td><td class="t-bold">Mehmet Nuri Yılmaz</td><td>1992–2003</td><td>En uzun görev (11 yıl), DİYK üyeliğinden yükseldi</td><td></td></tr>
+          <tr><td>15</td><td class="t-bold">Ali Bardakoğlu</td><td>2003–2010</td><td>Fıkıh profesörü, Diyanet'in yeniden yapılandırılması</td><td></td></tr>
+          <tr><td>16</td><td class="t-bold">Mehmet Görmez</td><td>2010–2017</td><td>Hadis profesörü, Hadislerle İslam ansiklopedisi, Diyanet Akademisi kurulması</td><td></td></tr>
+          <tr><td>17</td><td class="t-bold">Ali Erbaş</td><td>2017–Günümüz</td><td>Mevcut başkan, hadis profesörü, İstanbul Müftülüğünden geldi</td><td></td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="alert alert-tip" style="margin-top:20px;">
+        <div class="alert-title">💡 SINAV İPUCU</div>
+        <p>Sorular genellikle şu formatlarda gelir: "Aşağıdakilerden hangisi Diyanet İşleri Başkanlığı yapmıştır/yapmamıştır?", "Kronolojik sıralama", veya "X eserin müellifi olan başkan kimdir?". <strong>Ömer Nasuhi Bilmen</strong> açık ara en çok sorulan başkandır (eserleriyle birlikte).</p>
+      </div>
+    </div>
+
+    <!-- ====== TAB: GÜNCEL KONULAR ====== -->
+    <div class="tab-panel" id="tab-guncel">
+      <div class="section-title">🎯 Güncel Konular, Genel Kültür ve Sık Sorulan Şahıslar</div>
+      <div class="section-subtitle">Her yıl sınavda 2-5 soru mutlaka güncel ve genel kültür konularından gelmektedir</div>
+
+      <!-- MÜTEFEKKİRLER -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">✍️ Sınavda Çıkan Mütefekkir ve Yazarlar</div>
+          <span class="badge badge-red">2024'TE 7 KEZ</span>
+        </div>
+        <div class="alert alert-warn" style="margin-top:0">
+          <div class="alert-title">⚠️ DİKKAT</div>
+          <p>2024 sınavında <strong>"Yedi Güzel Adam"</strong> şairlerinden 5'inin adı sorulmuştur. 2025'te Seyyid Kutup, Mevdûdî ve Muhammed Hamidullah sorulmuştur.</p>
+        </div>
+        <table>
+          <thead><tr><th>İsim</th><th>Bilinmesi Gerekenler</th><th>Sınavda Çıktığı Yıl</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Sezai Karakoç</td><td>Diriliş hareketi, "Diriliş Nesli"nin öncüsü, şair, düşünür</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">Nuri Pakdil</td><td>Yedi Güzel Adam'dan, Edebiyat dergisi kurucusu</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">Cahit Zarifoğlu</td><td>Yedi Güzel Adam'dan, şair, çocuk edebiyatı</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">Erdem Bayazıt</td><td>Yedi Güzel Adam'dan, şair, "Sebep Ey" şiiri</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">Rasim Özdenören</td><td>Yedi Güzel Adam'dan, hikâyeci, denemeci</td><td><span class="badge badge-orange">2020 ✓</span></td></tr>
+            <tr><td class="t-bold">Teoman Duralı</td><td>Felsefeci, "Omurgasızlaştırılmış Türklük" eseri</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">Alev Alatlı</td><td>Yazar, "Schrödinger'in Kedisi" üçlemesi</td><td><span class="badge badge-orange">2020 ✓</span></td></tr>
+            <tr><td class="t-bold">Muhammed İkbal</td><td>Pakistan'ın manevi kurucusu, "Câvidnâme", "İslam'da Dini Düşüncenin Yeniden Doğuşu"</td><td><span class="badge badge-orange">2023 ✓</span></td></tr>
+            <tr><td class="t-bold">Musa Cârullah (Bigiyef)</td><td>Kazan Türkü İslam âlimi, "Rahmet-i İlâhiyye Burhanları"</td><td><span class="badge badge-orange">2023 ✓</span></td></tr>
+            <tr><td class="t-bold">Seyyid Kutup</td><td>"Fî Zilâli'l-Kur'ân" tefsiri, Müslüman Kardeşler hareketi</td><td><span class="badge badge-blue">2025 ✓</span></td></tr>
+            <tr><td class="t-bold">Mevdûdî</td><td>Cemaat-i İslâmî kurucusu, "Tefhîmu'l-Kur'ân"</td><td><span class="badge badge-blue">2025 ✓</span></td></tr>
+            <tr><td class="t-bold">M. Hamidullah</td><td>"İslam Peygamberi", siyere modern yaklaşım, Fransa'da yaşadı</td><td><span class="badge badge-blue">2025 ✓</span></td></tr>
+            <tr><td class="t-bold">Necip Fazıl Kısakürek</td><td>"Büyük Doğu" hareketi, şair, oyun yazarı</td><td><span class="badge badge-yellow">2018 ✓</span></td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:14px;">
+          <div class="sub-title">"Yedi Güzel Adam" Kimdir?</div>
+          <p style="color:var(--text-dim);font-size:0.88rem;margin-bottom:8px;">1960-70'lerde Türk-İslam edebiyatının önemli isimleri. TRT dizisi de yapıldı:</p>
+          <ul class="topic-list">
+            <li><strong>Sezai Karakoç</strong> — Lider figür, Diriliş hareketi</li>
+            <li><strong>Nuri Pakdil</strong> — Edebiyat dergisi</li>
+            <li><strong>Cahit Zarifoğlu</strong> — Şair</li>
+            <li><strong>Erdem Bayazıt</strong> — Şair</li>
+            <li><strong>Rasim Özdenören</strong> — Hikâyeci</li>
+            <li><strong>Alaeddin Özdenören</strong> — Hikâyeci (Rasim'in kardeşi)</li>
+            <li><strong>Akif İnan</strong> — Şair</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- DİYANET GÜNCEL -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🕌 Diyanet Teşkilatı Güncel Bilgiler</div>
+          <span class="badge badge-orange">2024'TE 7 KEZ</span>
+        </div>
+        <table>
+          <thead><tr><th>Konu</th><th>Bilgi</th><th>Sınav</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Diyanet Akademisi</td><td>2019'da kuruldu, ihtisas ve hizmet içi eğitimler</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">Alo 190</td><td>Diyanet fetva hattı</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">TRT Diyanet</td><td>2012'de yayına başlayan TV kanalı</td><td><span class="badge badge-yellow">Çıkabilir</span></td></tr>
+            <tr><td class="t-bold">Diyanet Journal</td><td>Diyanet'in İngilizce yayını</td><td><span class="badge badge-red">2024 ✓</span></td></tr>
+            <tr><td class="t-bold">Din Şûrası</td><td>Diyanet'in düzenlediği istişare toplantıları (I-VIII. Din Şûrası)</td><td><span class="badge badge-yellow">Çıkabilir</span></td></tr>
+            <tr><td class="t-bold">633 sayılı Kanun</td><td>Diyanet İşleri Başkanlığı'nın kuruluş kanunu (1965)</td><td><span class="badge badge-orange">2013, 2018, 2024 ✓</span></td></tr>
+            <tr><td class="t-bold">657 sayılı Kanun</td><td>Devlet Memurları Kanunu, hizmet sınıfları</td><td><span class="badge badge-orange">2018, 2023 ✓</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RAMAZAN TEMALARI -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🌙 Ramazan Ayı Temaları</div>
+          <span class="badge badge-yellow">ÇIKABİLİR</span>
+        </div>
+        <p style="color:var(--text-dim);font-size:0.88rem;margin-bottom:10px;">Diyanet her yıl Ramazan için bir tema belirler. Son yılların temaları soruluyor:</p>
+        <ul class="topic-list">
+          <li><strong>2026:</strong> "Ramazan ve Muhasebe"</li>
+          <li><strong>2025:</strong> "Ramazan ve Sabır"</li>
+          <li><strong>2024:</strong> "Ramazan ve Şifa" (Şifa Ayı)</li>
+          <li><strong>2023:</strong> "Ramazan ve İnfak"</li>
+          <li><strong>2022:</strong> "Ramazan ve Kardeşlik"</li>
+          <li><strong>2021:</strong> "Ramazan ve Şükür"</li>
+          <li><strong>2020:</strong> "Ramazan ve Sabır"</li>
+        </ul>
+      </div>
+
+      <!-- MODERN FELSEFİ AKIMLAR -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">💭 Modern Felsefi Akımlar ve Tanımları</div>
+          <span class="badge badge-orange">2-4 SORU/YIL</span>
+        </div>
+        <table>
+          <thead><tr><th>Akım</th><th>Tanım</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Ateizm</td><td>Tanrı'nın varlığını reddeden düşünce</td></tr>
+            <tr><td class="t-bold">Deizm</td><td>Tanrı'yı kabul eden ancak vahiy/din/peygamberi reddeden görüş</td></tr>
+            <tr><td class="t-bold">Agnostisizm</td><td>Tanrı'nın varlığının bilinemeyeceği görüşü</td></tr>
+            <tr><td class="t-bold">Nihilizm</td><td>Hiçbir değer ve anlamın olmadığını savunan düşünce</td></tr>
+            <tr><td class="t-bold">Pozitivizm</td><td>Sadece bilimsel/deneysel bilgiyi kabul eden anlayış</td></tr>
+            <tr><td class="t-bold">Materyalizm</td><td>Var olan her şeyi maddeden ibaret sayan düşünce</td></tr>
+            <tr><td class="t-bold">Transhümanizm</td><td>Teknoloji ile insanı "aşma" ideolojisi</td></tr>
+            <tr><td class="t-bold">Sekülerizm</td><td>Din ve devlet işlerinin ayrılması, dinin kamusal alandan çekilmesi</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DİNLER TARİHİ TEMEL KAVRAMLAR -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">✝️ Dinler Tarihi – Temel Kavramlar</div>
+          <span class="badge badge-yellow">2 SORU/YIL</span>
+        </div>
+        <table>
+          <thead><tr><th>Kavram</th><th>Din</th><th>Açıklama</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">İnkarnasyon</td><td>Hristiyanlık</td><td>Tanrı'nın İsa'da beden alması (tecessüd)</td></tr>
+            <tr><td class="t-bold">Aslî Günah</td><td>Hristiyanlık</td><td>Âdem'in günahının tüm insanlara geçtiği inanışı</td></tr>
+            <tr><td class="t-bold">Endüljans</td><td>Katolik</td><td>Günahların para karşılığı bağışlanması (Reformun sebebi)</td></tr>
+            <tr><td class="t-bold">Konfirmasyon</td><td>Hristiyanlık</td><td>Vaftiz sonrası "iman onayı" sakramenti</td></tr>
+            <tr><td class="t-bold">Martin Luther</td><td>Protestan</td><td>Reform hareketi öncüsü (1517), 95 tez</td></tr>
+            <tr><td class="t-bold">Arz-ı Mev'ûd</td><td>Yahudilik</td><td>"Vaad edilmiş toprak" (Filistin/Kenan diyarı)</td></tr>
+            <tr><td class="t-bold">Mesihçilik</td><td>Yahudilik</td><td>Mesih'in gelip Yahudi devletini kuracağı inancı</td></tr>
+            <tr><td class="t-bold">Siyonizm</td><td>Yahudilik</td><td>Yahudi devleti kurma siyasi hareket</td></tr>
+            <tr><td class="t-bold">Evanjelizm</td><td>Protestan</td><td>İncil'e literal yaklaşım, İsrail'i destekleme</td></tr>
+            <tr><td class="t-bold">Yehova Şahitleri</td><td>Yeni Dini Hareket</td><td>Teslis reddeden, kan nakli yasaklayan grup</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- AKADEMİSYENLER -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎓 Sınavda Sorulan Akademisyenler</div>
+          <span class="badge badge-orange">2023-2025 YOĞUN</span>
+        </div>
+        <div class="alert alert-note" style="margin-top:0">
+          <div class="alert-title">ℹ️ Not</div>
+          <p>2023 sınavında Türk tefsir akademisyenlerinden birçoğu sorulmuştur. Genellikle eser-müellif eşleştirme formatında gelir.</p>
+        </div>
+        <table>
+          <thead><tr><th>İsim</th><th>Alan</th><th>Bilinen Eseri / Özelliği</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Elmalılı M. Hamdi Yazır</td><td>Tefsir</td><td>"Hak Dini Kur'an Dili" (Türkçe en kapsamlı tefsir)</td></tr>
+            <tr><td class="t-bold">İsmail Cerrahoğlu</td><td>Tefsir</td><td>"Tefsir Usûlü", "Kur'an Tefsirinin Doğuşu ve Gelişimi"</td></tr>
+            <tr><td class="t-bold">Talat Koçyiğit</td><td>Hadis</td><td>"Hadis Usûlü", "Hadis Istılahları"</td></tr>
+            <tr><td class="t-bold">Hayrettin Karaman</td><td>Fıkıh</td><td>"Mukayeseli İslam Hukuku" eserleri</td></tr>
+            <tr><td class="t-bold">Mustafa Sabri Efendi</td><td>Kelam</td><td>Son Osmanlı Şeyhülislâmlarından, "Mevkıfu'l-Akl"</td></tr>
+            <tr><td class="t-bold">İzmirli İsmail Hakkı</td><td>Kelam</td><td>"Yeni İlm-i Kelam"</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ======== TAHMİN: GÜNCEL MESELELER ======== -->
+      <hr class="divider">
+      <div class="section-title">🔮 2026 Sınavında Çıkması Muhtemel Güncel Meseleler</div>
+      <div class="section-subtitle">Son 2 yılda meydana gelmiş, daha önce sorulmamış ve Diyanet'in ilgi alanına giren konular — olasılığa göre sıralı</div>
+
+      <div class="alert alert-danger">
+        <div class="alert-title">🚨 TAHMİN BÖLÜMÜ</div>
+        <p>Bu bölüm, sınav geçmişi paterni analizi ve güncel gelişmelere dayalı <strong>tahmindir</strong>. Kesin soru çıkacağı garanti değildir. Ancak sınav komisyonu her yıl 2-5 güncel soru sormaktadır.</p>
+      </div>
+
+      <!-- YÜKSEK İHTİMAL -->
+      <div class="priority-group priority-1">
+        <div class="priority-header">🔴 Yüksek İhtimal — Büyük Olasılıkla Sorulacak</div>
+
+        <div class="card" style="background:transparent;border:none;padding:8px 0;">
+          <table>
+            <thead><tr><th>#</th><th>Konu</th><th>Detay</th><th>Neden Sorulabilir?</th></tr></thead>
+            <tbody>
+              <tr><td class="t-bold">1</td><td class="t-bold">7. Din Şûrası (2024)</td><td>"Dijitalleşen Dünyada Diyanet Hizmetleri" teması. 26-28 Kasım 2024'te yapıldı.</td><td class="t-dim">Her din şûrası sonrası sınavda soruluyor</td></tr>
+              <tr><td class="t-bold">2</td><td class="t-bold">Yapay Zeka ve Fetva</td><td>Diyanet fetva hattında (Alo 190) yapay zeka destekli botlar kullanılmaya başlandı. Yapay zeka fetva kaynağı değil, destek aracı.</td><td class="t-dim">7. Din Şûrası'nın ana teması, toplumsal gündem</td></tr>
+              <tr><td class="t-bold">3</td><td class="t-bold">Kripto Para Fetvası</td><td>DIYK: "Garar (belirsizlik), tağrir (aldatma) ve devlet güvencesi olmaması nedeniyle şu an caiz değildir."</td><td class="t-dim">Çok güncel, fıkıh usulü ile bağlantılı</td></tr>
+              <tr><td class="t-bold">4</td><td class="t-bold">ÇEDES Projesi</td><td>Çevreme Duyarlıyım ve Değerlerime Saygılıyım — MEB ile Diyanet ortak projesi, okullarda değerler eğitimi.</td><td class="t-dim">Diyanet'in en güncel eğitim projesi</td></tr>
+              <tr><td class="t-bold">5</td><td class="t-bold">UNESCO 2024-2025 Anma Yılları</td><td>• Dîvânu Lügâti't-Türk'ün 950. yılı (Kaşgarlı Mahmud)<br>• Ali Kuşçu vefatının 550. yılı<br>• Fuat Sezgin doğumunun 100. yılı</td><td class="t-dim">Her UNESCO yılı genel kültür sorusu oluyor</td></tr>
+              <tr><td class="t-bold">6</td><td class="t-bold">UNESCO 2026 Anma Yılları</td><td>• Şair Bâkî doğumunun 500. yılı<br>• Şeyh Edebali ölümünün 700. yılı</td><td class="t-dim">Sınav 2026'da yapılacağı için çok güncel</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ORTA İHTİMAL -->
+      <div class="priority-group priority-2">
+        <div class="priority-header">🟠 Orta İhtimal — Sorulma Olasılığı Var</div>
+
+        <div class="card" style="background:transparent;border:none;padding:8px 0;">
+          <table>
+            <thead><tr><th>#</th><th>Konu</th><th>Detay</th></tr></thead>
+            <tbody>
+              <tr><td class="t-bold">7</td><td class="t-bold">Ramazan Temaları 2025-2026</td><td>2025: "Ramazan ve Sabır" — 2026: "Ramazan ve Muhasebe". Bu yılın teması çok çıkar.</td></tr>
+              <tr><td class="t-bold">8</td><td class="t-bold">Diyanet Akademisi Yeni Yapılanma</td><td>2019'da kuruldu, ihtisas eğitimi ve hizmet içi eğitimler. Taşra teşkilatında yeni eğitim merkezleri açılıyor.</td></tr>
+              <tr><td class="t-bold">9</td><td class="t-bold">DİYK Üye Atamaları (Ekim 2025)</td><td>4 Ekim 2025 tarihli Resmi Gazete ile Din İşleri Yüksek Kurulu'na yeni üye atamaları yapıldı.</td></tr>
+              <tr><td class="t-bold">10</td><td class="t-bold">Dijital Fetva Platformu</td><td>Diyanet'in online dini bilgilendirme platformu: fetva portalı, video cevaplar, chatbot sistemi.</td></tr>
+              <tr><td class="t-bold">11</td><td class="t-bold">Filistin / Gazze Meselesi</td><td>2023'ten bu yana devam eden insani kriz. Diyanet'in hutbe ve açıklamalarında sıkça yer aldı. Müslüman dayanışması.</td></tr>
+              <tr><td class="t-bold">12</td><td class="t-bold">Deizm ve Gençlik</td><td>Diyanet'in "deizm" konusundaki kaygıları ve gençlere yönelik din hizmetleri. 7. Din Şûrası'nda da gündemde.</td></tr>
+              <tr><td class="t-bold">13</td><td class="t-bold">İslamofobi ile Mücadele</td><td>Kur'an yakma olayları (İsveç/Danimarka), Diyanet'in uluslararası tepkileri ve "15 Mart İslamofobi ile Mücadele Günü".</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DÜŞÜK AMA MÜMKÜN -->
+      <div class="priority-group priority-3">
+        <div class="priority-header">🟡 Düşük Ama Mümkün</div>
+
+        <div class="card" style="background:transparent;border:none;padding:8px 0;">
+          <table>
+            <thead><tr><th>#</th><th>Konu</th><th>Detay</th></tr></thead>
+            <tbody>
+              <tr><td>14</td><td class="t-bold">TRT Diyanet Kanal Değişiklikleri</td><td>TRT Diyanet yayın politikası ve yeni programlar.</td></tr>
+              <tr><td>15</td><td class="t-bold">Türkiye geneli cami sayısı</td><td>2026 itibarıyla 90.000+ cami. Fonksiyonel cami projeleri.</td></tr>
+              <tr><td>16</td><td class="t-bold">Organ nakli / Ötanazi fetvası</td><td>DIYK'nin güncel tıbbi etik fetvalarına dair sorular.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ======== TAHMİN: ŞAHISLAR ======== -->
+      <hr class="divider">
+      <div class="section-title">👤 Daha Önce Sorulmamış — Sorulma İhtimali Yüksek Şahıslar</div>
+      <div class="section-subtitle">Sınav komisyonu her yıl 2-4 tanınmış İslam düşünürü / Türk şahsiyet soruyor. Bu isimler henüz sorulmadı.</div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎯 2026 Sınavı İçin Potansiyel Şahıslar</div>
+          <span class="badge badge-red">TAHMİN</span>
+        </div>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>İsim</th><th>Alan</th><th>Bilinmesi Gerekenler</th><th>Neden Sorulabilir?</th></tr></thead>
+          <tbody>
+            <tr><td class="t-bold">Prof. Dr. Fuat Sezgin</td><td>Bilim Tarihi</td><td>"Geschichte des Arabischen Schrifttums" (GAS), İslam bilim tarihi alanında çığır açan eseri. Frankfurt İslam Kültürleri Müzesi kurucusu.</td><td><span class="badge badge-red">UNESCO 2025</span> 100. doğum yılı</td></tr>
+            <tr><td class="t-bold">Ali Kuşçu</td><td>Astronomi / Matematik</td><td>Uluğ Bey'in gözlemevinde çalıştı, İstanbul'a gelip medreselerde ders verdi. M athematik ve astronomi eserleri.</td><td><span class="badge badge-red">UNESCO 2025</span> 550. vefat yılı</td></tr>
+            <tr><td class="t-bold">Kaşgarlı Mahmud</td><td>Dil Bilimi</td><td>"Dîvânu Lügâti't-Türk" — ilk Türk dili sözlüğü ve ansiklopedisi (1072-1074). Türk kültürü açısından en önemli eser.</td><td><span class="badge badge-red">UNESCO 2025</span> 950. yıl</td></tr>
+            <tr><td class="t-bold">Şeyh Edebali</td><td>Tasavvuf / Tarih</td><td>Osman Gazi'nin kayınbabası, Osmanlı'nın manevi mimarı. "Oğul, insanı yaşat ki devlet yaşasın" nasihati.</td><td><span class="badge badge-orange">UNESCO 2026</span> 700. vefat yılı</td></tr>
+            <tr><td class="t-bold">Şair Bâkî</td><td>Edebiyat</td><td>"Sultanü'ş-Şuarâ" (Şairlerin Sultanı). Kanuni mersiyesi meşhur. Divan edebiyatının zirvesi.</td><td><span class="badge badge-orange">UNESCO 2026</span> 500. doğum yılı</td></tr>
+            <tr><td class="t-bold">İbn Haldun</td><td>Tarih / Sosyoloji</td><td>"Mukaddime" — tarih felsefesi ve sosyolojinin öncüsü. Umran bilimi, asabiyet kavramı.</td><td class="t-dim">Son yıllarda İslam medeniyeti soruları artıyor</td></tr>
+            <tr><td class="t-bold">Fazlur Rahman</td><td>Düşünce / Tefsir</td><td>Çağdaş İslam düşünürü, "İslam" ve "Ana Konularıyla Kur'an" eserleri. Tarihselcilik tartışmaları.</td><td class="t-dim">2025'te Mevdudi/Kutub soruldu → benzer isimler</td></tr>
+            <tr><td class="t-bold">Said Nursî</td><td>Düşünce / Kelam</td><td>"Risale-i Nur Külliyatı", iman hakikatleri, tabiat felsefesine karşı deliller.</td><td class="t-dim">Büyük düşünür, henüz sorulmadı</td></tr>
+            <tr><td class="t-bold">Mehmed Âkif Ersoy</td><td>Edebiyat / Düşünce</td><td>İstiklal Marşı şairi, "Safahat", İslam birliği ve ahlak vurgusu. Asım'ın Nesli ideali.</td><td class="t-dim">Her yıl edebiyatçı-düşünür soruluyor</td></tr>
+            <tr><td class="t-bold">Bediüzzaman'ın Talebeleri</td><td>Düşünce</td><td>Zübeyir Gündüzalp, Mustafa Sungur, Hüsrev Altınbaşak gibi isimler.</td><td class="t-dim">Düşük ihtimal ama mümkün</td></tr>
+            <tr><td class="t-bold">İmam Şâtıbî</td><td>Fıkıh Usulü</td><td>"el-Muvâfakât" eseri, makâsıdü'ş-şerîa (İslam hukukunun gayeleri) teorisinin mimarı.</td><td class="t-dim">Fıkıh usulü soruları artıyor</td></tr>
+            <tr><td class="t-bold">İmam Nevevî</td><td>Hadis / Fıkıh</td><td>"Riyâzü's-Sâlihîn", "el-Ezkâr", Müslim şerhi "el-Minhâc". Şâfiî fakîh.</td><td class="t-dim">Hadis kaynakları sorulan klasik isim</td></tr>
+            <tr><td class="t-bold">Tahâvî</td><td>Kelam / Akaid</td><td>"el-Akîdetü't-Tahâviyye" — Ehl-i Sünnet akaidinin en kısa ve özlü metni.</td><td class="t-dim">Kelam konusu her yıl çıkıyor</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="alert alert-tip" style="margin-top:18px;">
+        <div class="alert-title">💡 ÇALIŞMA STRATEJİSİ</div>
+        <p><strong>Öncelik sırası:</strong> UNESCO yılı olan isimler (Fuat Sezgin, Ali Kuşçu, Kaşgarlı Mahmud, Şeyh Edebali, Bâkî) > 7. Din Şûrası kararları > Kripto/yapay zeka fetvası > Diğerleri. Her şahıs için en az <strong>1 eser adı + 1 ayırt edici özellik</strong> ezberlenmeli.</p>
+      </div>
+
+    </div>
+
+  </div><!-- /tab-content (ref) -->
+</div><!-- /tabs-wrapper (ref) -->
+
+<div class="footer">
+  📊 İhtisas Sınavı Konu Analizi &middot; 17 Yıllık Veri (2009–2025) &middot; Son güncelleme: 10 Nisan 2026
+</div>
+
+</div><!-- /container -->
+
+<script>
+// Independent tab groups
+document.querySelectorAll('.tabs-wrapper').forEach(wrapper => {
+  const btns = wrapper.querySelectorAll('.tab-btn');
+  const content = wrapper.querySelector('.tab-content');
+  const panels = content ? content.querySelectorAll('.tab-panel') : [];
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+
+      // Deactivate siblings
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      panels.forEach(p => {
+        p.classList.remove('active');
+        if (p.id === 'tab-' + target) p.classList.add('active');
+      });
+    });
+  });
+});
+
+// Animate progress bars on load
+window.addEventListener('load', () => {
+  const fills = document.querySelectorAll('.progress-bar-fill');
+  fills.forEach(f => {
+    const w = f.style.width;
+    f.style.width = '0';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { f.style.width = w; });
+    });
+  });
+});
+</script>
+
+</body>
+</html>
