@@ -238,6 +238,14 @@ body::before {
   to { opacity: 1; transform: translateY(0); }
 }
 
+.arabic-text {
+  font-family: 'Amiri', 'Arabic Typesetting', 'Traditional Arabic', serif;
+  font-size: 1.65em;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0 4px;
+}
+
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
@@ -1711,8 +1719,8 @@ button, .tab-btn { -webkit-tap-highlight-color: transparent; }
           <thead><tr><th>Kelime Türü</th><th>Merfu (Özne/Fail vs)</th><th>Mansub (Nesne/Meful)</th><th>Mecrur (Harf-i cer yanı)</th></tr></thead>
           <tbody>
             <tr><td class="t-bold">Müfred (Tekil İsim)</td><td>Ötre (-u/ün)</td><td>Üstün (-a/en)</td><td>Esre (-i/in)</td></tr>
-            <tr><td class="t-bold">Tesniye (İkil)</td><td>Elif ( ـَانِ ) <em>-âni</em></td><td>Ya ( ـَيْنِ ) <em>-eyni</em></td><td>Ya ( ـَيْنِ ) <em>-eyni</em></td></tr>
-            <tr><td class="t-bold">Cem'i Müzekker Sâlim (Eril Çoğul)</td><td>Vav ( ـُونَ ) <em>-ûne</em></td><td>Ya ( ـِينَ ) <em>-îne</em></td><td>Ya ( ـِينَ ) <em>-îne</em></td></tr>
+            <tr><td class="t-bold">Tesniye (İkil)</td><td>Elif ( <span class="arabic-text" dir="rtl">ـَانِ</span> ) <em>-âni</em></td><td>Ya ( <span class="arabic-text" dir="rtl">ـَيْنِ</span> ) <em>-eyni</em></td><td>Ya ( <span class="arabic-text" dir="rtl">ـَيْنِ</span> ) <em>-eyni</em></td></tr>
+            <tr><td class="t-bold">Cem'i Müzekker Sâlim (Eril Çoğul)</td><td>Vav ( <span class="arabic-text" dir="rtl">ـُونَ</span> ) <em>-ûne</em></td><td>Ya ( <span class="arabic-text" dir="rtl">ـِينَ</span> ) <em>-îne</em></td><td>Ya ( <span class="arabic-text" dir="rtl">ـِينَ</span> ) <em>-îne</em></td></tr>
             <tr><td class="t-bold">Cem'i Müennes Sâlim (Dişil Çoğul)</td><td>Ötre (-u/ün) <em>-âtun</em></td><td>Esre (-i/in) <em>-âtin!</em> <span style="color:var(--orange)">(Üstün fetha ASLA almaz)</span></td><td>Esre (-i/in) <em>-âtin</em></td></tr>
             <tr><td class="t-bold">Esmâ-i Hamse (5 İsim: Ebu, Ehu vb)</td><td>Vav ile (Ebû)</td><td>Elif ile (Ebâ)</td><td>Ya ile (Ebî)</td></tr>
           </tbody>
@@ -1721,18 +1729,18 @@ button, .tab-btn { -webkit-tap-highlight-color: transparent; }
 
         <div class="sub-title" style="margin-top:16px;">B- SIKLIKLA SORULAN NAHİV KAVRAMLARI:</div>
         <ul class="topic-list" style="margin-bottom:14px;">
-          <li><strong>Hâl:</strong> Fiilin yapılırken fâilin (özne) veya mefûlün (nesne) durumunu bildirir. Her zaman "Nekre" (belirsiz) ve "Mansub"dur. Soru dilde: "Nasıl?"<br><span class="t-dim">Örn: جَاءَ زَيْدٌ <strong>رَاكِبًا</strong> (Zeyd <em>binerek/binekli</em> geldi). Râkiben: Hal'dir. (Nasıl geldi?)</span></li>
-          <li><strong>Mef'ûl-ü Mutlak:</strong> Fiilin kökünden veya eş anlamlısından türeyen, cümleyi pekiştirmek veya eylemin sayısını/türünü belirtmek için gelen mastardır.<br><span class="t-dim">Örn: ضَرَبْتُهُ <strong>ضَرْبًا</strong> (Onu <em>öyle bir dövdüm ki... / dövmekle dövdüm</em>). Sarf bilgisi: Kök fiille aynı mastar olması şarttır.</span></li>
-          <li><strong>Mef'ûl-ü Li-eclih (Leh):</strong> Eylemin "niçin, ne maksatla" yapıldığını, sebebini bildiren mansub mastardır.<br><span class="t-dim">Örn: قُمْتُ <strong>إِجْلَالًا</strong> لَهُ (Ona <em>saygıdan dolayı</em> ayağa kalktım). (İclâl = Hürmet, Saygı).</span></li>
-          <li><strong>Temyîz:</strong> Kendinden önceki kelimede (veya cümlede) bulunan kapalılığı gideren "nekre-mansub" isimdir. (Çoğunlukla ağırlık, ölçü ve sayılardan (11-99) sonra bolca gelir).<br><span class="t-dim">Örn: اِشْتَرَيْتُ عِشْرِينَ <strong>كِتَابًا</strong> (Yirmi <em>(ne?) adet kitap</em> satın aldım). Kitâben: Yirminin kapalılığını açan Temyizdir.</span></li>
-          <li><strong>Müstesnâ (İstisna):</strong> İllâ (إِلَّا) ve benzeri edatlardan sonra gelen kelimedir. Olumlu tam cümlede (İlla)'dan sonra gelen kelime daima Mansub fetha alır.<br><span class="t-dim">Örn: جَاءَ الطُّلَّابُ إِلَّا <strong>زَيْدًا</strong> (Öğrenciler geldi, <em>Zeyd hariç</em>). Zeyden: mansub.</span></li>
+          <li><strong>Hâl:</strong> Fiilin yapılırken fâilin (özne) veya mefûlün (nesne) durumunu bildirir. Her zaman "Nekre" (belirsiz) ve "Mansub"dur. Soru dilde: "Nasıl?"<br><span class="t-dim">Örn: <span class="arabic-text" dir="rtl">جَاءَ زَيْدٌ <strong>رَاكِبًا</strong></span> (Zeyd <em>binerek/binekli</em> geldi). Râkiben: Hal'dir. (Nasıl geldi?)</span></li>
+          <li><strong>Mef'ûl-ü Mutlak:</strong> Fiilin kökünden veya eş anlamlısından türeyen, cümleyi pekiştirmek veya eylemin sayısını/türünü belirtmek için gelen mastardır.<br><span class="t-dim">Örn: <span class="arabic-text" dir="rtl">ضَرَبْتُهُ <strong>ضَرْبًا</strong></span> (Onu <em>öyle bir dövdüm ki... / dövmekle dövdüm</em>). Sarf bilgisi: Kök fiille aynı mastar olması şarttır.</span></li>
+          <li><strong>Mef'ûl-ü Li-eclih (Leh):</strong> Eylemin "niçin, ne maksatla" yapıldığını, sebebini bildiren mansub mastardır.<br><span class="t-dim">Örn: <span class="arabic-text" dir="rtl">قُمْتُ <strong>إِجْلَالًا</strong> لَهُ</span> (Ona <em>saygıdan dolayı</em> ayağa kalktım). (İclâl = Hürmet, Saygı).</span></li>
+          <li><strong>Temyîz:</strong> Kendinden önceki kelimede (veya cümlede) bulunan kapalılığı gideren "nekre-mansub" isimdir. (Çoğunlukla ağırlık, ölçü ve sayılardan (11-99) sonra bolca gelir).<br><span class="t-dim">Örn: <span class="arabic-text" dir="rtl">اِشْتَرَيْتُ عِشْرِينَ <strong>كِتَابًا</strong></span> (Yirmi <em>(ne?) adet kitap</em> satın aldım). Kitâben: Yirminin kapalılığını açan Temyizdir.</span></li>
+          <li><strong>Müstesnâ (İstisna):</strong> İllâ (إِلَّا) ve benzeri edatlardan sonra gelen kelimedir. Olumlu tam cümlede (İlla)'dan sonra gelen kelime daima Mansub fetha alır.<br><span class="t-dim">Örn: <span class="arabic-text" dir="rtl">جَاءَ الطُّلَّابُ إِلَّا <strong>زَيْدًا</strong></span> (Öğrenciler geldi, <em>Zeyd hariç</em>). Zeyden: mansub.</span></li>
         </ul>
 
         <div class="sub-title">C- ÇELMELERE DİKKAT! CEM-İ GAYR-İ ÂKIL (Akılsız Çoğullar):</div>
         <p class="t-dim" style="font-size:0.85rem; margin-bottom:10px;">Arapçada nesneler ve hayvanlar (insan dışı gayr-i âkıl varlıklar) Cem'i (çoğul) yapıldıklarında gramer olarak daima <strong>MÜFRED - MÜENNES</strong> hükmündedir! Yanlış zamir, yanlış fiil veya yanlış sıfat gelmemesine dikkat edin.</p>
         <ul class="topic-list" style="margin-bottom:0;">
-          <li>İşaret Zamiri Örneği: "O (uzaktaki) kitaplar" demek için (هُمْ كُتُبٌ) denmez. Kitap gayr-i âkıldır, Müfred-Müennes muamelesi görür: <strong>تِلْكَ كُتُبٌ</strong> (Tilke kütübün) veya yakındakine <strong>هَذِهِ كُتُبٌ</strong> (Hâzihi kütübün) denir.</li>
-          <li>Mübteda/Haber Örneği: "Şu arabalar hızlıdır": السَّيَّارَاتُ <strong>سَرِيعَةٌ</strong> (Seyyârât Cem'i ama haber olan hızlıkelimesi Müfred-Müennes / kapalı te ile "Serîatun" gelir. Serîatât denmez).</li>
+          <li>İşaret Zamiri Örneği: "O (uzaktaki) kitaplar" demek için ( <span class="arabic-text" dir="rtl">هُمْ كُتُبٌ</span> ) denmez. Kitap gayr-i âkıldır, Müfred-Müennes muamelesi görür: <strong class="arabic-text" dir="rtl">تِلْكَ كُتُبٌ</strong> (Tilke kütübün) veya yakındakine <strong class="arabic-text" dir="rtl">هَذِهِ كُتُبٌ</strong> (Hâzihi kütübün) denir.</li>
+          <li>Mübteda/Haber Örneği: "Şu arabalar hızlıdır": <span class="arabic-text" dir="rtl">السَّيَّارَاتُ <strong>سَرِيعَةٌ</strong></span> (Seyyârât Cem'i ama haber olan hızlıkelimesi Müfred-Müennes / kapalı te ile "Serîatun" gelir. Serîatât denmez).</li>
         </ul>
 
         <!-- SAYILARIN TEMYİZİ -->
@@ -1757,37 +1765,37 @@ button, .tab-btn { -webkit-tap-highlight-color: transparent; }
               <td class="t-bold t-orange">1 ve 2</td>
               <td>Önce Ma'dûd, sonra Aded gelir. Sadece 2 sayısı failse merfu, mefulse mansub irabı alır (Tesniye irabı).</td>
               <td><strong class="t-green">UYAR.</strong> Tıpatıp aynıdır (Mevsûf-Sıfat tamlamasıdır).</td>
-              <td>كِتَابٌ <strong class="t-accent">وَاحِدٌ</strong> (1 Kitap)<br>كِتَابَانِ <strong class="t-accent">اِثْنَانِ</strong> (2 Kitap)</td>
+              <td><span class="arabic-text" dir="rtl">كِتَابٌ <strong class="t-accent">وَاحِدٌ</strong></span> (1 Kitap)<br><span class="arabic-text" dir="rtl">كِتَابَانِ <strong class="t-accent">اِثْنَانِ</strong></span> (2 Kitap)</td>
             </tr>
             <tr>
               <td class="t-bold t-orange">3 ilâ 10<br><span class="t-dim">(Önemli!)</span></td>
               <td><strong class="t-red">CEM'İ ve MECRUR (Esre)</strong><br><span class="t-dim">(İzâfet / İsim tamlaması)</span></td>
               <td><strong class="t-red">ZITTIR.</strong> Ma'dûd Müzekker ise Aded Müennes formda (kapalı te ile) gelir.</td>
-              <td>ثَلَاثَةُ <strong>كُتُبٍ</strong> (3 kitap - <em>Kütübin</em>)<br><span class="t-dim">(Kitap kelimesi Müzekkerdir, Selâsetu ise Müennes formda gelir)</span></td>
+              <td><span class="arabic-text" dir="rtl">ثَلَاثَةُ <strong>كُتُبٍ</strong></span> (3 kitap - <em>Kütübin</em>)<br><span class="t-dim">(Kitap kelimesi Müzekkerdir, Selâsetu ise Müennes formda gelir)</span></td>
             </tr>
             <tr>
               <td class="t-bold t-orange">11 ve 12</td>
               <td><strong class="t-blue">MÜFRED ve MANSUB (Üstün)</strong><br><span class="t-dim">(Temyizdir)</span></td>
               <td><strong class="t-green">UYAR.</strong> Her iki basamak da Ma'dûd ile aynı cinsiyettedir.</td>
-              <td>أَحَدَ عَشَرَ <strong>كَوْكَبًا</strong> (11 Yıldız)<br><span class="t-dim">(Kevkeben Müfred-Mansub, sayı fetha üzere mebni, iki taraf da Müzekker)</span></td>
+              <td><span class="arabic-text" dir="rtl">أَحَدَ عَشَرَ <strong>كَوْكَبًا</strong></span> (11 Yıldız)<br><span class="t-dim">(Kevkeben Müfred-Mansub, sayı fetha üzere mebni, iki taraf da Müzekker)</span></td>
             </tr>
             <tr>
               <td class="t-bold t-orange">13 ilâ 19</td>
               <td><strong class="t-blue">MÜFRED ve MANSUB (Üstün)</strong><br><span class="t-dim">(Temyizdir)</span></td>
               <td><strong class="t-red">BİRLEŞİKTİR.</strong> 1. basamak ZIT, 2. basamak(Onlar) UYAR.</td>
-              <td>ثَلَاثَةَ عَشَرَ <strong>قَلَمًا</strong> (13 Kalem)<br><span class="t-dim">(Kalem Müzekker, 3 Müennes-Zıt, 10 Müzekker-Uyar)</span></td>
+              <td><span class="arabic-text" dir="rtl">ثَلَاثَةَ عَشَرَ <strong>قَلَمًا</strong></span> (13 Kalem)<br><span class="t-dim">(Kalem Müzekker, 3 Müennes-Zıt, 10 Müzekker-Uyar)</span></td>
             </tr>
             <tr>
               <td class="t-bold t-orange">20, 30... 90<br><span class="t-dim">(Ukûd Sayıları)</span></td>
               <td><strong class="t-blue">MÜFRED ve MANSUB (Üstün)</strong><br><span class="t-dim">(Temyizdir)</span></td>
               <td>Cinsiyet kuralı YOKTUR. Müzekker de Müennes de aynıdır.</td>
-              <td>عِشْرُونَ <strong>رَجُلًا</strong> (20 Adam - <em>Racülen</em>)<br>عِشْرُونَ <strong>اِمْرَأَةً</strong> (20 Kadın - <em>İmra'eten</em>)</td>
+              <td><span class="arabic-text" dir="rtl">عِشْرُونَ <strong>رَجُلًا</strong></span> (20 Adam - <em>Racülen</em>)<br><span class="arabic-text" dir="rtl">عِشْرُونَ <strong>اِمْرَأَةً</strong></span> (20 Kadın - <em>İmra'eten</em>)</td>
             </tr>
             <tr>
               <td class="t-bold t-orange">100, 1000 ve Katları</td>
               <td><strong class="t-red">MÜFRED ve MECRUR (Esre)</strong><br><span class="t-dim">(İzâfet)</span></td>
               <td>Cinsiyet kuralı YOKTUR. Müzekker de Müennes de aynıdır.</td>
-              <td>مِائَةُ <strong>كِتَابٍ</strong> (100 kitap - <em>Kitâbin</em>)<br>أَلْفُ <strong>رَجُلٍ</strong> (1000 adam - <em>Raculin</em>)</td>
+              <td><span class="arabic-text" dir="rtl">مِائَةُ <strong>كِتَابٍ</strong></span> (100 kitap - <em>Kitâbin</em>)<br><span class="arabic-text" dir="rtl">أَلْفُ <strong>رَجُلٍ</strong></span> (1000 adam - <em>Raculin</em>)</td>
             </tr>
           </tbody>
         </table>
