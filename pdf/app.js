@@ -145,12 +145,15 @@
     async function renderThumbnails() {
         const grid = $('#thumbnail-grid');
         grid.innerHTML = '';
-        const baseW = 160 * state.zoomLevel;
+        // Dynamic: at zoom 5x, one page fills the full container width
+        const containerW = grid.clientWidth - 48; // minus padding
+        const baseW = Math.max(120, Math.min(containerW, Math.floor(containerW * state.zoomLevel / 5)));
         grid.style.setProperty('--thumb-width', baseW + 'px');
 
         for (let i = 1; i <= state.pageCount; i++) {
             const page = await state.pdfJsDoc.getPage(i);
-            const vp = page.getViewport({ scale: 0.4 * state.zoomLevel });
+            const scale = Math.min(0.6 * state.zoomLevel, 2.5);
+            const vp = page.getViewport({ scale });
             const canvas = el('canvas', { width: vp.width, height: vp.height });
             const ctx = canvas.getContext('2d');
             await page.render({ canvasContext: ctx, viewport: vp }).promise;
@@ -282,6 +285,20 @@
     }
 
     function closeTool() {
+        // Revert preview if active
+        if (state._previewActive && state._previewBase) {
+            state.pdfBytes = state._previewBase;
+            const loadAndRender = async () => {
+                state.pdfJsDoc = await pdfjsLib.getDocument({ data: state.pdfBytes.slice(0) }).promise;
+                state.pageCount = state.pdfJsDoc.numPages;
+                await renderThumbnails();
+            };
+            loadAndRender();
+        }
+        state._previewActive = false;
+        state._previewBase = null;
+        state._previewResult = null;
+        state._previewTimer = null;
         state.currentTool = null;
         $$('.tool-card').forEach(c => c.classList.remove('active'));
         $('#tool-panel').classList.remove('open');
@@ -331,6 +348,15 @@
         if (['reorder', 'export-images', 'metadata'].includes(toolId)) footer.style.display = 'none';
 
         panel.classList.add('open');
+
+        // Start live preview system
+        state._previewBase = state.pdfBytes;
+        state._previewActive = false;
+        state._previewResult = null;
+        const noPreview = ['reorder', 'export-images', 'images-to-pdf', 'metadata', 'merge-pdfs', 'compress', 'add-image'];
+        if (!noPreview.includes(toolId)) {
+            setTimeout(() => attachPreviewListeners(), 150);
+        }
     }
 
     /* ============================================================
@@ -1018,9 +1044,7 @@
     /* ============================================================
        PDF TOOL ENGINES
        ============================================================ */
-    async function applyTool() {
-        if (!state.currentTool || !state.pdfBytes) return;
-
+    function getToolHandler(toolId) {
         const handlers = {
             'merge-pages': execMergePages,
             'merge-pdfs': execMergePDFs,
@@ -1044,8 +1068,70 @@
             'compress': execCompress,
             'metadata': execMetadata,
         };
+        return handlers[toolId] || null;
+    }
 
-        const handler = handlers[state.currentTool];
+    /* ---- Live Preview System ---- */
+    function attachPreviewListeners() {
+        const body = $('#tool-panel-body');
+        if (!body) return;
+        body.querySelectorAll('input, select').forEach(inp => {
+            const evt = (inp.type === 'range' || inp.type === 'number' || inp.type === 'color') ? 'input' : 'change';
+            inp.addEventListener(evt, () => triggerPreview());
+            if (evt === 'input') inp.addEventListener('change', () => triggerPreview());
+        });
+    }
+
+    function triggerPreview() {
+        clearTimeout(state._previewTimer);
+        state._previewTimer = setTimeout(runPreview, 500);
+    }
+
+    async function runPreview() {
+        if (!state.currentTool || !state._previewBase) return;
+        const handler = getToolHandler(state.currentTool);
+        if (!handler) return;
+
+        // Use base bytes as source for preview
+        const savedBytes = state.pdfBytes;
+        state.pdfBytes = state._previewBase;
+
+        try {
+            const result = await handler();
+            if (result) {
+                state._previewResult = new Uint8Array(result);
+                state._previewActive = true;
+                // Render thumbnails from preview result
+                const doc = await pdfjsLib.getDocument({ data: state._previewResult.slice(0) }).promise;
+                state.pdfJsDoc = doc;
+                state.pageCount = doc.numPages;
+                // Keep base bytes unchanged
+                state.pdfBytes = state._previewBase;
+                await renderThumbnails();
+            } else {
+                state.pdfBytes = state._previewBase;
+            }
+        } catch (e) {
+            console.warn('Preview hatası:', e);
+            state.pdfBytes = state._previewBase;
+        }
+    }
+
+    async function applyTool() {
+        if (!state.currentTool || !state.pdfBytes) return;
+
+        // If preview was computed, commit it
+        if (state._previewResult && state._previewActive) {
+            state.pdfBytes = state._previewBase; // restore for history
+            await reloadAfterEdit(state._previewResult);
+            state._previewResult = null;
+            state._previewBase = state.pdfBytes;
+            state._previewActive = false;
+            toast('İşlem başarıyla tamamlandı!', 'success');
+            return;
+        }
+
+        const handler = getToolHandler(state.currentTool);
         if (!handler) return;
 
         showLoading();
@@ -1927,12 +2013,14 @@
 
         // Zoom
         $('#btn-zoom-in').addEventListener('click', () => {
-            state.zoomLevel = Math.min(2.5, state.zoomLevel + 0.25);
+            const step = state.zoomLevel >= 2 ? 0.5 : 0.25;
+            state.zoomLevel = Math.min(5, +(state.zoomLevel + step).toFixed(2));
             $('#zoom-level').textContent = Math.round(state.zoomLevel * 100) + '%';
             renderThumbnails();
         });
         $('#btn-zoom-out').addEventListener('click', () => {
-            state.zoomLevel = Math.max(0.5, state.zoomLevel - 0.25);
+            const step = state.zoomLevel > 2 ? 0.5 : 0.25;
+            state.zoomLevel = Math.max(0.5, +(state.zoomLevel - step).toFixed(2));
             $('#zoom-level').textContent = Math.round(state.zoomLevel * 100) + '%';
             renderThumbnails();
         });
