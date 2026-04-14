@@ -20,6 +20,17 @@
         { id: 'orientation', name: 'Yön Değiştirme', icon: '↔️', desc: 'Dikey ↔ Yatay' },
         { id: 'resize', name: 'Boyut Değiştir', icon: '📐', desc: 'Sayfa boyutunu değiştir' },
         { id: 'text-color', name: 'Metin Rengi', icon: '🎨', desc: 'Metin renklerini değiştir' },
+        { id: 'bg-color', name: 'Arka Plan Rengi', icon: '🖌️', desc: 'Sayfa arka plan rengini değiştir' },
+        { id: 'header-footer', name: 'Üst/Alt Bilgi', icon: '📋', desc: 'Her sayfaya sabit metin ekle' },
+        { id: 'stamp', name: 'Damga', icon: '🔏', desc: 'Hazır damga/mühür ekle' },
+        { id: 'add-image', name: 'Resim Ekle', icon: '🖼️', desc: 'Sayfalara görsel yerleştir' },
+        { id: 'crop', name: 'Sayfa Kırpma', icon: '🔲', desc: 'Sayfa kenarlarını kırp' },
+        { id: 'add-blank', name: 'Boş Sayfa Ekle', icon: '📃', desc: 'Araya/sona boş sayfa ekle' },
+        { id: 'duplicate', name: 'Sayfa Çoğalt', icon: '🔁', desc: 'Seçili sayfaları kopyala' },
+        { id: 'export-images', name: 'Görsel Aktar', icon: '📸', desc: 'Sayfaları resim olarak indir' },
+        { id: 'images-to-pdf', name: 'Görselden PDF', icon: '🏞️', desc: 'Resimlerden PDF oluştur' },
+        { id: 'compress', name: 'Sıkıştır', icon: '📦', desc: 'Dosya boyutunu küçült' },
+        { id: 'metadata', name: 'PDF Bilgileri', icon: 'ℹ️', desc: 'Metadata görüntüle/düzenle' },
     ];
 
     const PAGE_PRESETS = {
@@ -301,12 +312,23 @@
             'orientation': panelOrientation,
             'resize': panelResize,
             'text-color': panelTextColor,
+            'bg-color': panelBgColor,
+            'header-footer': panelHeaderFooter,
+            'stamp': panelStamp,
+            'add-image': panelAddImage,
+            'crop': panelCrop,
+            'add-blank': panelAddBlank,
+            'duplicate': panelDuplicate,
+            'export-images': panelExportImages,
+            'images-to-pdf': panelImagesToPdf,
+            'compress': panelCompress,
+            'metadata': panelMetadata,
         };
 
         if (panels[toolId]) panels[toolId](body);
 
-        // Special: hide footer for reorder (it works via drag & drop)
-        if (toolId === 'reorder') footer.style.display = 'none';
+        // Special: hide footer for tools that don't use the apply button
+        if (['reorder', 'export-images', 'metadata'].includes(toolId)) footer.style.display = 'none';
 
         panel.classList.add('open');
     }
@@ -612,6 +634,375 @@
         });
     }
 
+    function panelBgColor(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">Seçili sayfaların arka plan rengini değiştirir. Mevcut içerik (metin, görsel) korunur.</div>
+            <div class="form-group">
+                <label class="form-label">Arka Plan Rengi</label>
+                <input class="form-color" id="opt-bg-color" type="color" value="#FFFFFF" style="width:48px;height:40px;">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Opaklık (%)</label>
+                <input class="form-input" id="opt-bg-opacity" type="number" value="100" min="1" max="100">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Uygulama</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="bg-scope" value="all" checked> Tüm Sayfalara</label>
+                    <label class="radio-option"><input type="radio" name="bg-scope" value="selected"> Seçili Sayfalara</label>
+                </div>
+            </div>`;
+        initRadioGroups(body);
+    }
+
+    function panelHeaderFooter(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">Her sayfanın üstüne veya altına sabit metin ekler.</div>
+            <div class="form-group">
+                <label class="form-label">Metin</label>
+                <input class="form-input" id="opt-hf-text" placeholder="ör: Gizli Belge" value="">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Konum</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="hf-pos" value="top" checked> Üst (Header)</label>
+                    <label class="radio-option"><input type="radio" name="hf-pos" value="bottom"> Alt (Footer)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hizalama</label>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="hf-align" value="left"> Sola</label>
+                    <label class="radio-option active"><input type="radio" name="hf-align" value="center" checked> Ortaya</label>
+                    <label class="radio-option"><input type="radio" name="hf-align" value="right"> Sağa</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Yazı Boyutu</label>
+                    <input class="form-input" id="opt-hf-size" type="number" value="10" min="6" max="36">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Renk</label>
+                    <input class="form-color" id="opt-hf-color" type="color" value="#333333">
+                </div>
+            </div>`;
+        initRadioGroups(body);
+    }
+
+    function panelStamp(body) {
+        body.innerHTML = `
+            <div class="form-group">
+                <label class="form-label">Damga Metni</label>
+                <select class="form-select" id="opt-stamp-preset">
+                    <option value="ONAYLANDI">✅ ONAYLANDI</option>
+                    <option value="KOPYA">📋 KOPYA</option>
+                    <option value="GİZLİ">🔒 GİZLİ</option>
+                    <option value="TASLAK">📝 TASLAK</option>
+                    <option value="İPTAL">❌ İPTAL</option>
+                    <option value="ACİL">🚨 ACİL</option>
+                    <option value="custom">✏️ Özel Metin...</option>
+                </select>
+            </div>
+            <div class="form-group" id="stamp-custom-group" style="display:none;">
+                <label class="form-label">Özel Metin</label>
+                <input class="form-input" id="opt-stamp-custom" placeholder="Damga metni girin">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Konum</label>
+                <select class="form-select" id="opt-stamp-pos">
+                    <option value="center">Ortada</option>
+                    <option value="top-right">Sağ Üst</option>
+                    <option value="top-left">Sol Üst</option>
+                    <option value="bottom-right">Sağ Alt</option>
+                    <option value="bottom-left">Sol Alt</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Boyut</label>
+                    <input class="form-input" id="opt-stamp-size" type="number" value="36" min="12" max="120">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Opaklık (%)</label>
+                    <input class="form-input" id="opt-stamp-opacity" type="number" value="60" min="5" max="100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Renk</label>
+                <input class="form-color" id="opt-stamp-color" type="color" value="#CC0000">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Uygulama</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="stamp-scope" value="all" checked> Tüm Sayfalara</label>
+                    <label class="radio-option"><input type="radio" name="stamp-scope" value="selected"> Seçili Sayfalara</label>
+                </div>
+            </div>`;
+        initRadioGroups(body);
+        $('#opt-stamp-preset').addEventListener('change', e => {
+            $('#stamp-custom-group').style.display = e.target.value === 'custom' ? '' : 'none';
+        });
+    }
+
+    function panelAddImage(body) {
+        state._addImageData = null;
+        body.innerHTML = `
+            <div class="info-box info-primary">Sayfalara görsel (logo, imza vb.) yerleştirir.</div>
+            <div class="form-group">
+                <button class="btn btn-ghost btn-block" id="btn-pick-image">🖼️ Görsel Seç</button>
+                <p class="form-hint" id="add-image-name" style="margin-top:6px;">Henüz görsel seçilmedi</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Konum</label>
+                <select class="form-select" id="opt-img-pos">
+                    <option value="center">Ortada</option>
+                    <option value="top-left">Sol Üst</option>
+                    <option value="top-right">Sağ Üst</option>
+                    <option value="bottom-left">Sol Alt</option>
+                    <option value="bottom-right">Sağ Alt</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ölçek (%)</label>
+                <input class="form-input" id="opt-img-scale" type="number" value="50" min="5" max="200">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Opaklık (%)</label>
+                <input class="form-input" id="opt-img-opacity" type="number" value="100" min="5" max="100">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Uygulama</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="img-scope" value="all" checked> Tüm Sayfalara</label>
+                    <label class="radio-option"><input type="radio" name="img-scope" value="selected"> Seçili Sayfalara</label>
+                </div>
+            </div>`;
+        initRadioGroups(body);
+        $('#btn-pick-image').addEventListener('click', () => {
+            const inp = $('#file-input-image');
+            inp.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                state._addImageData = new Uint8Array(await file.arrayBuffer());
+                state._addImageType = file.type;
+                $('#add-image-name').textContent = '✅ ' + file.name;
+                inp.value = '';
+            };
+            inp.click();
+        });
+    }
+
+    function panelCrop(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">Sayfa kenarlarından belirtilen miktarda kırpar.</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Üst (mm)</label>
+                    <input class="form-input" id="opt-crop-top" type="number" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Alt (mm)</label>
+                    <input class="form-input" id="opt-crop-bottom" type="number" value="0" min="0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Sol (mm)</label>
+                    <input class="form-input" id="opt-crop-left" type="number" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sağ (mm)</label>
+                    <input class="form-input" id="opt-crop-right" type="number" value="0" min="0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Uygulama</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="crop-scope" value="all" checked> Tüm Sayfalara</label>
+                    <label class="radio-option"><input type="radio" name="crop-scope" value="selected"> Seçili Sayfalara</label>
+                </div>
+            </div>`;
+        initRadioGroups(body);
+    }
+
+    function panelAddBlank(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">PDF'e boş sayfa ekler. Sayfa boyutu mevcut sayfalarla aynı olur.</div>
+            <div class="form-group">
+                <label class="form-label">Ekleme Konumu</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="blank-pos" value="end" checked> Sona Ekle</label>
+                    <label class="radio-option"><input type="radio" name="blank-pos" value="after-selected"> Seçili Sayfadan Sonra</label>
+                    <label class="radio-option"><input type="radio" name="blank-pos" value="before-selected"> Seçili Sayfadan Önce</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Eklenecek Sayfa Sayısı</label>
+                <input class="form-input" id="opt-blank-count" type="number" value="1" min="1" max="50">
+            </div>`;
+        initRadioGroups(body);
+    }
+
+    function panelDuplicate(body) {
+        body.innerHTML = `
+            <div class="info-box">Önce thumbnail'lardan çoğaltmak istediğiniz sayfaları seçin.</div>
+            <div class="form-group">
+                <label class="form-label">Kopya Sayısı</label>
+                <input class="form-input" id="opt-dup-count" type="number" value="1" min="1" max="20">
+                <p class="form-hint">Her seçili sayfa bu kadar kez kopyalanır.</p>
+            </div>
+            <p class="form-hint" style="margin-top:8px;">Seçili sayfa: <strong id="dup-count">${state.selectedPages.size}</strong></p>`;
+    }
+
+    function panelExportImages(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">Sayfaları resim olarak dışa aktarır ve indirir.</div>
+            <div class="form-group">
+                <label class="form-label">Format</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="exp-format" value="png" checked> PNG (kayıpsız)</label>
+                    <label class="radio-option"><input type="radio" name="exp-format" value="jpeg"> JPEG (küçük boyut)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Çözünürlük</label>
+                <select class="form-select" id="opt-exp-scale">
+                    <option value="1">Normal (1x)</option>
+                    <option value="2" selected>Yüksek (2x)</option>
+                    <option value="3">Çok Yüksek (3x)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sayfalar</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="exp-scope" value="all" checked> Tüm Sayfalar</label>
+                    <label class="radio-option"><input type="radio" name="exp-scope" value="selected"> Seçili Sayfalar</label>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-block" id="btn-export-go" style="margin-top:12px;">📸 Dışa Aktar ve İndir</button>`;
+        initRadioGroups(body);
+        $('#btn-export-go').addEventListener('click', execExportImages);
+    }
+
+    function panelImagesToPdf(body) {
+        state._imagesToPdfFiles = [];
+        body.innerHTML = `
+            <div class="info-box info-primary">Birden fazla görseli sırayla bir PDF dosyasına dönüştürür.</div>
+            <div class="form-group">
+                <button class="btn btn-ghost btn-block" id="btn-pick-images">🖼️ Görselleri Seç</button>
+            </div>
+            <div class="merge-file-list" id="img2pdf-list"></div>
+            <div class="form-group">
+                <label class="form-label">Sayfa Boyutu</label>
+                <select class="form-select" id="opt-i2p-size">
+                    <option value="fit">Görsele Göre Ayarla</option>
+                    <option value="A4">A4 Sayfaya Sığdır</option>
+                </select>
+            </div>`;
+        $('#btn-pick-images').addEventListener('click', () => {
+            const inp = $('#file-input-images');
+            inp.onchange = async (e) => {
+                for (const file of e.target.files) {
+                    const bytes = new Uint8Array(await file.arrayBuffer());
+                    state._imagesToPdfFiles.push({ name: file.name, bytes, type: file.type });
+                    const list = $('#img2pdf-list');
+                    const item = el('div', { className: 'merge-file-item' }, [
+                        el('span', { className: 'file-order', textContent: list.children.length + 1 }),
+                        el('span', { className: 'file-label', textContent: file.name }),
+                    ]);
+                    list.appendChild(item);
+                }
+                inp.value = '';
+            };
+            inp.click();
+        });
+    }
+
+    function panelCompress(body) {
+        const sizeStr = formatSize(state.pdfBytes.length);
+        body.innerHTML = `
+            <div class="info-box info-primary">PDF dosyasını optimize ederek boyutunu küçültür.</div>
+            <div class="form-group">
+                <label class="form-label">Mevcut Boyut</label>
+                <p style="font-size:1.2rem;font-weight:700;color:var(--primary-light);">${sizeStr}</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sıkıştırma Yöntemi</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="comp-mode" value="basic" checked> Temel Optimizasyon</label>
+                    <label class="radio-option"><input type="radio" name="comp-mode" value="aggressive"> Agresif (metadata temizle)</label>
+                </div>
+            </div>`;
+        initRadioGroups(body);
+    }
+
+    function panelMetadata(body) {
+        const loadMeta = async () => {
+            const doc = await PDFDocument.load(state.pdfBytes);
+            const title = doc.getTitle() || '';
+            const author = doc.getAuthor() || '';
+            const subject = doc.getSubject() || '';
+            const keywords = (doc.getKeywords() || '');
+            const creator = doc.getCreator() || '';
+            const producer = doc.getProducer() || '';
+            const created = doc.getCreationDate();
+            const modified = doc.getModificationDate();
+            body.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label">Başlık</label>
+                    <input class="form-input" id="opt-meta-title" value="${title.replace(/"/g, '&quot;')}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Yazar</label>
+                    <input class="form-input" id="opt-meta-author" value="${author.replace(/"/g, '&quot;')}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Konu</label>
+                    <input class="form-input" id="opt-meta-subject" value="${subject.replace(/"/g, '&quot;')}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Anahtar Kelimeler</label>
+                    <input class="form-input" id="opt-meta-keywords" value="${keywords.replace(/"/g, '&quot;')}">
+                </div>
+                <div class="divider"></div>
+                <div class="form-group">
+                    <label class="form-label">Oluşturan</label>
+                    <p class="form-hint" style="font-size:0.85rem;">${creator || '-'}</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Üretici</label>
+                    <p class="form-hint" style="font-size:0.85rem;">${producer || '-'}</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Oluşturma Tarihi</label>
+                    <p class="form-hint" style="font-size:0.85rem;">${created ? created.toLocaleString('tr-TR') : '-'}</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Değiştirilme Tarihi</label>
+                    <p class="form-hint" style="font-size:0.85rem;">${modified ? modified.toLocaleString('tr-TR') : '-'}</p>
+                </div>
+                <div class="divider"></div>
+                <button class="btn btn-primary btn-block" id="btn-save-meta">💾 Metadata Kaydet</button>`;
+            $('#btn-save-meta').addEventListener('click', async () => {
+                showLoading('Metadata kaydediliyor...');
+                try {
+                    const d = await PDFDocument.load(state.pdfBytes);
+                    d.setTitle($('#opt-meta-title').value);
+                    d.setAuthor($('#opt-meta-author').value);
+                    d.setSubject($('#opt-meta-subject').value);
+                    d.setKeywords([$('#opt-meta-keywords').value]);
+                    const bytes = await d.save();
+                    await reloadAfterEdit(new Uint8Array(bytes));
+                    toast('Metadata güncellendi!', 'success');
+                } catch (err) { toast('Hata: ' + err.message, 'error'); }
+                hideLoading();
+            });
+        };
+        body.innerHTML = '<p style="color:var(--text-muted)">Yükleniyor...</p>';
+        loadMeta();
+    }
+
     function initRadioGroups(container) {
         container.querySelectorAll('.radio-group').forEach(group => {
             group.querySelectorAll('.radio-option').forEach(opt => {
@@ -642,6 +1033,16 @@
             'orientation': execOrientation,
             'resize': execResize,
             'text-color': execTextColor,
+            'bg-color': execBgColor,
+            'header-footer': execHeaderFooter,
+            'stamp': execStamp,
+            'add-image': execAddImage,
+            'crop': execCrop,
+            'add-blank': execAddBlank,
+            'duplicate': execDuplicate,
+            'images-to-pdf': execImagesToPdf,
+            'compress': execCompress,
+            'metadata': execMetadata,
         };
 
         const handler = handlers[state.currentTool];
@@ -1094,6 +1495,323 @@
         });
 
         return safe;
+    }
+
+    /* ---- 13. Background Color ---- */
+    async function execBgColor() {
+        const colorHex = $('#opt-bg-color').value;
+        const opacity = (parseInt($('#opt-bg-opacity').value) || 100) / 100;
+        const scope = document.querySelector('input[name="bg-scope"]:checked').value;
+        const r = parseInt(colorHex.slice(1, 3), 16) / 255;
+        const g = parseInt(colorHex.slice(3, 5), 16) / 255;
+        const b = parseInt(colorHex.slice(5, 7), 16) / 255;
+
+        const doc = await PDFDocument.load(state.pdfBytes);
+        const pages = doc.getPages();
+        const indices = scope === 'all' ? pages.map((_, i) => i) : [...state.selectedPages];
+        if (indices.length === 0) { toast('Lütfen sayfaları seçin.', 'error'); return null; }
+
+        for (const idx of indices) {
+            const page = pages[idx];
+            const { width, height } = page.getSize();
+            page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(r, g, b), opacity, borderWidth: 0 });
+        }
+        return await doc.save();
+    }
+
+    /* ---- 14. Header/Footer ---- */
+    async function execHeaderFooter() {
+        const text = $('#opt-hf-text').value;
+        if (!text) { toast('Lütfen metin girin.', 'error'); return null; }
+        const pos = document.querySelector('input[name="hf-pos"]:checked').value;
+        const align = document.querySelector('input[name="hf-align"]:checked').value;
+        const fontSize = parseInt($('#opt-hf-size').value) || 10;
+        const colorHex = $('#opt-hf-color').value;
+        const r = parseInt(colorHex.slice(1, 3), 16) / 255;
+        const g = parseInt(colorHex.slice(3, 5), 16) / 255;
+        const b = parseInt(colorHex.slice(5, 7), 16) / 255;
+
+        const doc = await PDFDocument.load(state.pdfBytes);
+        const font = await doc.embedFont(StandardFonts.Helvetica);
+        const pages = doc.getPages();
+        const margin = 30;
+
+        for (const page of pages) {
+            const { width, height } = page.getSize();
+            const tw = font.widthOfTextAtSize(text, fontSize);
+            let x;
+            if (align === 'left') x = margin;
+            else if (align === 'right') x = width - margin - tw;
+            else x = width / 2 - tw / 2;
+            const y = pos === 'top' ? height - margin : margin;
+            page.drawText(text, { x, y, size: fontSize, font, color: rgb(r, g, b) });
+        }
+        return await doc.save();
+    }
+
+    /* ---- 15. Stamp ---- */
+    async function execStamp() {
+        const preset = $('#opt-stamp-preset').value;
+        const text = preset === 'custom' ? ($('#opt-stamp-custom').value || 'DAMGA') : preset;
+        const position = $('#opt-stamp-pos').value;
+        const fontSize = parseInt($('#opt-stamp-size').value) || 36;
+        const opacity = (parseInt($('#opt-stamp-opacity').value) || 60) / 100;
+        const colorHex = $('#opt-stamp-color').value;
+        const scope = document.querySelector('input[name="stamp-scope"]:checked').value;
+        const r = parseInt(colorHex.slice(1, 3), 16) / 255;
+        const g = parseInt(colorHex.slice(3, 5), 16) / 255;
+        const b = parseInt(colorHex.slice(5, 7), 16) / 255;
+
+        const doc = await PDFDocument.load(state.pdfBytes);
+        const font = await doc.embedFont(StandardFonts.Helvetica);
+        const pages = doc.getPages();
+        const indices = scope === 'all' ? pages.map((_, i) => i) : [...state.selectedPages];
+        if (indices.length === 0) { toast('Lütfen sayfaları seçin.', 'error'); return null; }
+
+        for (const idx of indices) {
+            const page = pages[idx];
+            const { width, height } = page.getSize();
+            const tw = font.widthOfTextAtSize(text, fontSize);
+            const th = fontSize;
+            const pad = 8;
+            let x, y;
+            if (position === 'center') { x = width / 2 - tw / 2; y = height / 2 - th / 2; }
+            else if (position === 'top-right') { x = width - tw - 40; y = height - th - 40; }
+            else if (position === 'top-left') { x = 40; y = height - th - 40; }
+            else if (position === 'bottom-right') { x = width - tw - 40; y = 40; }
+            else { x = 40; y = 40; }
+
+            page.drawRectangle({
+                x: x - pad, y: y - pad, width: tw + pad * 2, height: th + pad * 2,
+                borderColor: rgb(r, g, b), borderWidth: 2, opacity: 0, borderOpacity: opacity,
+            });
+            page.drawText(text, { x, y, size: fontSize, font, color: rgb(r, g, b), opacity });
+        }
+        return await doc.save();
+    }
+
+    /* ---- 16. Add Image ---- */
+    async function execAddImage() {
+        if (!state._addImageData) { toast('Lütfen bir görsel seçin.', 'error'); return null; }
+        const position = $('#opt-img-pos').value;
+        const scale = (parseInt($('#opt-img-scale').value) || 50) / 100;
+        const opacity = (parseInt($('#opt-img-opacity').value) || 100) / 100;
+        const scope = document.querySelector('input[name="img-scope"]:checked').value;
+
+        const doc = await PDFDocument.load(state.pdfBytes);
+        let img;
+        try {
+            if (state._addImageType && state._addImageType.includes('png')) {
+                img = await doc.embedPng(state._addImageData);
+            } else {
+                img = await doc.embedJpg(state._addImageData);
+            }
+        } catch (e) {
+            toast('Görsel yüklenemedi. PNG veya JPEG kullanın.', 'error'); return null;
+        }
+
+        const pages = doc.getPages();
+        const indices = scope === 'all' ? pages.map((_, i) => i) : [...state.selectedPages];
+        if (indices.length === 0) { toast('Lütfen sayfaları seçin.', 'error'); return null; }
+
+        const imgW = img.width * scale;
+        const imgH = img.height * scale;
+        const margin = 20;
+
+        for (const idx of indices) {
+            const page = pages[idx];
+            const { width, height } = page.getSize();
+            let x, y;
+            if (position === 'center') { x = width / 2 - imgW / 2; y = height / 2 - imgH / 2; }
+            else if (position === 'top-left') { x = margin; y = height - imgH - margin; }
+            else if (position === 'top-right') { x = width - imgW - margin; y = height - imgH - margin; }
+            else if (position === 'bottom-left') { x = margin; y = margin; }
+            else { x = width - imgW - margin; y = margin; }
+            page.drawImage(img, { x, y, width: imgW, height: imgH, opacity });
+        }
+        state._addImageData = null;
+        return await doc.save();
+    }
+
+    /* ---- 17. Crop ---- */
+    async function execCrop() {
+        const mm2pt = v => parseFloat(v) / 25.4 * 72;
+        const top = mm2pt($('#opt-crop-top').value);
+        const bottom = mm2pt($('#opt-crop-bottom').value);
+        const left = mm2pt($('#opt-crop-left').value);
+        const right = mm2pt($('#opt-crop-right').value);
+        if (top === 0 && bottom === 0 && left === 0 && right === 0) {
+            toast('Lütfen en az bir kenar için kırpma değeri girin.', 'error'); return null;
+        }
+        const scope = document.querySelector('input[name="crop-scope"]:checked').value;
+        const doc = await PDFDocument.load(state.pdfBytes);
+        const pages = doc.getPages();
+        const indices = scope === 'all' ? pages.map((_, i) => i) : [...state.selectedPages];
+        if (indices.length === 0) { toast('Lütfen sayfaları seçin.', 'error'); return null; }
+
+        for (const idx of indices) {
+            const page = pages[idx];
+            const { width, height } = page.getSize();
+            page.setCropBox(left, bottom, width - left - right, height - top - bottom);
+        }
+        return await doc.save();
+    }
+
+    /* ---- 18. Add Blank Page ---- */
+    async function execAddBlank() {
+        const pos = document.querySelector('input[name="blank-pos"]:checked').value;
+        const count = parseInt($('#opt-blank-count').value) || 1;
+
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        const newDoc = await PDFDocument.create();
+        const totalPages = srcDoc.getPageCount();
+        const allPages = await newDoc.copyPages(srcDoc, Array.from({ length: totalPages }, (_, i) => i));
+
+        let insertIdx = totalPages;
+        if ((pos === 'after-selected' || pos === 'before-selected') && state.selectedPages.size > 0) {
+            const sorted = [...state.selectedPages].sort((a, b) => a - b);
+            insertIdx = pos === 'after-selected' ? sorted[sorted.length - 1] + 1 : sorted[0];
+        }
+
+        const refPage = srcDoc.getPages()[Math.min(insertIdx, totalPages) - 1] || srcDoc.getPages()[0];
+        const { width, height } = refPage.getSize();
+
+        for (let i = 0; i < totalPages; i++) {
+            if (i === insertIdx) {
+                for (let j = 0; j < count; j++) newDoc.addPage([width, height]);
+            }
+            newDoc.addPage(allPages[i]);
+        }
+        if (insertIdx >= totalPages) {
+            for (let j = 0; j < count; j++) newDoc.addPage([width, height]);
+        }
+        return await newDoc.save();
+    }
+
+    /* ---- 19. Duplicate Pages ---- */
+    async function execDuplicate() {
+        if (state.selectedPages.size === 0) { toast('Lütfen çoğaltılacak sayfaları seçin.', 'error'); return null; }
+        const copies = parseInt($('#opt-dup-count').value) || 1;
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        const newDoc = await PDFDocument.create();
+        const totalPages = srcDoc.getPageCount();
+
+        for (let i = 0; i < totalPages; i++) {
+            const [page] = await newDoc.copyPages(srcDoc, [i]);
+            newDoc.addPage(page);
+            if (state.selectedPages.has(i)) {
+                for (let c = 0; c < copies; c++) {
+                    const [dup] = await newDoc.copyPages(srcDoc, [i]);
+                    newDoc.addPage(dup);
+                }
+            }
+        }
+        return await newDoc.save();
+    }
+
+    /* ---- 20. Export Images ---- */
+    async function execExportImages() {
+        const format = document.querySelector('input[name="exp-format"]:checked').value;
+        const scale = parseFloat($('#opt-exp-scale').value) || 2;
+        const scope = document.querySelector('input[name="exp-scope"]:checked').value;
+        const indices = scope === 'all'
+            ? Array.from({ length: state.pageCount }, (_, i) => i)
+            : [...state.selectedPages].sort((a, b) => a - b);
+        if (indices.length === 0) { toast('Lütfen sayfaları seçin.', 'error'); return; }
+
+        showLoading('Sayfalar dışa aktarılıyor...');
+        const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+        const ext = format === 'jpeg' ? 'jpg' : 'png';
+
+        try {
+            for (const idx of indices) {
+                const page = await state.pdfJsDoc.getPage(idx + 1);
+                const vp = page.getViewport({ scale });
+                const canvas = document.createElement('canvas');
+                canvas.width = vp.width;
+                canvas.height = vp.height;
+                const ctx = canvas.getContext('2d');
+                await page.render({ canvasContext: ctx, viewport: vp }).promise;
+
+                const blob = await new Promise(res => canvas.toBlob(res, mime, 0.92));
+                const url = URL.createObjectURL(blob);
+                const a = el('a', { href: url, download: `${state.fileName.replace('.pdf', '')}_sayfa${idx + 1}.${ext}` });
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                await new Promise(r => setTimeout(r, 300));
+            }
+            toast(`${indices.length} sayfa dışa aktarıldı!`, 'success');
+        } catch (err) { toast('Hata: ' + err.message, 'error'); }
+        hideLoading();
+    }
+
+    /* ---- 21. Images to PDF ---- */
+    async function execImagesToPdf() {
+        if (!state._imagesToPdfFiles || state._imagesToPdfFiles.length === 0) {
+            toast('Lütfen en az bir görsel seçin.', 'error'); return null;
+        }
+        const sizeMode = $('#opt-i2p-size').value;
+        const newDoc = await PDFDocument.create();
+
+        for (const file of state._imagesToPdfFiles) {
+            let img;
+            try {
+                if (file.type.includes('png')) img = await newDoc.embedPng(file.bytes);
+                else img = await newDoc.embedJpg(file.bytes);
+            } catch (e) { console.warn('Görsel atlandı:', file.name, e); continue; }
+
+            let pageW, pageH, drawW, drawH, drawX, drawY;
+            if (sizeMode === 'A4') {
+                pageW = 595.28; pageH = 841.89;
+                const s = Math.min(pageW / img.width, pageH / img.height);
+                drawW = img.width * s; drawH = img.height * s;
+                drawX = (pageW - drawW) / 2; drawY = (pageH - drawH) / 2;
+            } else {
+                pageW = img.width; pageH = img.height;
+                drawW = img.width; drawH = img.height;
+                drawX = 0; drawY = 0;
+            }
+            const page = newDoc.addPage([pageW, pageH]);
+            page.drawImage(img, { x: drawX, y: drawY, width: drawW, height: drawH });
+        }
+
+        state._imagesToPdfFiles = [];
+        return await newDoc.save();
+    }
+
+    /* ---- 22. Compress ---- */
+    async function execCompress() {
+        const mode = document.querySelector('input[name="comp-mode"]:checked').value;
+        const originalSize = state.pdfBytes.length;
+        const doc = await PDFDocument.load(state.pdfBytes);
+
+        if (mode === 'aggressive') {
+            doc.setTitle('');
+            doc.setAuthor('');
+            doc.setSubject('');
+            doc.setKeywords([]);
+            doc.setCreator('');
+            doc.setProducer('');
+        }
+
+        const bytes = await doc.save({ useObjectStreams: true });
+        const newSize = bytes.length;
+        const saved = originalSize - newSize;
+        const pct = ((saved / originalSize) * 100).toFixed(1);
+        if (saved > 0) {
+            toast(`${formatSize(saved)} küçültüldü (${pct}%) — ${formatSize(originalSize)} → ${formatSize(newSize)}`, 'success');
+        } else {
+            toast('Dosya zaten optimize durumda, daha fazla küçültülemedi.', 'info');
+        }
+        return bytes;
+    }
+
+    /* ---- 23. Metadata ---- */
+    async function execMetadata() {
+        // Handled directly in panelMetadata via button
+        return null;
     }
 
     /* ---- Range Parser ---- */
