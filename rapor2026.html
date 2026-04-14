@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 İhtisas Sınavı — Referans Kartları Analiz Raporu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0f1a;
+  --bg-card: #141829;
+  --bg-card-hover: #1a1f37;
+  --bg-tab: #1e2340;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-bright: #f8fafc;
+  --accent: #818cf8;
+  --accent-2: #a78bfa;
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.15);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.12);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,0.12);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.12);
+  --border: rgba(148,163,184,0.1);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(99,102,241,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 80%, rgba(139,92,246,0.05) 0%, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 50px 20px 30px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.15));
+  border: 1px solid rgba(129,140,248,0.25);
+  padding: 6px 18px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #e2e8f0, #818cf8, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+.hero p { color: var(--text-dim); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+/* STAT GRID */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+.stat-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  text-align: center;
+}
+.stat-card .val {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-card .label {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  font-weight: 500;
+}
+.stat-card.green .val {
+  background: linear-gradient(135deg, #34d399, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.stat-card.orange .val {
+  background: linear-gradient(135deg, #fb923c, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.stat-card.red .val {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* SECTION */
+.section-divider {
+  margin: 50px 0 10px;
+  text-align: center;
+}
+.section-divider .line {
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #6366f1, #a78bfa);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.section-divider h2 {
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #34d399, #6366f1, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.section-divider p { color: var(--text-dim); font-size: 0.88rem; }
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-subtitle {
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  margin-bottom: 18px;
+}
+
+/* CARD */
+.card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 18px;
+}
+.card:hover { background: rgba(255,255,255,0.05); }
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.card-title {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+/* BADGE */
+.badge {
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-orange { background: var(--orange-dim); color: var(--orange); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
+.badge-green { background: var(--green-dim); color: var(--green); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); }
+
+/* ALERT */
+.alert {
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin: 18px 0;
+  border-left: 4px solid;
+  font-size: 0.88rem;
+}
+.alert-warn { background: rgba(251,146,60,0.08); border-color: var(--orange); }
+.alert-warn .alert-title { color: var(--orange); }
+.alert-tip { background: rgba(52,211,153,0.08); border-color: var(--green); }
+.alert-tip .alert-title { color: var(--green); }
+.alert-note { background: rgba(96,165,250,0.08); border-color: var(--blue); }
+.alert-note .alert-title { color: var(--blue); }
+.alert-danger { background: rgba(248,113,113,0.08); border-color: var(--red); }
+.alert-danger .alert-title { color: var(--red); }
+.alert-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.alert p { color: var(--text-dim); line-height: 1.65; }
+.alert strong { color: var(--text-bright); }
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.85rem;
+  margin: 12px 0;
+  display: block;
+  overflow-x: auto;
+}
+thead th {
+  background: rgba(99,102,241,0.1);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 2px solid rgba(99,102,241,0.2);
+  white-space: nowrap;
+}
+thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+tbody tr:hover td { background: rgba(129,140,248,0.04); }
+tbody tr:last-child td { border-bottom: none; }
+.t-center { text-align: center; }
+.t-bold { font-weight: 700; color: var(--text-bright); }
+.t-dim { color: var(--text-dim); }
+.t-accent { color: var(--accent); font-weight: 700; }
+.t-green { color: var(--green); font-weight: 700; }
+.t-orange { color: var(--orange); font-weight: 700; }
+.t-red { color: var(--red); font-weight: 700; }
+
+/* PROGRESS */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.progress-label {
+  flex: 0 0 180px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: right;
+  color: var(--text);
+}
+.progress-bar-bg {
+  flex: 1;
+  height: 28px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  transition: width 1s ease;
+  min-width: 40px;
+}
+.fill-indigo { background: linear-gradient(90deg, #6366f1, #818cf8); }
+.fill-emerald { background: linear-gradient(90deg, #059669, #34d399); }
+.fill-sky { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+.fill-amber { background: linear-gradient(90deg, #d97706, #fbbf24); }
+.fill-violet { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+.fill-rose { background: linear-gradient(90deg, #e11d48, #fb7185); }
+.fill-teal { background: linear-gradient(90deg, #0d9488, #2dd4bf); }
+.fill-orange { background: linear-gradient(90deg, #ea580c, #fb923c); }
+.fill-slate { background: linear-gradient(90deg, #475569, #94a3b8); }
+.progress-val {
+  flex: 0 0 70px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+/* COMPARISON */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+.compare-card {
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+}
+.compare-card.scenario-a {
+  background: rgba(248,113,113,0.06);
+  border: 1px solid rgba(248,113,113,0.15);
+}
+.compare-card.scenario-b {
+  background: rgba(52,211,153,0.06);
+  border: 1px solid rgba(52,211,153,0.15);
+}
+.compare-card .sc-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.compare-card.scenario-a .sc-label { color: var(--orange); }
+.compare-card.scenario-b .sc-label { color: var(--green); }
+.compare-card .sc-val {
+  font-size: 2.4rem;
+  font-weight: 900;
+  margin-bottom: 2px;
+}
+.compare-card.scenario-a .sc-val { color: var(--orange); }
+.compare-card.scenario-b .sc-val { color: var(--green); }
+.compare-card .sc-sub {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+.compare-card .sc-puan {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.compare-card.scenario-a .sc-puan { color: var(--orange); }
+.compare-card.scenario-b .sc-puan { color: var(--green); }
+
+/* QUESTION ITEM */
+.q-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(148,163,184,0.06);
+  font-size: 0.85rem;
+}
+.q-item:last-child { border-bottom: none; }
+.q-num {
+  flex-shrink: 0;
+  width: 36px;
+  height: 24px;
+  background: rgba(99,102,241,0.15);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.q-desc { flex: 1; color: var(--text); }
+.q-tag {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.q-tag.direct { background: var(--green-dim); color: var(--green); }
+.q-tag.partial { background: var(--yellow-dim); color: var(--yellow); }
+
+/* PRIORITY LIST */
+.priority-list {
+  counter-reset: prio;
+  list-style: none;
+  padding: 0;
+}
+.priority-list li {
+  counter-increment: prio;
+  padding: 14px 0 14px 46px;
+  position: relative;
+  font-size: 0.88rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.priority-list li::before {
+  content: counter(prio);
+  position: absolute;
+  left: 0; top: 14px;
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #fff;
+}
+.priority-list li:last-child { border-bottom: none; }
+.priority-list li strong { color: var(--text-bright); }
+.priority-list li .p-detail { color: var(--text-dim); font-size: 0.8rem; }
+
+/* DIVIDER */
+.divider { border: none; height: 1px; background: var(--border); margin: 28px 0; }
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 30px 0 10px;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .container { padding: 10px 12px 40px; }
+  .hero { padding: 30px 10px 18px; }
+  .hero h1 { font-size: 1.35rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card { padding: 14px 10px; }
+  .stat-card .val { font-size: 1.6rem; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .progress-label { flex: 0 0 120px; font-size: 0.75rem; }
+  .progress-val { flex: 0 0 55px; font-size: 0.75rem; }
+  .card { padding: 14px; }
+  .q-item { font-size: 0.8rem; }
+  thead th { font-size: 0.68rem; padding: 8px 8px; }
+  tbody td { font-size: 0.78rem; padding: 8px 8px; }
+  .section-title { font-size: 1.05rem; }
+}
+@media (max-width: 480px) {
+  .container { padding: 6px 8px 30px; }
+  .hero h1 { font-size: 1.15rem; }
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card .val { font-size: 1.3rem; }
+  .compare-card .sc-val { font-size: 1.8rem; }
+  .progress-label { flex: 0 0 90px; font-size: 0.7rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🔬 2026 SINAV ANALİZİ</div>
+  <h1>Referans Bilgi Kartları<br>Ne Kadar Fayda Sağlıyor?</h1>
+  <p>2026 İhtisas sınavındaki 80 sorunun referans kartlarıyla eşleştirme analizi</p>
+</div>
+
+<!-- INFO -->
+<div class="alert alert-note">
+  <div class="alert-title">ℹ️ 2026 SINAV BİLGİSİ</div>
+  <p><strong>80 soru</strong> (önceki yıllardan farklı olarak 100 değil) · <strong>120 dakika</strong> süre · Her soru <strong>1.25 puan</strong> · Yanlış cevap etkisiz</p>
+</div>
+
+<!-- =============================== -->
+<!-- SENARYO 1: SIFIR BİLGİ         -->
+<!-- =============================== -->
+<div class="section-divider">
+  <div class="line"></div>
+  <h2>🔬 Senaryo 1: Sıfır Bilgi + Sadece Kartlar</h2>
+  <p>Hiçbir ön bilgisi olmayan biri, YALNIZCA referans kartlarını okuyarak kaç soruyu doğru cevaplar?</p>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card green">
+    <div class="val">8</div>
+    <div class="label">✅ Yüksek güven</div>
+  </div>
+  <div class="stat-card orange">
+    <div class="val">6</div>
+    <div class="label">🟡 Orta güven</div>
+  </div>
+  <div class="stat-card red">
+    <div class="val">66</div>
+    <div class="label">❌ Cevaplanamaz</div>
+  </div>
+  <div class="stat-card">
+    <div class="val">~12-14</div>
+    <div class="label">📊 Toplam ≈ %15-17.5</div>
+  </div>
+</div>
+
+<!-- YÜK. GÜVEN SORULAR -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">✅ Yüksek Güvenle Cevaplanır (8 Soru)</div>
+    <span class="badge badge-green">KESİN BİLGİ</span>
+  </div>
+
+  <div class="q-item">
+    <div class="q-num">S26</div>
+    <div class="q-desc"><strong>Külli Kaide</strong> — "Iztırar gayrın hakkını iptal etmez" kartta birebir var</div>
+    <div class="q-tag direct">⚖️ Külli Kaideler</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S43</div>
+    <div class="q-desc"><strong>Fıkhî Tefsir</strong> — Metin hukuki/ahkâm konulu → Kart "Ahkâm ayetlerini mezhep fıkhına göre yorumlar" diyor</div>
+    <div class="q-tag direct">📖 Tefsir Türleri</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S52</div>
+    <div class="q-desc"><strong>Tefsir Eşleştirmesi</strong> — İbn Atiyye İşârî tefsirciler arasında yok; Tantâvî Bilimsel'de birebir var</div>
+    <div class="q-tag direct">📖 Tefsir Türleri</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S53</div>
+    <div class="q-desc"><strong>Elmalılı Hamdi Yazır</strong> — Başkanlar kartında yok + Akademisyenler kartında tefsirci → Başkan olmamış</div>
+    <div class="q-tag direct">🏛️ Çapraz Ref.</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S54</div>
+    <div class="q-desc"><strong>Merfû vs Mevkûf</strong> — "Rasulullah buyurdu" = Merfû; kart tanımı birebir ayırt ediyor</div>
+    <div class="q-tag direct">📜 Hadis Usulü</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S57</div>
+    <div class="q-desc"><strong>İ'tibâr</strong> — Şâhid/Mütâbi' açıklaması "başka tariklerle destek" cevabını veriyor</div>
+    <div class="q-tag direct">📜 Hadis Usulü</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S67</div>
+    <div class="q-desc"><strong>Mâturîdî Görüşleri</strong> — Eş'arî-Mâtürîdî tablosundan A,C,D doğrulanıyor → B değil</div>
+    <div class="q-tag direct">🧠 Kelam</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S73</div>
+    <div class="q-desc"><strong>Felsefi Akımlar</strong> — Pozitivizm: kart "deneysel" diyor, şık "sezgi" → Yanlışı bul</div>
+    <div class="q-tag direct">💭 Felsefe</div>
+  </div>
+</div>
+
+<!-- ORTA GÜVEN -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">🟡 Orta Güvenle Cevaplanır (6 Soru)</div>
+    <span class="badge badge-yellow">ÇIKARIM GEREKLİ</span>
+  </div>
+
+  <div class="q-item">
+    <div class="q-num">S7</div>
+    <div class="q-desc"><strong>Mef'ûl-ü Mutlak</strong> — Kartın Mef'ûl-ü Leh örneğiyle Arapça metin karşılaştırması</div>
+    <div class="q-tag partial">🔤 Arapça</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S9</div>
+    <div class="q-desc"><strong>Hâl Kavramı</strong> — Kartın "Nasıl?" sorusu ipucuyla çözülebilir</div>
+    <div class="q-tag partial">🔤 Arapça</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S58</div>
+    <div class="q-desc"><strong>Hicrî 3. Asır</strong> — Kütüb-i Tis'a vefat tarihleri (256-303) → 3. yüzyıl çıkarımı</div>
+    <div class="q-tag partial">📚 Çapraz Ref.</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S62</div>
+    <div class="q-desc"><strong>Tirmizî</strong> — "Sıhhat değerlendirmesi" + "ale'l-ebvâb" → Eleme yöntemiyle</div>
+    <div class="q-tag partial">📚 Çapraz Ref.</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S68</div>
+    <div class="q-desc"><strong>Mezhep Eşleştirmesi</strong> — Eş'arî/Mâturîdî farkları tablosundan I ve II yanlış</div>
+    <div class="q-tag partial">🧠 Kelam</div>
+  </div>
+  <div class="q-item">
+    <div class="q-num">S79</div>
+    <div class="q-desc"><strong>Yedi Güzel Adam</strong> — Hikâyeci = tek Rasim Özdenören (diğerleri şair)</div>
+    <div class="q-tag partial">✍️ Yazarlar</div>
+  </div>
+</div>
+
+<!-- NEDEN KALANLAR CEVAPLANAMAZ -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">❌ Neden 66 Soru Cevaplanamaz?</div>
+  </div>
+  <table>
+    <thead><tr><th>Sebep</th><th class="t-center">Soru Sayısı</th><th>Örnek</th></tr></thead>
+    <tbody>
+      <tr><td class="t-bold">🔤 Arapça metin okuma şart</td><td class="t-center t-red">~30</td><td class="t-dim">S1-S6, S10-S24 (dilbilgisi + okuma-anlama)</td></tr>
+      <tr><td class="t-bold">📋 Konu var ama detay yok</td><td class="t-center t-orange">~18</td><td class="t-dim">S30 (DIYK promosyon), S33 (kefâret orucu), S36 (Cuma sayısı)</td></tr>
+      <tr><td class="t-bold">❓ Konu kartlarda hiç yok</td><td class="t-center t-accent">~18</td><td class="t-dim">S40 (itikâf), S46 (Kur'âniyyûn), S75 (Veda Hutbesi)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- =============================== -->
+<!-- SENARYO 2: BİLGİLİ ADAY        -->
+<!-- =============================== -->
+<div class="section-divider">
+  <div class="line"></div>
+  <h2>📖 Senaryo 2: Bilgili Aday + Son Gün Tekrarı</h2>
+  <p>Arapça bilen, temel konulara aşina bir aday kartlarla son gün tekrar ederse kaç soruya faydası olur?</p>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card green">
+    <div class="val">40</div>
+    <div class="label">✅ Doğrudan etkili (%50)</div>
+  </div>
+  <div class="stat-card orange">
+    <div class="val">18</div>
+    <div class="label">🟡 Kısmen etkili (%22.5)</div>
+  </div>
+  <div class="stat-card red">
+    <div class="val">22</div>
+    <div class="label">❌ Karttan bağımsız (%27.5)</div>
+  </div>
+  <div class="stat-card">
+    <div class="val">~58</div>
+    <div class="label">📊 Toplam etki ≈ %72.5</div>
+  </div>
+</div>
+
+<!-- KART BAZINDA FAYDA -->
+<div class="section-title" style="margin-top:24px;">📊 Kart Bazında Son Tekrar Faydası</div>
+<div class="section-subtitle">Bilgili adayın her karttan etkilenen soru sayısı</div>
+
+<div style="margin-bottom:24px;">
+  <div class="progress-row"><div class="progress-label">🔤 Arapça Sarf & Nahiv</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-indigo" style="width:100%;">16 soru</div></div><div class="progress-val">%20</div></div>
+  <div class="progress-row"><div class="progress-label">⚖️ Fıkıh (Usulü+İbadet+DIYK)</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-emerald" style="width:69%;">11 soru</div></div><div class="progress-val">%13.8</div></div>
+  <div class="progress-row"><div class="progress-label">📜 Hadis Usulü + Kütüb-i Tis'a</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-sky" style="width:63%;">10 soru</div></div><div class="progress-val">%12.5</div></div>
+  <div class="progress-row"><div class="progress-label">📖 Tefsir + Ulûm-ul Kur'an</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-amber" style="width:44%;">7 soru</div></div><div class="progress-val">%8.8</div></div>
+  <div class="progress-row"><div class="progress-label">🧠 Kelam (Eş'arî-Mâtürîdî+)</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-violet" style="width:38%;">6 soru</div></div><div class="progress-val">%7.5</div></div>
+  <div class="progress-row"><div class="progress-label">📐 Fıkıh Usulü + Külli Kaideler</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-teal" style="width:31%;">5 soru</div></div><div class="progress-val">%6.3</div></div>
+  <div class="progress-row"><div class="progress-label">🌍 Diğer (Felsefe, Dinler, Yazarlar)</div><div class="progress-bar-bg"><div class="progress-bar-fill fill-orange" style="width:38%;">6 soru</div></div><div class="progress-val">%7.5</div></div>
+</div>
+
+<!-- DETAY KARTLAR -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">🔤 Arapça Sarf & Nahiv Kartı</div>
+    <span class="badge badge-red">16 SORU — EN YÜKSEK ETKİ</span>
+  </div>
+  <table>
+    <thead><tr><th>Doğrudan (11)</th><th>Kısmen (5)</th></tr></thead>
+    <tbody>
+      <tr><td>S3 Aksâm-ı seb'a · S4 Fiil babları · S5 Fiil çekimi · S6 İsm-i fail/meful · S7 Mef'ûl-ü mutlak · S8 Mübteda-Haber · S9 Hâl · S10 Mübteda-Haber · S12 Fail/Hâl/Temyîz · S13 İstisna türleri · S16 Bedel</td><td>S1 Vezin · S2 İsm-i türleri · S11 لَوْ edatı · S14 ما edatı · S15 İzâfet</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">📜 Hadis Usulü + Kütüb-i Tis'a</div>
+    <span class="badge badge-orange">10 SORU — EN İYİ YATIRIM/GETİRİ</span>
+  </div>
+  <table>
+    <thead><tr><th>Doğrudan (7)</th><th>Kısmen (3)</th></tr></thead>
+    <tbody>
+      <tr><td>S54 Merfû/Mevkûf · S55 Şâz/Mu'dal/Hasen/Mütevatir · S57 İ'tibâr · S58 3. yüzyıl · S59 Mevzû · S60 Tedvîn-Tasnîf · S62 Tirmizî</td><td>S56 İlk usul eseri · S63 Garîbü'l-Hadîs · S64 Rihle</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">🧠 Kelam Kartları</div>
+    <span class="badge badge-yellow">6 SORU</span>
+  </div>
+  <table>
+    <thead><tr><th>Doğrudan (5)</th><th>Kısmen (1)</th></tr></thead>
+    <tbody>
+      <tr><td>S66 Kelam dönemleri · S67 Mâturîdî · S68 Mezhep eşleştirmesi · S70 Gazzâlî/Râzî · S71 Kelam eserleri</td><td>S69 Ye's hâlinde iman</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">📖 Tefsir + Ulûm-ul Kur'an</div>
+    <span class="badge badge-yellow">7 SORU</span>
+  </div>
+  <table>
+    <thead><tr><th>Doğrudan (4)</th><th>Kısmen (3)</th></tr></thead>
+    <tbody>
+      <tr><td>S43 Fıkhî tefsir · S48 Emsâlü'l-Kur'ân · S51 İ'câzü'l-Kur'ân · S52 Tefsir eşleştirmesi</td><td>S42 Tecvid · S44 Noktalama tarihi · S45 Mübhemât</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">⚖️ Fıkıh + DIYK + Mezhep</div>
+    <span class="badge badge-blue">11 SORU</span>
+  </div>
+  <table>
+    <thead><tr><th>Doğrudan (4)</th><th>Kısmen (7)</th></tr></thead>
+    <tbody>
+      <tr><td>S27 Mezhep teşekkülü · S30 DIYK promosyon · S32 Fıkıh eserleri · S38 Tasarruf finansman</td><td>S31 Abdest · S33 Kefâret orucu · S34 DIYK boşanma · S35 Adak · S36 Cuma sayısı · S37 Cemaat hükmü · S39 İhram</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- KARŞILAŞTIRMA -->
+<hr class="divider">
+
+<div class="section-divider" style="margin-top:20px;">
+  <div class="line"></div>
+  <h2>📈 İki Senaryonun Karşılaştırması</h2>
+</div>
+
+<div class="compare-grid">
+  <div class="compare-card scenario-a">
+    <div class="sc-label">🔬 Sıfır Bilgi + Sadece Kartlar</div>
+    <div class="sc-val">~12</div>
+    <div class="sc-sub">soru cevaplanır</div>
+    <div class="sc-puan">≈ 15 puan</div>
+  </div>
+  <div class="compare-card scenario-b">
+    <div class="sc-label">📖 Bilgili Aday + Son Gün Tekrar</div>
+    <div class="sc-val">~55</div>
+    <div class="sc-sub">soruya etki eder</div>
+    <div class="sc-puan">≈ 69 puan potansiyel</div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>Metrik</th><th class="t-center">Sıfır Bilgi</th><th class="t-center">Bilgili Aday</th><th class="t-center">Fark</th></tr></thead>
+  <tbody>
+    <tr><td class="t-bold">Doğrudan cevaplanır</td><td class="t-center">8</td><td class="t-center t-green">40</td><td class="t-center t-accent">+32</td></tr>
+    <tr><td class="t-bold">Kısmen fayda</td><td class="t-center">4-6</td><td class="t-center t-green">18</td><td class="t-center t-accent">+13</td></tr>
+    <tr><td class="t-bold">Toplam</td><td class="t-center t-orange">~12</td><td class="t-center t-green">~55</td><td class="t-center t-accent">+43</td></tr>
+    <tr><td class="t-bold">Puan karşılığı (×1.25)</td><td class="t-center t-orange">~15 puan</td><td class="t-center t-green">~69 puan</td><td class="t-center t-accent">+54 puan</td></tr>
+  </tbody>
+</table>
+
+<div class="alert alert-warn" style="margin-top:20px;">
+  <div class="alert-title">⚡ KALDIRAÇ ETKİSİ</div>
+  <p>Kartların faydası ön bilgi ile birleşince <strong>4-5 kata</strong> çıkıyor. Sıfır bilgili biri için ~15 puan, bilgili aday için <strong>~69 puan potansiyel</strong>. Kartların gerçek gücü "tek başına kaynak" olmak değil, <strong>son tekrarda sistematik hatırlatma</strong> sağlaması.</p>
+</div>
+
+<!-- SON GÜN TEKRAR SIRASI -->
+<hr class="divider">
+
+<div class="section-title">🏆 En Verimli Son Gün Tekrar Sırası</div>
+<div class="section-subtitle">Bilgili aday için kartların soru başına fayda sırasıyla tekrar önceliği</div>
+
+<ol class="priority-list">
+  <li><strong>Eş'arî-Mâtürîdî Tablosu</strong> → 3 soru<br><span class="p-detail">~10 dk okuma ile S67, S68 kesin + S66 çok muhtemel</span></li>
+  <li><strong>Hadis Usulü Terimleri</strong> → 7 soru<br><span class="p-detail">~25 dk ile Metâîn-i Aşere, Senet Kusurları, Tahammül-Eda</span></li>
+  <li><strong>Tefsir Türleri Tablosu</strong> → 4 soru<br><span class="p-detail">~12 dk ile tür-müfessir-eser eşleştirmeleri</span></li>
+  <li><strong>Külli Kaideler</strong> → 1-2 soru<br><span class="p-detail">~10 dk ile 10 kaide + Arapça karşılıkları</span></li>
+  <li><strong>Kütüb-i Tis'a Listesi</strong> → 3 soru<br><span class="p-detail">~12 dk ile 9 kaynak, müellif, vefat, şerh</span></li>
+  <li><strong>Arapça Nahiv (İrab + Mef'ûl + Temyîz)</strong> → 11 soru<br><span class="p-detail">~45 dk ile İrab tablosu + kavram örnekleri</span></li>
+  <li><strong>Modern Felsefi Akımlar</strong> → 1 soru<br><span class="p-detail">~5 dk ile 8 akımın tanımı</span></li>
+  <li><strong>Fıkıh Usulü Delilleri</strong> → 4 soru<br><span class="p-detail">~20 dk ile deliller tablosu + delalet çeşitleri</span></li>
+  <li><strong>Diyanet Başkanları + Yazarlar</strong> → 2-3 soru<br><span class="p-detail">~15 dk ile 17 başkan + Yedi Güzel Adam</span></li>
+</ol>
+
+<div class="alert alert-tip" style="margin-top:20px;">
+  <div class="alert-title">💡 30 DAKİKA STRATEJİSİ</div>
+  <p>İlk 5 kartı (Eş'arî-Mâtürîdî + Hadis + Tefsir + Külli Kaideler + Kütüb-i Tis'a) son <strong>30 dakikada</strong> gözden geçiren bilgili aday, <strong>~18 soruyu pekiştirir = 22.5 puan</strong>. Tüm kartları tekrar etmek ~2.5 saat sürer ve <strong>~40 soruya etki eder</strong>.</p>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  🔬 2026 İhtisas Sınavı Referans Kartları Analiz Raporu · Son güncelleme: 14 Nisan 2026
+</div>
+
+</div><!-- /container -->
+
+<script>
+window.addEventListener('load', () => {
+  document.querySelectorAll('.progress-bar-fill').forEach(f => {
+    const w = f.style.width;
+    f.style.width = '0';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { f.style.width = w; });
+    });
+  });
+});
+</script>
+</body>
+</html>
