@@ -19,6 +19,7 @@
         { id: 'page-numbers', name: 'Sayfa Numarası', icon: '🔢', desc: 'Numara ekle' },
         { id: 'orientation', name: 'Yön Değiştirme', icon: '↔️', desc: 'Dikey ↔ Yatay' },
         { id: 'resize', name: 'Boyut Değiştir', icon: '📐', desc: 'Sayfa boyutunu değiştir' },
+        { id: 'text-color', name: 'Metin Rengi', icon: '🎨', desc: 'Metin renklerini değiştir' },
     ];
 
     const PAGE_PRESETS = {
@@ -299,6 +300,7 @@
             'page-numbers': panelPageNumbers,
             'orientation': panelOrientation,
             'resize': panelResize,
+            'text-color': panelTextColor,
         };
 
         if (panels[toolId]) panels[toolId](body);
@@ -570,6 +572,46 @@
         });
     }
 
+    function panelTextColor(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">PDF'deki tüm metinlerin rengini değiştirir. Arka plan, çizgiler ve görseller etkilenmez — yalnızca metin rengi değişir.</div>
+            <div class="form-group">
+                <label class="form-label">Metin Rengi</label>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <input class="form-color" id="opt-tc-color" type="color" value="#000000" style="width:48px;height:40px;">
+                    <span class="form-hint" id="opt-tc-color-label" style="margin:0;font-size:0.85rem;">#000000</span>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="form-group">
+                <label class="form-label">Hangi Sayfalara Uygulansın?</label>
+                <div class="radio-group" id="opt-tc-scope-group">
+                    <label class="radio-option active"><input type="radio" name="tc-scope" value="all" checked> Tüm Sayfalara</label>
+                    <label class="radio-option"><input type="radio" name="tc-scope" value="selected"> Seçili Sayfalara (thumbnail)</label>
+                    <label class="radio-option"><input type="radio" name="tc-scope" value="range"> Sayfa Aralığı Belirt</label>
+                </div>
+            </div>
+            <div class="form-group" id="tc-range-group" style="display:none;">
+                <label class="form-label">Sayfa Aralığı</label>
+                <input class="form-input" id="opt-tc-range" placeholder="ör: 1-5, 8, 10-15">
+                <p class="form-hint">Virgülle ayırarak birden fazla aralık belirtebilirsiniz. (toplam ${state.pageCount} sayfa)</p>
+            </div>`;
+        initRadioGroups(body);
+
+        // Show/hide range input based on scope selection
+        body.querySelectorAll('input[name="tc-scope"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const rangeGroup = $('#tc-range-group');
+                rangeGroup.style.display = radio.value === 'range' ? '' : 'none';
+            });
+        });
+
+        // Update color label preview
+        $('#opt-tc-color').addEventListener('input', (e) => {
+            $('#opt-tc-color-label').textContent = e.target.value;
+        });
+    }
+
     function initRadioGroups(container) {
         container.querySelectorAll('.radio-group').forEach(group => {
             group.querySelectorAll('.radio-option').forEach(opt => {
@@ -599,6 +641,7 @@
             'page-numbers': execPageNumbers,
             'orientation': execOrientation,
             'resize': execResize,
+            'text-color': execTextColor,
         };
 
         const handler = handlers[state.currentTool];
@@ -875,6 +918,182 @@
             }
         }
         return await newDoc.save();
+    }
+
+    /* ---- 12. Text Color ---- */
+    async function execTextColor() {
+        const colorHex = $('#opt-tc-color').value;
+        const scope = document.querySelector('input[name="tc-scope"]:checked').value;
+
+        const tR = parseInt(colorHex.slice(1, 3), 16) / 255;
+        const tG = parseInt(colorHex.slice(3, 5), 16) / 255;
+        const tB = parseInt(colorHex.slice(5, 7), 16) / 255;
+
+        let indices;
+        if (scope === 'all') {
+            indices = Array.from({ length: state.pageCount }, (_, i) => i);
+        } else if (scope === 'selected') {
+            indices = [...state.selectedPages].sort((a, b) => a - b);
+        } else {
+            const rangeStr = $('#opt-tc-range')?.value?.trim();
+            if (!rangeStr) { toast('Lütfen sayfa aralığı girin.', 'error'); return null; }
+            indices = parseRanges(rangeStr, state.pageCount);
+        }
+
+        if (indices.length === 0) {
+            toast('Lütfen en az bir sayfa seçin.', 'error');
+            return null;
+        }
+
+        const doc = await PDFDocument.load(state.pdfBytes);
+        const pages = doc.getPages();
+        const PDFName_ = PDFLib.PDFName;
+
+        let pagesModified = 0;
+
+        for (const idx of indices) {
+            const page = pages[idx];
+            const contentsEntry = page.node.get(PDFName_.of('Contents'));
+            if (!contentsEntry) continue;
+
+            const contentsObj = doc.context.lookup(contentsEntry);
+            const streamEntries = [];
+
+            // Contents can be a single stream ref or an array of stream refs
+            if (contentsObj instanceof PDFLib.PDFArray) {
+                for (let i = 0; i < contentsObj.size(); i++) {
+                    const sRef = contentsObj.get(i);
+                    streamEntries.push({ ref: sRef, stream: doc.context.lookup(sRef) });
+                }
+            } else {
+                streamEntries.push({ ref: contentsEntry, stream: contentsObj });
+            }
+
+            for (const { ref, stream } of streamEntries) {
+                if (!stream) continue;
+
+                // Get raw stream bytes
+                let rawBytes;
+                try {
+                    rawBytes = stream.getContents();
+                } catch (e) {
+                    console.warn('Sayfa ' + (idx + 1) + ' getContents hatası:', e);
+                    continue;
+                }
+                if (!rawBytes || rawBytes.length === 0) continue;
+
+                // Check if stream is FlateDecode compressed
+                const filterEntry = stream.dict.get(PDFName_.of('Filter'));
+                const isFlate = filterEntry && filterEntry.toString().includes('FlateDecode');
+
+                // Decompress if needed
+                let contentBytes;
+                try {
+                    if (isFlate) {
+                        contentBytes = pako.inflate(rawBytes);
+                    } else {
+                        contentBytes = rawBytes;
+                    }
+                } catch (e) {
+                    console.warn('Sayfa ' + (idx + 1) + ' inflate hatası:', e);
+                    continue;
+                }
+
+                // Bytes → Latin-1 string
+                let text = '';
+                for (let ci = 0; ci < contentBytes.length; ci++) {
+                    text += String.fromCharCode(contentBytes[ci]);
+                }
+
+                const modified = replaceTextColors(text, tR, tG, tB);
+                if (modified === text) continue;
+
+                // String → bytes
+                let newContentBytes = new Uint8Array(modified.length);
+                for (let ci = 0; ci < modified.length; ci++) {
+                    newContentBytes[ci] = modified.charCodeAt(ci) & 0xFF;
+                }
+
+                // Re-compress with FlateDecode
+                const compressedBytes = pako.deflate(newContentBytes);
+
+                // Create new FlateDecode stream
+                const newDict = PDFLib.PDFDict.withContext(doc.context);
+                newDict.set(PDFName_.of('Filter'), PDFName_.of('FlateDecode'));
+                newDict.set(PDFName_.of('Length'), PDFLib.PDFNumber.of(compressedBytes.length));
+                const newStream = PDFLib.PDFRawStream.of(newDict, compressedBytes);
+                doc.context.assign(ref, newStream);
+                pagesModified++;
+            }
+        }
+
+        if (pagesModified === 0) {
+            toast('Seçili sayfalarda değiştirilecek metin bulunamadı.', 'info');
+            return null;
+        }
+
+        return await doc.save();
+    }
+
+    /**
+     * Replaces all text (non-stroking) color operators inside BT...ET blocks
+     * with the given RGB color. Protects string literals from modification.
+     */
+    function replaceTextColors(content, r, g, b) {
+        const colorCmd = r.toFixed(6) + ' ' + g.toFixed(6) + ' ' + b.toFixed(6) + ' rg';
+
+        // Step 1: Protect parenthesized string literals from regex replacement
+        const strings = [];
+        let safe = '';
+        let i = 0;
+        while (i < content.length) {
+            if (content[i] === '(') {
+                let depth = 1;
+                let str = '(';
+                i++;
+                while (i < content.length && depth > 0) {
+                    if (content[i] === '\\') {
+                        str += content[i];
+                        i++;
+                        if (i < content.length) { str += content[i]; i++; }
+                        continue;
+                    }
+                    if (content[i] === '(') depth++;
+                    if (content[i] === ')') depth--;
+                    str += content[i];
+                    i++;
+                }
+                strings.push(str);
+                safe += '\x01#' + (strings.length - 1) + '#\x01';
+            } else {
+                safe += content[i];
+                i++;
+            }
+        }
+
+        // Step 2: Find BT...ET text blocks and replace non-stroking color operators
+        safe = safe.replace(/\bBT\b([\s\S]*?)\bET\b/g, function (match, inner) {
+            let mod = inner;
+            // RGB non-stroking color: r g b rg
+            mod = mod.replace(/([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+rg\b/g, colorCmd);
+            // Grayscale non-stroking color: gray g
+            mod = mod.replace(/(^|[\s\n\r])([\d.]+)\s+g(?=[\s\n\r]|$)/gm, '$1' + colorCmd);
+            // CMYK non-stroking color: c m y k k
+            mod = mod.replace(/([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+k\b/g, colorCmd);
+            // sc / scn with 3 args (RGB color space)
+            mod = mod.replace(/([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+scn?\b/g, colorCmd);
+            // sc / scn with 1 arg (grayscale color space)
+            mod = mod.replace(/(^|[\s\n\r])([\d.]+)\s+scn?(?=[\s\n\r]|$)/gm, '$1' + colorCmd);
+            // Inject target color right after BT to override any inherited color
+            return 'BT\n' + colorCmd + '\n' + mod + 'ET';
+        });
+
+        // Step 3: Restore protected string literals
+        safe = safe.replace(/\x01#(\d+)#\x01/g, function (_, idx) {
+            return strings[parseInt(idx)];
+        });
+
+        return safe;
     }
 
     /* ---- Range Parser ---- */
