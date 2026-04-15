@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resimden PDF Oluşturucu</title>
+    <meta name="description" content="Fotoğraflardan profesyonel PDF belgeleri oluşturun — kırpma, döndürme, perspektif düzeltme ve renk ayarları ile">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-left">
+            <a href="../index.html" class="back-link" id="back-link">
+                <span class="back-arrow">←</span>
+                <span class="back-text">Araçlar</span>
+            </a>
+            <div class="logo">
+                <span class="logo-icon">📸</span>
+                <span class="logo-text">Resimden PDF</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <span class="page-count" id="page-count" style="display:none">0 sayfa</span>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-ghost" id="btn-add-more" style="display:none" title="Resim Ekle">
+                ➕ Ekle
+            </button>
+            <button class="btn btn-ghost" id="btn-settings" style="display:none" title="PDF Ayarları">
+                ⚙️ Ayarlar
+            </button>
+            <button class="btn btn-primary" id="btn-generate-pdf" style="display:none">
+                💾 PDF Oluştur
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         SCREEN 1: WELCOME / DROP ZONE
+         ============================================================ -->
+    <section id="screen-welcome" class="screen screen-welcome">
+        <div class="drop-zone" id="drop-zone">
+            <div class="drop-zone-inner">
+                <div class="drop-icon-wrapper">
+                    <div class="drop-icon">📸</div>
+                    <div class="drop-icon-pulse"></div>
+                </div>
+                <h2 class="drop-title">Resimlerinizi Sürükleyin</h2>
+                <p class="drop-subtitle">veya aşağıdaki seçeneklerden birini kullanın</p>
+                <div class="drop-buttons">
+                    <button class="btn btn-primary btn-lg" id="btn-select-files">
+                        📁 Dosyadan Seç
+                    </button>
+                    <button class="btn btn-ghost btn-lg" id="btn-open-camera">
+                        📷 Kameradan Çek
+                    </button>
+                </div>
+                <div class="drop-features">
+                    <span class="feature-badge">🔒 Güvenli</span>
+                    <span class="feature-badge">⚡ Hızlı</span>
+                    <span class="feature-badge">🌐 Tarayıcı İçi</span>
+                </div>
+                <p class="drop-hint">Tüm işlemler tarayıcınızda yapılır. Dosyalarınız hiçbir sunucuya gönderilmez.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SCREEN 2: CAMERA
+         ============================================================ -->
+    <section id="screen-camera" class="screen screen-camera" style="display:none">
+        <div class="camera-container">
+            <div class="camera-preview-wrapper">
+                <video id="camera-preview" autoplay playsinline></video>
+                <div class="camera-guide-overlay">
+                    <div class="camera-guide-rect"></div>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <button class="btn btn-ghost btn-icon camera-btn-secondary" id="btn-camera-switch" title="Kamera Değiştir">
+                    🔄
+                </button>
+                <button class="btn-capture" id="btn-camera-capture" title="Fotoğraf Çek">
+                    <span class="capture-inner"></span>
+                </button>
+                <button class="btn btn-ghost btn-icon camera-btn-secondary" id="btn-camera-close" title="Kapat">
+                    ✕
+                </button>
+            </div>
+            <p class="camera-hint">Belgeyi çerçeveye alın ve çekim butonuna basın</p>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SCREEN 3: IMAGE EDITOR
+         ============================================================ -->
+    <section id="screen-editor" class="screen screen-editor" style="display:none">
+        <div class="editor-layout">
+            <!-- Canvas Area -->
+            <div class="editor-canvas-area" id="editor-canvas-area">
+                <div class="editor-canvas-wrapper" id="editor-canvas-wrapper">
+                    <canvas id="editor-canvas"></canvas>
+                </div>
+                <div class="editor-canvas-controls">
+                    <button class="btn btn-sm btn-ghost" id="btn-zoom-out" title="Uzaklaştır">➖</button>
+                    <span class="zoom-label" id="editor-zoom-level">100%</span>
+                    <button class="btn btn-sm btn-ghost" id="btn-zoom-in" title="Yakınlaştır">➕</button>
+                    <button class="btn btn-sm btn-ghost" id="btn-zoom-fit" title="Sığdır">⊞</button>
+                </div>
+            </div>
+
+            <!-- Editor Sidebar -->
+            <aside class="editor-sidebar" id="editor-sidebar">
+                <div class="editor-sidebar-scroll">
+                    <!-- Crop Section -->
+                    <div class="tool-section" id="section-crop">
+                        <div class="tool-section-header" data-section="crop">
+                            <span>✂️ Kırpma</span>
+                            <span class="section-toggle">▾</span>
+                        </div>
+                        <div class="tool-section-body">
+                            <div class="aspect-buttons">
+                                <button class="btn btn-sm btn-ghost aspect-btn active" data-aspect="free">Serbest</button>
+                                <button class="btn btn-sm btn-ghost aspect-btn" data-aspect="1:1">1:1</button>
+                                <button class="btn btn-sm btn-ghost aspect-btn" data-aspect="4:3">4:3</button>
+                                <button class="btn btn-sm btn-ghost aspect-btn" data-aspect="16:9">16:9</button>
+                                <button class="btn btn-sm btn-ghost aspect-btn" data-aspect="A4">A4</button>
+                            </div>
+                            <div class="crop-actions">
+                                <button class="btn btn-sm btn-primary" id="btn-crop-apply" style="display:none">✅ Kırpmayı Uygula</button>
+                                <button class="btn btn-sm btn-ghost" id="btn-crop-cancel" style="display:none">İptal</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rotation Section -->
+                    <div class="tool-section" id="section-rotate">
+                        <div class="tool-section-header" data-section="rotate">
+                            <span>🔄 Döndürme</span>
+                            <span class="section-toggle">▾</span>
+                        </div>
+                        <div class="tool-section-body">
+                            <div class="rotation-control">
+                                <svg class="rotation-dial" id="rotation-dial" width="140" height="140" viewBox="0 0 140 140">
+                                    <circle cx="70" cy="70" r="58" class="dial-track"/>
+                                    <!-- Tick marks -->
+                                    <line x1="70" y1="14" x2="70" y2="22" class="dial-tick dial-tick-major"/>
+                                    <line x1="128" y1="70" x2="120" y2="70" class="dial-tick dial-tick-major"/>
+                                    <line x1="70" y1="128" x2="70" y2="120" class="dial-tick dial-tick-major"/>
+                                    <line x1="12" y1="70" x2="20" y2="70" class="dial-tick dial-tick-major"/>
+                                    <!-- Labels -->
+                                    <text x="70" y="10" class="dial-label">0°</text>
+                                    <text x="134" y="74" class="dial-label">90°</text>
+                                    <text x="70" y="138" class="dial-label">180°</text>
+                                    <text x="6" y="74" class="dial-label">270°</text>
+                                    <!-- Thumb -->
+                                    <circle cx="70" cy="14" r="8" class="dial-thumb" id="rotation-thumb"/>
+                                </svg>
+                                <div class="rotation-value" id="rotation-value">0°</div>
+                            </div>
+                            <div class="rotation-quick-buttons">
+                                <button class="btn btn-sm btn-ghost" id="btn-rotate-ccw" title="90° Sola">↺ 90°</button>
+                                <button class="btn btn-sm btn-ghost" id="btn-rotate-180" title="180°">↕ 180°</button>
+                                <button class="btn btn-sm btn-ghost" id="btn-rotate-cw" title="90° Sağa">↻ 90°</button>
+                                <button class="btn btn-sm btn-ghost" id="btn-rotate-reset" title="Sıfırla">0°</button>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Açı (°)</label>
+                                <input class="form-input" id="rotation-input" type="number" value="0" min="-360" max="360" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Perspective Section -->
+                    <div class="tool-section" id="section-perspective">
+                        <div class="tool-section-header" data-section="perspective">
+                            <span>📐 Perspektif Düzeltme</span>
+                            <span class="section-toggle">▾</span>
+                        </div>
+                        <div class="tool-section-body">
+                            <div class="info-box info-primary">4 köşe noktasını sürükleyerek belgenin perspektifini düzeltin.</div>
+                            <div class="perspective-actions">
+                                <button class="btn btn-sm btn-ghost btn-block" id="btn-perspective-toggle">📐 Perspektif Modunu Aç</button>
+                                <button class="btn btn-sm btn-primary btn-block" id="btn-perspective-apply" style="display:none">✅ Düzeltmeyi Uygula</button>
+                                <button class="btn btn-sm btn-ghost btn-block" id="btn-perspective-reset" style="display:none">Sıfırla</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color Section -->
+                    <div class="tool-section" id="section-color">
+                        <div class="tool-section-header" data-section="color">
+                            <span>🎨 Renk Ayarları</span>
+                            <span class="section-toggle">▾</span>
+                        </div>
+                        <div class="tool-section-body">
+                            <div class="form-group">
+                                <label class="form-label">Renk Modu</label>
+                                <div class="radio-group" id="color-mode-group">
+                                    <label class="radio-option active"><input type="radio" name="color-mode" value="color" checked> 🎨 Renkli</label>
+                                    <label class="radio-option"><input type="radio" name="color-mode" value="bw"> ⬛ Siyah-Beyaz</label>
+                                </div>
+                            </div>
+                            <div class="form-group slider-group">
+                                <label class="form-label">
+                                    <span>☀️ Parlaklık</span>
+                                    <span class="slider-value" id="brightness-value">0</span>
+                                </label>
+                                <input class="form-range" id="brightness-slider" type="range" min="-100" max="100" value="0">
+                            </div>
+                            <div class="form-group slider-group">
+                                <label class="form-label">
+                                    <span>🔲 Kontrast</span>
+                                    <span class="slider-value" id="contrast-value">0</span>
+                                </label>
+                                <input class="form-range" id="contrast-slider" type="range" min="-100" max="100" value="0">
+                            </div>
+
+                            <button class="btn btn-sm btn-ghost btn-block" id="btn-color-reset">🔄 Renk Ayarlarını Sıfırla</button>
+                        </div>
+                    </div>
+
+                    <div class="editor-sidebar-divider"></div>
+
+                    <!-- Editor Actions -->
+                    <div class="editor-actions">
+                        <button class="btn btn-primary btn-block" id="btn-editor-save">✅ Kaydet & Listeye Ekle</button>
+                        <button class="btn btn-ghost btn-block" id="btn-editor-cancel">❌ İptal</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SCREEN 4: PAGE MANAGEMENT
+         ============================================================ -->
+    <section id="screen-pages" class="screen screen-pages" style="display:none">
+        <div class="pages-container">
+            <div class="pages-toolbar" id="pages-toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-sm btn-ghost" id="btn-pages-add-file">📁 Dosyadan Ekle</button>
+                    <button class="btn btn-sm btn-ghost" id="btn-pages-add-camera">📷 Kameradan Ekle</button>
+                    <span class="selection-count" id="pages-selection-count"></span>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-sm btn-ghost" id="btn-pages-select-all">☑️ Tümünü Seç</button>
+                    <button class="btn btn-sm btn-danger" id="btn-pages-delete-selected" style="display:none">🗑️ Seçilileri Sil</button>
+                </div>
+            </div>
+            <div class="pages-grid" id="pages-grid"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         MODAL: PDF SETTINGS
+         ============================================================ -->
+    <div class="modal-overlay" id="modal-overlay" style="display:none">
+        <div class="modal-content" id="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ PDF Ayarları</h3>
+                <button class="btn-icon" id="btn-modal-close" title="Kapat">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Sayfa Boyutu</label>
+                    <select class="form-select" id="opt-page-size">
+                        <option value="A4" selected>A4 (210×297 mm)</option>
+                        <option value="A5">A5 (148×210 mm)</option>
+                        <option value="A3">A3 (297×420 mm)</option>
+                        <option value="Letter">Letter (8.5×11 in)</option>
+                        <option value="Legal">Legal (8.5×14 in)</option>
+                        <option value="custom">Özel Boyut</option>
+                    </select>
+                </div>
+                <div class="form-row" id="custom-size-group" style="display:none">
+                    <div class="form-group">
+                        <label class="form-label">Genişlik (mm)</label>
+                        <input class="form-input" id="opt-custom-w" type="number" value="210" min="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Yükseklik (mm)</label>
+                        <input class="form-input" id="opt-custom-h" type="number" value="297" min="10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sayfa Yönü</label>
+                    <div class="radio-group" id="orientation-group">
+                        <label class="radio-option active"><input type="radio" name="orientation" value="portrait" checked> 📄 Dikey (Portrait)</label>
+                        <label class="radio-option"><input type="radio" name="orientation" value="landscape"> 📄 Yatay (Landscape)</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kenar Boşlukları (mm)</label>
+                    <div class="margin-grid">
+                        <div class="margin-row margin-top-row">
+                            <div class="form-group margin-input-group">
+                                <label class="form-label-sm">Üst</label>
+                                <input class="form-input form-input-sm" id="opt-margin-top" type="number" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="margin-row margin-mid-row">
+                            <div class="form-group margin-input-group">
+                                <label class="form-label-sm">Sol</label>
+                                <input class="form-input form-input-sm" id="opt-margin-left" type="number" value="0" min="0">
+                            </div>
+                            <div class="margin-preview-box">📄</div>
+                            <div class="form-group margin-input-group">
+                                <label class="form-label-sm">Sağ</label>
+                                <input class="form-input form-input-sm" id="opt-margin-right" type="number" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="margin-row margin-bottom-row">
+                            <div class="form-group margin-input-group">
+                                <label class="form-label-sm">Alt</label>
+                                <input class="form-input form-input-sm" id="opt-margin-bottom" type="number" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Resim Yerleştirme</label>
+                    <div class="radio-group" id="fit-mode-group">
+                        <label class="radio-option active"><input type="radio" name="fit-mode" value="fit" checked> Sayfaya Sığdır</label>
+                        <label class="radio-option"><input type="radio" name="fit-mode" value="fill"> Sayfayı Doldur</label>
+                        <label class="radio-option"><input type="radio" name="fit-mode" value="original"> Orijinal Boyut</label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Arka Plan Rengi</label>
+                        <input class="form-color" id="opt-bg-color" type="color" value="#FFFFFF">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Görüntü Kalitesi</label>
+                        <select class="form-select" id="opt-quality">
+                            <option value="low">Düşük (72 DPI)</option>
+                            <option value="medium">Orta (150 DPI)</option>
+                            <option value="high" selected>Yüksek (300 DPI)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Dosya Adı</label>
+                    <input class="form-input" id="opt-filename" type="text" value="resimden-pdf" placeholder="PDF dosya adı">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-modal-cancel">İptal</button>
+                <button class="btn btn-primary" id="btn-modal-save">💾 PDF Oluştur & İndir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display:none">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p class="loading-text" id="loading-text">İşleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="file-input-images" accept="image/*" multiple style="display:none">
+    <input type="file" id="file-input-images-add" accept="image/*" multiple style="display:none">
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
