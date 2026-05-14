@@ -11,13 +11,10 @@
         { id: 'merge-pages', name: 'Sayfa Birleştirme', icon: '📄', desc: 'N sayfayı tek sayfada birleştir' },
         { id: 'merge-pdfs', name: 'PDF Birleştirme', icon: '📑', desc: 'Birden fazla PDF\'i birleştir' },
         { id: 'split', name: 'PDF Bölme', icon: '✂️', desc: 'Sayfa aralıklarına göre böl' },
-        { id: 'rotate', name: 'Sayfa Döndürme', icon: '🔄', desc: 'Seçili sayfaları döndür' },
-        { id: 'delete', name: 'Sayfa Silme', icon: '🗑️', desc: 'Seçili sayfaları sil' },
-        { id: 'reorder', name: 'Sayfa Sıralama', icon: '🔀', desc: 'Sürükle-bırak ile sırala' },
-        { id: 'extract', name: 'Sayfa Çıkarma', icon: '📤', desc: 'Belirli sayfaları ayır' },
+        { id: 'rotate', name: 'Döndürme & Yön', icon: '🔄', desc: 'Döndür veya yönü değiştir (dikey ↔ yatay)' },
+        { id: 'delete', name: 'Sayfa Sil / Çıkar', icon: '🗑️', desc: 'Seçili sayfaları sil veya ayrı PDF olarak çıkar' },
         { id: 'watermark', name: 'Filigran Ekle', icon: '💧', desc: 'Metin filigranı ekle' },
         { id: 'page-numbers', name: 'Sayfa Numarası', icon: '🔢', desc: 'Numara ekle' },
-        { id: 'orientation', name: 'Yön Değiştirme', icon: '↔️', desc: 'Dikey ↔ Yatay' },
         { id: 'resize', name: 'Boyut Değiştir', icon: '📐', desc: 'Sayfa boyutunu değiştir' },
         { id: 'text-color', name: 'Metin Rengi', icon: '🎨', desc: 'Metin renklerini değiştir' },
         { id: 'bg-color', name: 'Arka Plan Rengi', icon: '🖌️', desc: 'Sayfa arka plan rengini değiştir' },
@@ -28,7 +25,7 @@
         { id: 'add-blank', name: 'Boş Sayfa Ekle', icon: '📃', desc: 'Araya/sona boş sayfa ekle' },
         { id: 'duplicate', name: 'Sayfa Çoğalt', icon: '🔁', desc: 'Seçili sayfaları kopyala' },
         { id: 'export-images', name: 'Görsel Aktar', icon: '📸', desc: 'Sayfaları resim olarak indir' },
-        { id: 'images-to-pdf', name: 'Görselden PDF', icon: '🏞️', desc: 'Resimlerden PDF oluştur' },
+        { id: 'images-to-pdf', name: 'Görselden PDF', icon: '🏞️', desc: 'Mevcut PDF\'e görsel sayfa ekle' },
         { id: 'compress', name: 'Sıkıştır', icon: '📦', desc: 'Dosya boyutunu küçült' },
         { id: 'metadata', name: 'PDF Bilgileri', icon: 'ℹ️', desc: 'Metadata görüntüle/düzenle' },
     ];
@@ -54,6 +51,8 @@
         zoomLevel: 1,
         additionalFiles: [],
         dragSrcIndex: null,
+        pageOrder: [],
+        pendingReorder: false,
     };
 
     /* ---- DOM Helpers ---- */
@@ -95,6 +94,7 @@
         state.fileName = name;
         state.selectedPages.clear();
         state.history = [];
+        state.pendingReorder = false;
 
         try {
             const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });
@@ -104,6 +104,8 @@
             toast('PDF dosyası yüklenemedi: ' + err.message, 'error');
             return;
         }
+
+        state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
 
         // Update UI
         $('#file-name').textContent = name;
@@ -124,10 +126,12 @@
         if (state.history.length > 20) state.history.shift();
         state.pdfBytes = newBytes;
         state.selectedPages.clear();
+        state.pendingReorder = false;
 
         const loadingTask = pdfjsLib.getDocument({ data: newBytes.slice(0) });
         state.pdfJsDoc = await loadingTask.promise;
         state.pageCount = state.pdfJsDoc.numPages;
+        state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
 
         $('#file-meta').textContent = `${state.pageCount} sayfa • ${formatSize(newBytes.length)}`;
         await renderThumbnails();
@@ -142,27 +146,148 @@
     /* ============================================================
        THUMBNAIL RENDERING
        ============================================================ */
+    /* ============================================================
+       THUMBNAIL HELPER UTILITIES (module-level scope)
+       ============================================================ */
+    /** Rotate a canvas by angle (90/180/270) and return new canvas */
+    function rotateCanvasBy(canvas, angle) {
+        const w = canvas.width, h = canvas.height;
+        const nc = document.createElement('canvas');
+        if (angle === 90 || angle === 270) { nc.width = h; nc.height = w; }
+        else { nc.width = w; nc.height = h; }
+        const ctx = nc.getContext('2d');
+        ctx.translate(nc.width / 2, nc.height / 2);
+        ctx.rotate(angle * Math.PI / 180);
+        ctx.drawImage(canvas, -w / 2, -h / 2);
+        return nc;
+    }
+
+    /** Re-index all thumb cards in DOM after add/remove operations */
+    function renumberThumbnails() {
+        const newSelected = new Set();
+        $$('.thumb-card').forEach((card, i) => {
+            if (card.classList.contains('selected')) newSelected.add(i);
+            card.dataset.index = i;
+            card.querySelector('.thumb-label').textContent = `${i + 1}`;
+            const canvas = card.querySelector('canvas');
+            if (canvas) canvas.dataset.page = i + 1; // Sync for IntersectionObserver
+        });
+        state.selectedPages = newSelected;
+        state.pageCount = $$('.thumb-card').length;
+        state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
+        updateSelectionCount();
+        $('#file-meta').textContent = `${state.pageCount} sayfa • ${formatSize(state.pdfBytes ? state.pdfBytes.length : 0)}`;
+    }
+
+    /** Commit new PDF bytes to state WITHOUT re-rendering thumbnails */
+    async function commitPdfBytes(newBytes) {
+        if (!newBytes) return;
+        state.history.push(state.pdfBytes);
+        if (state.history.length > 20) state.history.shift();
+        state.pdfBytes = new Uint8Array(newBytes);
+        state.pendingReorder = false;
+        state.pdfJsDoc = await pdfjsLib.getDocument({ data: state.pdfBytes.slice(0) }).promise;
+        state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
+        $('#file-meta').textContent = `${state.pageCount} sayfa • ${formatSize(state.pdfBytes.length)}`;
+    }
+
+    /** Attach all drag/click events to a thumb card */
+    function attachThumbEvents(card) {
+        card.addEventListener('click', (e) => {
+            if (e.target.classList.contains('thumb-drag-handle')) return;
+            if (e.target.closest('.thumb-actions')) return;
+            togglePageSelection(parseInt(card.dataset.index));
+        });
+        card.addEventListener('dragstart', onDragStart);
+        card.addEventListener('dragover', onDragOver);
+        card.addEventListener('drop', onDrop);
+        card.addEventListener('dragend', onDragEnd);
+        card.addEventListener('dragleave', e => e.currentTarget.classList.remove('drag-over-card'));
+
+        // Add edit & delete buttons if not already present
+        if (!card.querySelector('.thumb-actions')) {
+            const actions = document.createElement('div');
+            actions.className = 'thumb-actions';
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'thumb-edit-btn';
+            editBtn.textContent = '✏️ Düzenle';
+            editBtn.title = 'Sayfayı Düzenle';
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openPageEditor(parseInt(card.dataset.index));
+            });
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'thumb-delete-btn';
+            deleteBtn.textContent = '🗑️ Sil';
+            deleteBtn.title = 'Sayfayı Sil';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(card.dataset.index);
+                state.selectedPages.clear();
+                state.selectedPages.add(idx);
+                document.getElementById('btn-quick-delete').click();
+            });
+
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+            card.appendChild(actions);
+        }
+    }
+
+    /** Create a blank white canvas with given dimensions */
+    function createBlankCanvas(w, h) {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, w, h);
+        return c;
+    }
+
+    /* ============================================================
+       THUMBNAIL RENDERING
+       ============================================================ */
     async function renderThumbnails() {
         const grid = $('#thumbnail-grid');
         grid.innerHTML = '';
-        // Dynamic: at zoom 5x, one page fills the full container width
-        const containerW = grid.clientWidth - 48; // minus padding
+        const containerW = grid.clientWidth - 48;
         const baseW = Math.max(120, Math.min(containerW, Math.floor(containerW * state.zoomLevel / 5)));
         grid.style.setProperty('--thumb-width', baseW + 'px');
 
+        if (state._thumbObserver) state._thumbObserver.disconnect();
+        state._thumbObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const canvas = entry.target;
+                    if (canvas.dataset.rendered === "true") return;
+                    canvas.dataset.rendered = "true";
+                    
+                    const pageNum = parseInt(canvas.dataset.page);
+                    state.pdfJsDoc.getPage(pageNum).then(page => {
+                        const scale = Math.min(0.6 * state.zoomLevel, 2.5);
+                        const vp = page.getViewport({ scale });
+                        canvas.width = vp.width;
+                        canvas.height = vp.height;
+                        canvas.style.aspectRatio = 'auto'; // Remove placeholder
+                        const ctx = canvas.getContext('2d');
+                        page.render({ canvasContext: ctx, viewport: vp });
+                    }).catch(err => console.error("Sayfa render hatası:", err));
+                }
+            });
+        }, { root: grid, rootMargin: '300px' });
+
         for (let i = 1; i <= state.pageCount; i++) {
-            const page = await state.pdfJsDoc.getPage(i);
-            const scale = Math.min(0.6 * state.zoomLevel, 2.5);
-            const vp = page.getViewport({ scale });
-            const canvas = el('canvas', { width: vp.width, height: vp.height });
-            const ctx = canvas.getContext('2d');
-            await page.render({ canvasContext: ctx, viewport: vp }).promise;
+            const canvas = el('canvas', { 'data-page': i });
+            // Placeholder boyutu, Intersection Observer'ın çalışması için gerekli
+            canvas.style.aspectRatio = '1 / 1.414'; 
 
             const idx = i - 1;
             const card = el('div', {
                 className: 'thumb-card' + (state.selectedPages.has(idx) ? ' selected' : ''),
                 'data-index': idx,
-                draggable: state.currentTool === 'reorder' ? 'true' : 'false',
+                draggable: 'true',
             }, [
                 el('span', { className: 'thumb-drag-handle', textContent: '⠿' }),
                 canvas,
@@ -170,21 +295,15 @@
                 el('span', { className: 'thumb-label', textContent: `${i}` }),
             ]);
 
-            card.addEventListener('click', () => togglePageSelection(idx));
-            // Drag events for reorder
-            card.addEventListener('dragstart', onDragStart);
-            card.addEventListener('dragover', onDragOver);
-            card.addEventListener('drop', onDrop);
-            card.addEventListener('dragend', onDragEnd);
-            card.addEventListener('dragleave', e => e.currentTarget.classList.remove('drag-over-card'));
-
+            attachThumbEvents(card);
             grid.appendChild(card);
+            state._thumbObserver.observe(canvas);
         }
         updateSelectionCount();
     }
 
+
     function togglePageSelection(idx) {
-        if (state.currentTool === 'reorder') return;
         if (state.selectedPages.has(idx)) state.selectedPages.delete(idx);
         else state.selectedPages.add(idx);
 
@@ -198,21 +317,19 @@
         $('#selection-count').textContent = c > 0 ? `${c} sayfa seçili` : '';
     }
 
-    /* ---- Drag & Drop Reorder ---- */
+    /* ---- Drag & Drop Reorder (always active, instant) ---- */
     function onDragStart(e) {
-        if (state.currentTool !== 'reorder') return;
         state.dragSrcIndex = parseInt(e.currentTarget.dataset.index);
         e.currentTarget.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', state.dragSrcIndex);
     }
     function onDragOver(e) {
-        if (state.currentTool !== 'reorder') return;
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
         e.currentTarget.classList.add('drag-over-card');
     }
     function onDrop(e) {
-        if (state.currentTool !== 'reorder') return;
         e.preventDefault();
         e.currentTarget.classList.remove('drag-over-card');
         const targetIdx = parseInt(e.currentTarget.dataset.index);
@@ -222,21 +339,51 @@
     }
     function onDragEnd(e) { e.currentTarget.classList.remove('dragging'); state.dragSrcIndex = null; }
 
-    async function applyReorder(fromIdx, toIdx) {
-        showLoading('Sayfalar yeniden sıralanıyor...');
-        try {
-            const srcDoc = await PDFDocument.load(state.pdfBytes);
-            const newDoc = await PDFDocument.create();
-            const order = Array.from({ length: srcDoc.getPageCount() }, (_, i) => i);
-            const [moved] = order.splice(fromIdx, 1);
-            order.splice(toIdx, 0, moved);
-            const pages = await newDoc.copyPages(srcDoc, order);
-            pages.forEach(p => newDoc.addPage(p));
-            const bytes = await newDoc.save();
-            await reloadAfterEdit(new Uint8Array(bytes));
-            toast('Sayfa sırası güncellendi', 'success');
-        } catch (err) { toast('Hata: ' + err.message, 'error'); }
-        hideLoading();
+    function applyReorder(fromIdx, toIdx) {
+        // Instant DOM manipulation - no PDF rebuild
+        const grid = $('#thumbnail-grid');
+        const cards = [...grid.querySelectorAll('.thumb-card')];
+        const movedCard = cards[fromIdx];
+        const targetCard = cards[toIdx];
+
+        if (fromIdx < toIdx) {
+            targetCard.after(movedCard);
+        } else {
+            targetCard.before(movedCard);
+        }
+
+        // Update pageOrder
+        const [moved] = state.pageOrder.splice(fromIdx, 1);
+        state.pageOrder.splice(toIdx, 0, moved);
+        state.pendingReorder = true;
+
+        // Update visual indices and labels
+        const newSelected = new Set();
+        grid.querySelectorAll('.thumb-card').forEach((card, i) => {
+            if (card.classList.contains('selected')) newSelected.add(i);
+            card.dataset.index = i;
+            card.querySelector('.thumb-label').textContent = `${i + 1}`;
+        });
+        state.selectedPages = newSelected;
+        updateSelectionCount();
+
+        toast('Sayfa sırası güncellendi', 'success');
+    }
+
+    async function commitPageOrder() {
+        if (!state.pendingReorder || !state.pdfBytes) return;
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        const newDoc = await PDFDocument.create();
+        const pages = await newDoc.copyPages(srcDoc, state.pageOrder);
+        pages.forEach(p => newDoc.addPage(p));
+        const bytes = await newDoc.save();
+        state.history.push(state.pdfBytes);
+        if (state.history.length > 20) state.history.shift();
+        state.pdfBytes = new Uint8Array(bytes);
+        state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
+        state.pendingReorder = false;
+        // Reload pdf.js doc
+        state.pdfJsDoc = await pdfjsLib.getDocument({ data: state.pdfBytes.slice(0) }).promise;
     }
 
     /* ============================================================
@@ -275,11 +422,6 @@
 
         state.currentTool = toolId;
         $$('.tool-card').forEach(c => c.classList.toggle('active', c.dataset.tool === toolId));
-        
-        // Enable/disable reorder mode
-        const grid = $('#thumbnail-grid');
-        grid.classList.toggle('reorder-mode', toolId === 'reorder');
-        $$('.thumb-card').forEach(c => c.draggable = toolId === 'reorder');
 
         showToolPanel(toolId);
     }
@@ -302,8 +444,6 @@
         state.currentTool = null;
         $$('.tool-card').forEach(c => c.classList.remove('active'));
         $('#tool-panel').classList.remove('open');
-        $('#thumbnail-grid').classList.remove('reorder-mode');
-        $$('.thumb-card').forEach(c => c.draggable = false);
     }
 
     function showToolPanel(toolId) {
@@ -322,11 +462,8 @@
             'split': panelSplit,
             'rotate': panelRotate,
             'delete': panelDelete,
-            'reorder': panelReorder,
-            'extract': panelExtract,
             'watermark': panelWatermark,
             'page-numbers': panelPageNumbers,
-            'orientation': panelOrientation,
             'resize': panelResize,
             'text-color': panelTextColor,
             'bg-color': panelBgColor,
@@ -345,7 +482,7 @@
         if (panels[toolId]) panels[toolId](body);
 
         // Special: hide footer for tools that don't use the apply button
-        if (['reorder', 'export-images', 'metadata'].includes(toolId)) footer.style.display = 'none';
+        if (['export-images', 'metadata'].includes(toolId)) footer.style.display = 'none';
 
         panel.classList.add('open');
 
@@ -353,7 +490,7 @@
         state._previewBase = state.pdfBytes;
         state._previewActive = false;
         state._previewResult = null;
-        const noPreview = ['reorder', 'export-images', 'images-to-pdf', 'metadata', 'merge-pdfs', 'compress', 'add-image'];
+        const noPreview = ['export-images', 'images-to-pdf', 'metadata', 'merge-pdfs', 'compress', 'add-image'];
         if (!noPreview.includes(toolId)) {
             setTimeout(() => attachPreviewListeners(), 150);
         }
@@ -444,13 +581,22 @@
 
     function panelRotate(body) {
         body.innerHTML = `
-            <div class="info-box">Önce thumbnail'lardan döndürmek istediğiniz sayfaları seçin.</div>
+            <div class="info-box">Önce thumbnail'lardan işlem yapmak istediğiniz sayfaları seçin.</div>
             <div class="form-group">
-                <label class="form-label">Döndürme Açısı</label>
-                <div class="radio-group" id="opt-rotate-angle">
-                    <label class="radio-option active"><input type="radio" name="rotate" value="90" checked> ↻ 90° Saat Yönü</label>
-                    <label class="radio-option"><input type="radio" name="rotate" value="180"> ↕ 180°</label>
-                    <label class="radio-option"><input type="radio" name="rotate" value="270"> ↺ 90° Saat Yönü Tersi</label>
+                <label class="form-label">İşlem Türü</label>
+                <div class="radio-group" id="opt-rotate-mode">
+                    <label class="radio-option active"><input type="radio" name="rotate-mode" value="rotate" checked> 🔄 Döndür</label>
+                    <label class="radio-option"><input type="radio" name="rotate-mode" value="orientation"> ↔️ Yön Değiştir (dikey ↔ yatay)</label>
+                </div>
+            </div>
+            <div id="rotate-angle-group">
+                <div class="form-group">
+                    <label class="form-label">Döndürme Açısı</label>
+                    <div class="radio-group" id="opt-rotate-angle">
+                        <label class="radio-option active"><input type="radio" name="rotate" value="90" checked> ↻ 90° Saat Yönü</label>
+                        <label class="radio-option"><input type="radio" name="rotate" value="180"> ↕ 180°</label>
+                        <label class="radio-option"><input type="radio" name="rotate" value="270"> ↺ 90° Saat Yönü Tersi</label>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -461,29 +607,35 @@
                 </div>
             </div>`;
         initRadioGroups(body);
+        // Toggle rotate angle group visibility
+        body.querySelectorAll('input[name="rotate-mode"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const angleGroup = body.querySelector('#rotate-angle-group');
+                angleGroup.style.display = radio.value === 'rotate' ? '' : 'none';
+            });
+        });
     }
 
     function panelDelete(body) {
         body.innerHTML = `
-            <div class="info-box">Silmek istediğiniz sayfaları thumbnail'lardan seçin, ardından <strong>Uygula</strong> butonuna tıklayın.</div>
-            <p class="form-hint" style="margin-top:8px;">Seçili sayfa sayısı: <strong id="delete-count">${state.selectedPages.size}</strong></p>`;
-    }
-
-    function panelReorder(body) {
-        body.innerHTML = `
-            <div class="info-box info-primary">Sayfaları yeniden sıralamak için thumbnail kartlarını <strong>sürükleyip bırakın</strong>.</div>
-            <p class="form-hint">Her sürükle-bırak işlemi otomatik olarak uygulanır.</p>`;
-    }
-
-    function panelExtract(body) {
-        body.innerHTML = `
-            <div class="info-box">Çıkarmak istediğiniz sayfaları seçin veya aralık girin.</div>
-            <div class="form-group">
-                <label class="form-label">Sayfa Aralığı (opsiyonel)</label>
-                <input class="form-input" id="opt-extract-range" placeholder="ör: 1-5, 8, 10-15">
+            <div class="info-box">Önce thumbnail'lardan sayfaları seçin, ardından işlemi seçin.</div>
+            <p class="form-hint" style="margin-top:8px;">Seçili sayfa sayısı: <strong id="delete-count">${state.selectedPages.size}</strong></p>
+            <div class="form-group" style="margin-top:12px;">
+                <label class="form-label">İşlem</label>
+                <div class="radio-group">
+                    <label class="radio-option active"><input type="radio" name="delete-mode" value="delete" checked> 🗑️ Seçili sayfaları SİL</label>
+                    <label class="radio-option"><input type="radio" name="delete-mode" value="extract"> 📤 Seçili sayfaları ayrı PDF olarak ÇIKAR</label>
+                </div>
+            </div>
+            <div class="form-group" id="delete-range-group">
+                <label class="form-label">Sayfa Aralığı (opsiyonel, sadece çıkarma için)</label>
+                <input class="form-input" id="opt-delete-range" placeholder="ör: 1-5, 8, 10-15">
                 <p class="form-hint">Boş bırakırsanız seçili thumbnail'lar kullanılır.</p>
             </div>`;
+        initRadioGroups(body);
     }
+
+
 
     function panelWatermark(body) {
         body.innerHTML = `
@@ -1051,10 +1203,8 @@
             'split': execSplit,
             'rotate': execRotate,
             'delete': execDelete,
-            'extract': execExtract,
             'watermark': execWatermark,
             'page-numbers': execPageNumbers,
-            'orientation': execOrientation,
             'resize': execResize,
             'text-color': execTextColor,
             'bg-color': execBgColor,
@@ -1120,9 +1270,14 @@
     async function applyTool() {
         if (!state.currentTool || !state.pdfBytes) return;
 
-        // If preview was computed, commit it
+        // Commit any pending reorder first
+        if (state.pendingReorder) {
+            try { await commitPageOrder(); } catch(e) { toast('Sıralama hatası: ' + e.message, 'error'); }
+        }
+
+        // If preview was computed, commit it (content-modifying tools)
         if (state._previewResult && state._previewActive) {
-            state.pdfBytes = state._previewBase; // restore for history
+            state.pdfBytes = state._previewBase;
             await reloadAfterEdit(state._previewResult);
             state._previewResult = null;
             state._previewBase = state.pdfBytes;
@@ -1134,6 +1289,120 @@
         const handler = getToolHandler(state.currentTool);
         if (!handler) return;
 
+        // Structural tools: DOM-first instant update, background PDF build
+        if (state.currentTool === 'delete') {
+            const mode = document.querySelector('input[name="delete-mode"]:checked')?.value || 'delete';
+            if (mode === 'extract') {
+                // Extract just downloads, no DOM change
+                showLoading('PDF çıkarılıyor...');
+                try { await handler(); } catch(e) { toast('Hata: ' + e.message, 'error'); }
+                hideLoading();
+                return;
+            }
+            const toDelete = new Set(state.selectedPages);
+            if (toDelete.size === 0) { toast('Lütfen silinecek sayfaları seçin.', 'error'); return; }
+            if (toDelete.size >= state.pageCount) { toast('Tüm sayfalar silinemez!', 'error'); return; }
+            toDelete.forEach(idx => { const c = $(`.thumb-card[data-index="${idx}"]`); if (c) c.remove(); });
+            state.selectedPages.clear();
+            renumberThumbnails();
+            toast('İşlem başarıyla tamamlandı!', 'success');
+            try {
+                const result = await handler();
+                if (result) await commitPdfBytes(result);
+            } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            return;
+        }
+
+        if (state.currentTool === 'rotate') {
+            const mode = document.querySelector('input[name="rotate-mode"]:checked')?.value || 'rotate';
+            const scope = document.querySelector('input[name="rotate-scope"]:checked')?.value || 'selected';
+            const indices = scope === 'all' ? Array.from({ length: state.pageCount }, (_, i) => i) : [...state.selectedPages];
+            if (indices.length === 0) { toast('Lütfen sayfaları seçin.', 'error'); return; }
+            if (mode === 'rotate') {
+                const angle = parseInt(document.querySelector('input[name="rotate"]:checked')?.value || '90');
+                indices.forEach(idx => {
+                    const card = $(`.thumb-card[data-index="${idx}"]`);
+                    if (!card) return;
+                    const canvas = card.querySelector('canvas');
+                    const rotated = rotateCanvasBy(canvas, angle);
+                    canvas.width = rotated.width; canvas.height = rotated.height;
+                    canvas.getContext('2d').drawImage(rotated, 0, 0);
+                });
+            } else {
+                // Orientation: swap width/height visually
+                indices.forEach(idx => {
+                    const card = $(`.thumb-card[data-index="${idx}"]`);
+                    if (!card) return;
+                    const canvas = card.querySelector('canvas');
+                    const rotated = rotateCanvasBy(canvas, 90);
+                    canvas.width = rotated.width; canvas.height = rotated.height;
+                    canvas.getContext('2d').drawImage(rotated, 0, 0);
+                });
+            }
+            toast('İşlem başarıyla tamamlandı!', 'success');
+            try {
+                const result = await handler();
+                if (result) await commitPdfBytes(result);
+            } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            return;
+        }
+
+        if (state.currentTool === 'duplicate') {
+            const toDup = [...state.selectedPages].sort((a, b) => a - b);
+            if (toDup.length === 0) { toast('Lütfen çoğaltılacak sayfaları seçin.', 'error'); return; }
+            toDup.forEach(idx => {
+                const card = $(`.thumb-card[data-index="${idx}"]`);
+                if (!card) return;
+                const clone = card.cloneNode(true);
+                clone.classList.remove('selected');
+                // Canvas piksel verisini kopyala
+                const srcCanvas = card.querySelector('canvas');
+                const dstCanvas = clone.querySelector('canvas');
+                if (srcCanvas && dstCanvas) {
+                    dstCanvas.width = srcCanvas.width;
+                    dstCanvas.height = srcCanvas.height;
+                    dstCanvas.getContext('2d').drawImage(srcCanvas, 0, 0);
+                }
+                attachThumbEvents(clone);
+                card.after(clone);
+            });
+            state.selectedPages.clear();
+            renumberThumbnails();
+            toast('İşlem başarıyla tamamlandı!', 'success');
+            try {
+                const result = await handler();
+                if (result) await commitPdfBytes(result);
+            } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            return;
+        }
+
+        if (state.currentTool === 'add-blank') {
+            const grid = $('#thumbnail-grid');
+            const refCanvas = grid.querySelector('.thumb-card canvas');
+            const w = refCanvas ? refCanvas.width : 180;
+            const h = refCanvas ? Math.round(refCanvas.height) : 255;
+            const newIdx = state.pageCount;
+            const blankCard = el('div', { className: 'thumb-card', 'data-index': newIdx, draggable: 'true' }, [
+                el('span', { className: 'thumb-drag-handle', textContent: '⠿' }),
+                createBlankCanvas(w, h),
+                el('span', { className: 'thumb-check', textContent: '✓' }),
+                el('span', { className: 'thumb-label', textContent: `${newIdx + 1}` }),
+            ]);
+            attachThumbEvents(blankCard);
+            grid.appendChild(blankCard);
+            state.pageCount++;
+            state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
+            updateSelectionCount();
+            $('#file-meta').textContent = `${state.pageCount} sayfa • ${formatSize(state.pdfBytes.length)}`;
+            toast('İşlem başarıyla tamamlandı!', 'success');
+            try {
+                const result = await handler();
+                if (result) await commitPdfBytes(result);
+            } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            return;
+        }
+
+        // Content-modifying tools: full rebuild with thumbnail re-render
         showLoading();
         try {
             const result = await handler();
@@ -1209,16 +1478,38 @@
         return await newDoc.save();
     }
 
-    /* ---- 4. Rotate ---- */
+    /* ---- 4. Rotate & Orientation ---- */
     async function execRotate() {
-        const angle = parseInt(document.querySelector('input[name="rotate"]:checked').value);
+        const mode = document.querySelector('input[name="rotate-mode"]:checked')?.value || 'rotate';
         const scope = document.querySelector('input[name="rotate-scope"]:checked').value;
+
+        if (mode === 'orientation') {
+            // Yön değiştirme (dikey ↔ yatay)
+            const srcDoc = await PDFDocument.load(state.pdfBytes);
+            const newDoc = await PDFDocument.create();
+            const pages = srcDoc.getPages();
+            const indices = scope === 'all' ? pages.map((_, i) => i) : [...state.selectedPages];
+            if (indices.length === 0) { toast('Lütfen sayfaları seçin.', 'error'); return null; }
+            const embeddedPages = await newDoc.embedPdf(srcDoc, srcDoc.getPageIndices());
+            for (let i = 0; i < pages.length; i++) {
+                if (indices.includes(i)) {
+                    const { width, height } = pages[i].getSize();
+                    const newPage = newDoc.addPage([height, width]);
+                    newPage.drawPage(embeddedPages[i], { x: 0, y: width, width, height, rotate: degrees(-90) });
+                } else {
+                    const [copied] = await newDoc.copyPages(srcDoc, [i]);
+                    newDoc.addPage(copied);
+                }
+            }
+            return await newDoc.save();
+        }
+
+        // Normal döndürme
+        const angle = parseInt(document.querySelector('input[name="rotate"]:checked').value);
         const doc = await PDFDocument.load(state.pdfBytes);
         const pages = doc.getPages();
         const indices = scope === 'all' ? pages.map((_, i) => i) : [...state.selectedPages];
-
         if (indices.length === 0) { toast('Lütfen döndürülecek sayfaları seçin.', 'error'); return null; }
-
         for (const idx of indices) {
             const page = pages[idx];
             const cur = page.getRotation().angle;
@@ -1227,11 +1518,38 @@
         return await doc.save();
     }
 
-    /* ---- 5. Delete ---- */
+    /* ---- 5. Delete / Extract ---- */
     async function execDelete() {
+        const mode = document.querySelector('input[name="delete-mode"]:checked')?.value || 'delete';
+
+        if (mode === 'extract') {
+            // Sayfa çıkarma
+            const rangeStr = $('#opt-delete-range')?.value?.trim();
+            let indices;
+            if (rangeStr) {
+                indices = parseRanges(rangeStr, state.pageCount);
+            } else {
+                indices = [...state.selectedPages].sort((a, b) => a - b);
+            }
+            if (indices.length === 0) { toast('Lütfen çıkarmak istediğiniz sayfaları seçin.', 'error'); return null; }
+            const srcDoc = await PDFDocument.load(state.pdfBytes);
+            const newDoc = await PDFDocument.create();
+            const pages = await newDoc.copyPages(srcDoc, indices);
+            pages.forEach(p => newDoc.addPage(p));
+            // Extract = download only, doesn't modify original
+            const bytes = await newDoc.save();
+            const blob = new Blob([bytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = el('a', { href: url, download: state.fileName.replace('.pdf', '_çıkarılan.pdf') });
+            document.body.appendChild(a); a.click(); a.remove();
+            URL.revokeObjectURL(url);
+            toast(`${indices.length} sayfa ayrı PDF olarak indirildi!`, 'success');
+            return null; // don't modify original
+        }
+
+        // Normal silme
         if (state.selectedPages.size === 0) { toast('Lütfen silinecek sayfaları seçin.', 'error'); return null; }
         if (state.selectedPages.size >= state.pageCount) { toast('Tüm sayfalar silinemez!', 'error'); return null; }
-
         const srcDoc = await PDFDocument.load(state.pdfBytes);
         const newDoc = await PDFDocument.create();
         const keepIndices = [];
@@ -1239,24 +1557,6 @@
             if (!state.selectedPages.has(i)) keepIndices.push(i);
         }
         const pages = await newDoc.copyPages(srcDoc, keepIndices);
-        pages.forEach(p => newDoc.addPage(p));
-        return await newDoc.save();
-    }
-
-    /* ---- 7. Extract ---- */
-    async function execExtract() {
-        const rangeStr = $('#opt-extract-range')?.value?.trim();
-        let indices;
-        if (rangeStr) {
-            indices = parseRanges(rangeStr, state.pageCount);
-        } else {
-            indices = [...state.selectedPages].sort((a, b) => a - b);
-        }
-        if (indices.length === 0) { toast('Lütfen çıkarmak istediğiniz sayfaları seçin.', 'error'); return null; }
-
-        const srcDoc = await PDFDocument.load(state.pdfBytes);
-        const newDoc = await PDFDocument.create();
-        const pages = await newDoc.copyPages(srcDoc, indices);
         pages.forEach(p => newDoc.addPage(p));
         return await newDoc.save();
     }
@@ -1833,13 +2133,14 @@
         hideLoading();
     }
 
-    /* ---- 21. Images to PDF ---- */
+    /* ---- 21. Images to PDF (mevcut PDF'e görsel sayfa ekle) ---- */
     async function execImagesToPdf() {
         if (!state._imagesToPdfFiles || state._imagesToPdfFiles.length === 0) {
             toast('Lütfen en az bir görsel seçin.', 'error'); return null;
         }
         const sizeMode = $('#opt-i2p-size').value;
-        const newDoc = await PDFDocument.create();
+        // Mevcut PDF'i yükle ve görsel sayfaları ekle
+        const newDoc = await PDFDocument.load(state.pdfBytes);
 
         for (const file of state._imagesToPdfFiles) {
             let img;
@@ -1939,14 +2240,26 @@
        UNDO
        ============================================================ */
     async function undo() {
-        if (state.history.length === 0) { toast('Geri alınacak işlem yok.', 'info'); return; }
+        if (state.history.length === 0) {
+            // If there's a pending reorder, cancel it
+            if (state.pendingReorder) {
+                state.pendingReorder = false;
+                state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
+                await renderThumbnails();
+                toast('Sıralama geri alındı.', 'success');
+                return;
+            }
+            toast('Geri alınacak işlem yok.', 'info'); return;
+        }
         showLoading('Geri alınıyor...');
+        state.pendingReorder = false;
         const prev = state.history.pop();
         state.pdfBytes = prev;
         state.selectedPages.clear();
         const loadingTask = pdfjsLib.getDocument({ data: prev.slice(0) });
         state.pdfJsDoc = await loadingTask.promise;
         state.pageCount = state.pdfJsDoc.numPages;
+        state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
         $('#file-meta').textContent = `${state.pageCount} sayfa • ${formatSize(prev.length)}`;
         await renderThumbnails();
         hideLoading();
@@ -1999,6 +2312,150 @@
         $('#btn-close-panel').addEventListener('click', closeTool);
         $('#btn-apply-tool').addEventListener('click', applyTool);
 
+        // Quick action toolbar buttons (instant DOM-first, background PDF build)
+        const quickActions = {
+            'btn-quick-delete': async () => {
+                if (!state.pdfBytes || state.selectedPages.size === 0) { toast('Lütfen silinecek sayfaları seçin.', 'error'); return; }
+                const toDelete = new Set(state.selectedPages);
+                if (toDelete.size >= state.pageCount) { toast('Tüm sayfalar silinemez!', 'error'); return; }
+                if (state.pendingReorder) await commitPageOrder();
+                // ✅ Anında DOM güncellemesi
+                toDelete.forEach(idx => { const c = $(`.thumb-card[data-index="${idx}"]`); if (c) c.remove(); });
+                state.selectedPages.clear();
+                renumberThumbnails();
+                toast('Seçili sayfalar silindi!', 'success');
+                // 🔄 Arka planda PDF güncelle
+                try {
+                    const srcDoc = await PDFDocument.load(state.pdfBytes);
+                    const newDoc = await PDFDocument.create();
+                    const keep = [];
+                    for (let i = 0; i < srcDoc.getPageCount(); i++) if (!toDelete.has(i)) keep.push(i);
+                    const pages = await newDoc.copyPages(srcDoc, keep);
+                    pages.forEach(p => newDoc.addPage(p));
+                    await commitPdfBytes(await newDoc.save());
+                } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            },
+            'btn-quick-rotate-cw': async () => {
+                if (!state.pdfBytes || state.selectedPages.size === 0) { toast('Lütfen döndürülecek sayfaları seçin.', 'error'); return; }
+                const toRotate = new Set(state.selectedPages);
+                if (state.pendingReorder) await commitPageOrder();
+                // ✅ Anında canvas döndürme
+                toRotate.forEach(idx => {
+                    const card = $(`.thumb-card[data-index="${idx}"]`);
+                    if (!card) return;
+                    const canvas = card.querySelector('canvas');
+                    const rotated = rotateCanvasBy(canvas, 90);
+                    canvas.width = rotated.width; canvas.height = rotated.height;
+                    canvas.getContext('2d').drawImage(rotated, 0, 0);
+                });
+                toast('Sayfalar döndürüldü!', 'success');
+                // 🔄 Arka planda PDF güncelle
+                try {
+                    const doc = await PDFDocument.load(state.pdfBytes);
+                    const pages = doc.getPages();
+                    toRotate.forEach(idx => { const p = pages[idx]; p.setRotation(degrees((p.getRotation().angle + 90) % 360)); });
+                    await commitPdfBytes(await doc.save());
+                } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            },
+            'btn-quick-rotate-ccw': async () => {
+                if (!state.pdfBytes || state.selectedPages.size === 0) { toast('Lütfen döndürülecek sayfaları seçin.', 'error'); return; }
+                const toRotate = new Set(state.selectedPages);
+                if (state.pendingReorder) await commitPageOrder();
+                // ✅ Anında canvas döndürme
+                toRotate.forEach(idx => {
+                    const card = $(`.thumb-card[data-index="${idx}"]`);
+                    if (!card) return;
+                    const canvas = card.querySelector('canvas');
+                    const rotated = rotateCanvasBy(canvas, 270);
+                    canvas.width = rotated.width; canvas.height = rotated.height;
+                    canvas.getContext('2d').drawImage(rotated, 0, 0);
+                });
+                toast('Sayfalar döndürüldü!', 'success');
+                // 🔄 Arka planda PDF güncelle
+                try {
+                    const doc = await PDFDocument.load(state.pdfBytes);
+                    const pages = doc.getPages();
+                    toRotate.forEach(idx => { const p = pages[idx]; p.setRotation(degrees((p.getRotation().angle + 270) % 360)); });
+                    await commitPdfBytes(await doc.save());
+                } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            },
+            'btn-quick-duplicate': async () => {
+                if (!state.pdfBytes || state.selectedPages.size === 0) { toast('Lütfen çoğaltılacak sayfaları seçin.', 'error'); return; }
+                const toDup = [...state.selectedPages].sort((a, b) => a - b);
+                if (state.pendingReorder) await commitPageOrder();
+                // ✅ Anında DOM - kartları klonla (canvas piksel verisini düşgün kopyala)
+                toDup.forEach(idx => {
+                    const card = $(`.thumb-card[data-index="${idx}"]`);
+                    if (!card) return;
+                    const clone = card.cloneNode(true);
+                    clone.classList.remove('selected');
+                    // Canvas piksel verisini kopyala
+                    const srcCanvas = card.querySelector('canvas');
+                    const dstCanvas = clone.querySelector('canvas');
+                    if (srcCanvas && dstCanvas) {
+                        dstCanvas.width = srcCanvas.width;
+                        dstCanvas.height = srcCanvas.height;
+                        dstCanvas.getContext('2d').drawImage(srcCanvas, 0, 0);
+                    }
+                    attachThumbEvents(clone);
+                    card.after(clone);
+                    if (state._thumbObserver && dstCanvas) state._thumbObserver.observe(dstCanvas);
+                });
+                state.selectedPages.clear();
+                renumberThumbnails();
+                toast('Sayfalar çoğaltıldı!', 'success');
+                // 🔄 Arka planda PDF güncelle
+                try {
+                    const srcDoc = await PDFDocument.load(state.pdfBytes);
+                    const newDoc = await PDFDocument.create();
+                    for (let i = 0; i < srcDoc.getPageCount(); i++) {
+                        const [p] = await newDoc.copyPages(srcDoc, [i]); newDoc.addPage(p);
+                        if (toDup.includes(i)) { const [d] = await newDoc.copyPages(srcDoc, [i]); newDoc.addPage(d); }
+                    }
+                    await commitPdfBytes(await newDoc.save());
+                } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            },
+            'btn-quick-blank': async () => {
+                if (!state.pdfBytes) return;
+                if (state.pendingReorder) await commitPageOrder();
+                // ✅ Anında DOM - beyaz canvas ekle
+                const grid = $('#thumbnail-grid');
+                const refCanvas = grid.querySelector('.thumb-card canvas');
+                const w = refCanvas ? refCanvas.width : 180;
+                const h = refCanvas ? Math.round(refCanvas.height) : 255;
+                const blankCanvas = createBlankCanvas(w, h);
+                blankCanvas.dataset.rendered = "true";
+                const newIdx = state.pageCount;
+                const card = el('div', { className: 'thumb-card', 'data-index': newIdx, draggable: 'true' }, [
+                    el('span', { className: 'thumb-drag-handle', textContent: '⠿' }),
+                    blankCanvas,
+                    el('span', { className: 'thumb-check', textContent: '✓' }),
+                    el('span', { className: 'thumb-label', textContent: `${newIdx + 1}` }),
+                ]);
+                attachThumbEvents(card);
+                grid.appendChild(card);
+                state.pageCount++;
+                state.pageOrder = Array.from({ length: state.pageCount }, (_, i) => i);
+                updateSelectionCount();
+                $('#file-meta').textContent = `${state.pageCount} sayfa • ${formatSize(state.pdfBytes.length)}`;
+                toast('Boş sayfa eklendi!', 'success');
+                // 🔄 Arka planda PDF güncelle
+                try {
+                    const srcDoc = await PDFDocument.load(state.pdfBytes);
+                    const newDoc = await PDFDocument.create();
+                    const total = srcDoc.getPageCount();
+                    const all = await newDoc.copyPages(srcDoc, Array.from({ length: total }, (_, i) => i));
+                    all.forEach(p => newDoc.addPage(p));
+                    const ref = srcDoc.getPages()[total - 1]; const { width, height } = ref.getSize();
+                    newDoc.addPage([width, height]);
+                    await commitPdfBytes(await newDoc.save());
+                } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            },
+        };
+        Object.entries(quickActions).forEach(([id, fn]) => {
+            const btn = $(`#${id}`);
+            if (btn) btn.addEventListener('click', fn);
+        });
         // Select all / deselect
         $('#btn-select-all').addEventListener('click', () => {
             for (let i = 0; i < state.pageCount; i++) state.selectedPages.add(i);
@@ -2034,6 +2491,19 @@
         document.addEventListener('dragover', e => e.preventDefault());
         document.addEventListener('drop', e => e.preventDefault());
     }
+
+    // Expose internals for page-editor.js
+    window.__pdfApp = {
+        state,
+        toast,
+        showLoading,
+        hideLoading,
+        commitPdfBytes,
+        reloadAfterEdit,
+        renderThumbnails,
+        $,
+        $$,
+    };
 
     // Start!
     init();

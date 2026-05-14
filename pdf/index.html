@@ -80,11 +80,23 @@
                         <button class="btn btn-sm btn-ghost" id="btn-deselect-all">⬜ Seçimi Kaldır</button>
                         <span class="selection-count" id="selection-count"></span>
                     </div>
+                    <div class="toolbar-center">
+                        <span class="quick-action-label">Seçili sayfalara:</span>
+                        <button class="btn btn-sm btn-quick" id="btn-quick-rotate-cw" title="90° Saat Yönünde Döndür">↻ 90°</button>
+                        <button class="btn btn-sm btn-quick" id="btn-quick-rotate-ccw" title="90° Saat Yönü Tersinde Döndür">↺ 90°</button>
+                        <button class="btn btn-sm btn-quick" id="btn-quick-duplicate" title="Sayfayı Çoğalt">🔁 Çoğalt</button>
+                        <button class="btn btn-sm btn-quick btn-quick-danger" id="btn-quick-delete" title="Sayfayı Sil">🗑️ Sil</button>
+                        <span class="quick-action-sep">|</span>
+                        <button class="btn btn-sm btn-quick" id="btn-quick-blank" title="Sona Boş Sayfa Ekle">📃 Boş Ekle</button>
+                    </div>
                     <div class="toolbar-right">
                         <button class="btn btn-sm btn-ghost" id="btn-zoom-out">➖</button>
                         <span class="zoom-label" id="zoom-level">100%</span>
                         <button class="btn btn-sm btn-ghost" id="btn-zoom-in">➕</button>
                     </div>
+                </div>
+                <div class="reorder-info-bar" id="reorder-info-bar">
+                    <span>↔ Sayfaları sürükleyerek yeniden sıralayabilirsiniz</span>
                 </div>
                 <div class="thumbnail-grid" id="thumbnail-grid"></div>
             </div>
@@ -103,6 +115,147 @@
                 </button>
             </div>
         </aside>
+    </div>
+
+    <!-- ============================================================
+         PAGE EDITOR MODAL
+         ============================================================ -->
+    <div class="page-editor-overlay" id="page-editor-overlay" style="display:none">
+        <div class="page-editor-layout">
+            <!-- Canvas Area -->
+            <div class="pe-canvas-area" id="pe-canvas-area">
+                <div class="pe-canvas-wrapper" id="pe-canvas-wrapper">
+                    <canvas id="pe-canvas"></canvas>
+                </div>
+                <div class="pe-canvas-controls">
+                    <button class="btn btn-sm btn-ghost" id="pe-btn-zoom-out" title="Uzaklaştır">➖</button>
+                    <span class="zoom-label" id="pe-zoom-level">100%</span>
+                    <button class="btn btn-sm btn-ghost" id="pe-btn-zoom-in" title="Yakınlaştır">➕</button>
+                    <button class="btn btn-sm btn-ghost" id="pe-btn-zoom-fit" title="Sığdır">⊞</button>
+                </div>
+            </div>
+
+            <!-- Editor Sidebar -->
+            <aside class="pe-sidebar" id="pe-sidebar">
+                <div class="pe-sidebar-header">
+                    <h3 id="pe-title">✏️ Sayfa Düzenle</h3>
+                    <button class="btn-icon" id="pe-btn-close" title="Kapat">✕</button>
+                </div>
+                <div class="pe-sidebar-scroll">
+                    <!-- Crop Section -->
+                    <div class="pe-section" id="pe-section-crop">
+                        <div class="pe-section-header" data-section="crop">
+                            <span>✂️ Kırpma</span>
+                            <span class="pe-section-toggle">▾</span>
+                        </div>
+                        <div class="pe-section-body">
+                            <div class="pe-aspect-buttons">
+                                <button class="btn btn-sm btn-ghost pe-aspect-btn active" data-aspect="free">Serbest</button>
+                                <button class="btn btn-sm btn-ghost pe-aspect-btn" data-aspect="1:1">1:1</button>
+                                <button class="btn btn-sm btn-ghost pe-aspect-btn" data-aspect="4:3">4:3</button>
+                                <button class="btn btn-sm btn-ghost pe-aspect-btn" data-aspect="16:9">16:9</button>
+                                <button class="btn btn-sm btn-ghost pe-aspect-btn" data-aspect="A4">A4</button>
+                            </div>
+                            <div class="pe-crop-actions">
+                                <button class="btn btn-sm btn-primary" id="pe-btn-crop-apply" style="display:none">✅ Kırpmayı Uygula</button>
+                                <button class="btn btn-sm btn-ghost" id="pe-btn-crop-cancel" style="display:none">İptal</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rotation Section -->
+                    <div class="pe-section" id="pe-section-rotate">
+                        <div class="pe-section-header" data-section="rotate">
+                            <span>🔄 Döndürme</span>
+                            <span class="pe-section-toggle">▾</span>
+                        </div>
+                        <div class="pe-section-body">
+                            <div class="pe-rotation-control">
+                                <svg class="pe-rotation-dial" id="pe-rotation-dial" width="130" height="130" viewBox="0 0 140 140">
+                                    <circle cx="70" cy="70" r="58" class="pe-dial-track"/>
+                                    <line x1="70" y1="14" x2="70" y2="22" class="pe-dial-tick pe-dial-tick-major"/>
+                                    <line x1="128" y1="70" x2="120" y2="70" class="pe-dial-tick pe-dial-tick-major"/>
+                                    <line x1="70" y1="128" x2="70" y2="120" class="pe-dial-tick pe-dial-tick-major"/>
+                                    <line x1="12" y1="70" x2="20" y2="70" class="pe-dial-tick pe-dial-tick-major"/>
+                                    <text x="70" y="10" class="pe-dial-label">0°</text>
+                                    <text x="134" y="74" class="pe-dial-label">90°</text>
+                                    <text x="70" y="138" class="pe-dial-label">180°</text>
+                                    <text x="6" y="74" class="pe-dial-label">270°</text>
+                                    <circle cx="70" cy="14" r="8" class="pe-dial-thumb" id="pe-rotation-thumb"/>
+                                </svg>
+                                <div class="pe-rotation-value" id="pe-rotation-value">0°</div>
+                            </div>
+                            <div class="pe-rotation-quick">
+                                <button class="btn btn-sm btn-ghost" id="pe-btn-rotate-ccw" title="90° Sola">↺ 90°</button>
+                                <button class="btn btn-sm btn-ghost" id="pe-btn-rotate-180" title="180°">↕ 180°</button>
+                                <button class="btn btn-sm btn-ghost" id="pe-btn-rotate-cw" title="90° Sağa">↻ 90°</button>
+                                <button class="btn btn-sm btn-ghost" id="pe-btn-rotate-reset" title="Sıfırla">0°</button>
+                            </div>
+                            <div class="form-group" style="margin-top:8px">
+                                <label class="form-label">Açı (°)</label>
+                                <input class="form-input" id="pe-rotation-input" type="number" value="0" min="-360" max="360" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Perspective Section -->
+                    <div class="pe-section" id="pe-section-perspective">
+                        <div class="pe-section-header" data-section="perspective">
+                            <span>📐 Perspektif Düzeltme</span>
+                            <span class="pe-section-toggle">▾</span>
+                        </div>
+                        <div class="pe-section-body">
+                            <div class="info-box info-primary">4 köşe noktasını sürükleyerek belgenin perspektifini düzeltin.</div>
+                            <div class="pe-perspective-actions">
+                                <button class="btn btn-sm btn-ghost btn-block" id="pe-btn-perspective-toggle">📐 Perspektif Modunu Aç</button>
+                                <button class="btn btn-sm btn-primary btn-block" id="pe-btn-perspective-apply" style="display:none">✅ Düzeltmeyi Uygula</button>
+                                <button class="btn btn-sm btn-ghost btn-block" id="pe-btn-perspective-reset" style="display:none">Sıfırla</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color Section -->
+                    <div class="pe-section" id="pe-section-color">
+                        <div class="pe-section-header" data-section="color">
+                            <span>🎨 Renk Ayarları</span>
+                            <span class="pe-section-toggle">▾</span>
+                        </div>
+                        <div class="pe-section-body">
+                            <div class="form-group">
+                                <label class="form-label">Renk Modu</label>
+                                <div class="radio-group" id="pe-color-mode-group">
+                                    <label class="radio-option active"><input type="radio" name="pe-color-mode" value="color" checked> 🎨 Renkli</label>
+                                    <label class="radio-option"><input type="radio" name="pe-color-mode" value="bw"> ⬛ Siyah-Beyaz</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display:flex;justify-content:space-between">
+                                    <span>☀️ Parlaklık</span>
+                                    <span id="pe-brightness-value">0</span>
+                                </label>
+                                <input class="form-range" id="pe-brightness-slider" type="range" min="-100" max="100" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display:flex;justify-content:space-between">
+                                    <span>🔲 Kontrast</span>
+                                    <span id="pe-contrast-value">0</span>
+                                </label>
+                                <input class="form-range" id="pe-contrast-slider" type="range" min="-100" max="100" value="0">
+                            </div>
+                            <button class="btn btn-sm btn-ghost btn-block" id="pe-btn-color-reset">🔄 Renk Ayarlarını Sıfırla</button>
+                        </div>
+                    </div>
+
+                    <div class="pe-divider"></div>
+
+                    <!-- Actions -->
+                    <div class="pe-actions">
+                        <button class="btn btn-primary btn-block" id="pe-btn-save">✅ Kaydet &amp; Uygula</button>
+                        <button class="btn btn-ghost btn-block" id="pe-btn-cancel">❌ İptal</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </div>
 
     <!-- Toast Container -->
@@ -130,5 +283,6 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
     <script src="app.js"></script>
+    <script src="page-editor.js"></script>
 </body>
 </html>
