@@ -13,6 +13,7 @@
         { id: 'split', name: 'PDF Bölme', icon: '✂️', desc: 'Sayfa aralıklarına göre böl' },
         { id: 'rotate', name: 'Döndürme & Yön', icon: '🔄', desc: 'Döndür veya yönü değiştir (dikey ↔ yatay)' },
         { id: 'delete', name: 'Sayfa Sil / Çıkar', icon: '🗑️', desc: 'Seçili sayfaları sil veya ayrı PDF olarak çıkar' },
+        { id: 'reverse-pages', name: 'Sayfa Sıralamasını Ters Çevir', icon: '🔃', desc: 'Sayfa sırasını ters çevir — Arapça baskılar için' },
         { id: 'watermark', name: 'Filigran Ekle', icon: '💧', desc: 'Metin filigranı ekle' },
         { id: 'page-numbers', name: 'Sayfa Numarası', icon: '🔢', desc: 'Numara ekle' },
         { id: 'resize', name: 'Boyut Değiştir', icon: '📐', desc: 'Sayfa boyutunu değiştir' },
@@ -278,21 +279,22 @@
             });
         }, { root: grid, rootMargin: '300px' });
 
-        for (let i = 1; i <= state.pageCount; i++) {
-            const canvas = el('canvas', { 'data-page': i });
+        // state.pageOrder dizisini kullanarak doğru sırada render et
+        for (let i = 0; i < state.pageCount; i++) {
+            const originalPageNum = state.pageOrder[i] + 1; // 1-tabanlı sayfa numarası
+            const canvas = el('canvas', { 'data-page': originalPageNum });
             // Placeholder boyutu, Intersection Observer'ın çalışması için gerekli
-            canvas.style.aspectRatio = '1 / 1.414'; 
+            canvas.style.aspectRatio = '1 / 1.414';
 
-            const idx = i - 1;
             const card = el('div', {
-                className: 'thumb-card' + (state.selectedPages.has(idx) ? ' selected' : ''),
-                'data-index': idx,
+                className: 'thumb-card' + (state.selectedPages.has(i) ? ' selected' : ''),
+                'data-index': i,
                 draggable: 'true',
             }, [
                 el('span', { className: 'thumb-drag-handle', textContent: '⠿' }),
                 canvas,
                 el('span', { className: 'thumb-check', textContent: '✓' }),
-                el('span', { className: 'thumb-label', textContent: `${i}` }),
+                el('span', { className: 'thumb-label', textContent: `${i + 1}` }),
             ]);
 
             attachThumbEvents(card);
@@ -462,6 +464,7 @@
             'split': panelSplit,
             'rotate': panelRotate,
             'delete': panelDelete,
+            'reverse-pages': panelReversePages,
             'watermark': panelWatermark,
             'page-numbers': panelPageNumbers,
             'resize': panelResize,
@@ -490,7 +493,7 @@
         state._previewBase = state.pdfBytes;
         state._previewActive = false;
         state._previewResult = null;
-        const noPreview = ['export-images', 'images-to-pdf', 'metadata', 'merge-pdfs', 'compress', 'add-image'];
+        const noPreview = ['export-images', 'images-to-pdf', 'metadata', 'merge-pdfs', 'compress', 'add-image', 'reverse-pages'];
         if (!noPreview.includes(toolId)) {
             setTimeout(() => attachPreviewListeners(), 150);
         }
@@ -636,6 +639,35 @@
     }
 
 
+
+    function panelReversePages(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">
+                🔃 <strong>Arapça / Sağdan Sola Baskı için:</strong> Sayfa sırası ters çevrildiğinde, baskıda ilk sayfa sona gelir. Arapça kitaplarda bu, okuyucunun sağdan sola açmasına uygun olur.
+            </div>
+            <div class="form-group">
+                <label class="form-label">Uygulama Kapsamı</label>
+                <div class="radio-group" id="opt-rev-scope">
+                    <label class="radio-option active"><input type="radio" name="rev-scope" value="all" checked> 📄 Tüm Sayfaları Ters Çevir</label>
+                    <label class="radio-option"><input type="radio" name="rev-scope" value="selected"> ✅ Yalnızca Seçili Sayfaları Ters Çevir</label>
+                </div>
+            </div>
+            <div class="info-box" id="rev-selection-hint" style="display:none;">
+                💡 Thumbnail'lardan ters çevirmek istediğiniz sayfaları seçin.
+            </div>
+            <div class="divider"></div>
+            <div class="form-group">
+                <label class="form-label">Mevcut Sayfa Sırası</label>
+                <p class="form-hint">Toplam <strong>${state.pageCount}</strong> sayfa — Uygula'ya tıklayınca sıralama anında tersine dönecektir.</p>
+            </div>`;
+        initRadioGroups(body);
+        body.querySelectorAll('input[name="rev-scope"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const hint = body.querySelector('#rev-selection-hint');
+                hint.style.display = radio.value === 'selected' ? '' : 'none';
+            });
+        });
+    }
 
     function panelWatermark(body) {
         body.innerHTML = `
@@ -1066,7 +1098,7 @@
     function panelImagesToPdf(body) {
         state._imagesToPdfFiles = [];
         body.innerHTML = `
-            <div class="info-box info-primary">Birden fazla görseli sırayla bir PDF dosyasına dönüştürür.</div>
+            <div class="info-box info-primary">Görselleri mevcut PDF'e sayfa olarak ekler.</div>
             <div class="form-group">
                 <button class="btn btn-ghost btn-block" id="btn-pick-images">🖼️ Görselleri Seç</button>
             </div>
@@ -1077,7 +1109,29 @@
                     <option value="fit">Görsele Göre Ayarla</option>
                     <option value="A4">A4 Sayfaya Sığdır</option>
                 </select>
-            </div>`;
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ekleme Konumu</label>
+                <div class="radio-group" id="opt-i2p-pos-group">
+                    <label class="radio-option"><input type="radio" name="i2p-pos" value="start"> 🔝 Sayfanın Başına</label>
+                    <label class="radio-option active"><input type="radio" name="i2p-pos" value="end" checked> 🔚 Sayfanın Sonuna</label>
+                    <label class="radio-option"><input type="radio" name="i2p-pos" value="after-selected"> ⬇️ Seçili Sayfadan Sonra</label>
+                    <label class="radio-option"><input type="radio" name="i2p-pos" value="before-selected"> ⬆️ Seçili Sayfadan Önce</label>
+                </div>
+            </div>
+            <div class="info-box" id="i2p-selection-hint" style="display:none;">💡 Thumbnail'lardan bir sayfa seçin; yeni sayfalar o sayfanın yanına eklenecek.</div>`;
+
+        initRadioGroups(body);
+
+        // Seçili sayfa ipucu göster/gizle
+        body.querySelectorAll('input[name="i2p-pos"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const hint = body.querySelector('#i2p-selection-hint');
+                const needsSelection = radio.value === 'after-selected' || radio.value === 'before-selected';
+                hint.style.display = needsSelection ? '' : 'none';
+            });
+        });
+
         $('#btn-pick-images').addEventListener('click', () => {
             const inp = $('#file-input-images');
             inp.onchange = async (e) => {
@@ -1203,6 +1257,7 @@
             'split': execSplit,
             'rotate': execRotate,
             'delete': execDelete,
+            'reverse-pages': execReversePages,
             'watermark': execWatermark,
             'page-numbers': execPageNumbers,
             'resize': execResize,
@@ -1376,6 +1431,60 @@
             return;
         }
 
+        if (state.currentTool === 'reverse-pages') {
+            const scope = document.querySelector('input[name="rev-scope"]:checked')?.value || 'all';
+            const grid = $('#thumbnail-grid');
+
+            // 1. Snapshot current card order (before any DOM moves)
+            const allCards = [...grid.querySelectorAll('.thumb-card')];
+
+            let indices;
+            if (scope === 'all') {
+                indices = allCards.map((_, i) => i);
+            } else {
+                indices = [...state.selectedPages].sort((a, b) => a - b);
+                if (indices.length < 2) { toast('Ters çevirmek için en az 2 sayfa seçin.', 'error'); return; }
+            }
+
+            // 2. Build new card order array: selected positions get their cards reversed
+            const newCardOrder = [...allCards];
+            const selectedCards = indices.map(i => allCards[i]);
+            const reversedCards = [...selectedCards].reverse();
+            indices.forEach((origIdx, pos) => { newCardOrder[origIdx] = reversedCards[pos]; });
+
+            // 3. Re-append all cards in new order (appendChild moves nodes — no clone needed)
+            newCardOrder.forEach(card => grid.appendChild(card));
+
+            // 4. Update pageOrder state
+            const newOrder = [...state.pageOrder];
+            const reversedVals = indices.map(i => state.pageOrder[i]).reverse();
+            indices.forEach((origIdx, pos) => { newOrder[origIdx] = reversedVals[pos]; });
+            state.pageOrder = newOrder;
+            state.pendingReorder = true;
+
+            // 5. Re-index labels & selection
+            const newSelected = new Set();
+            grid.querySelectorAll('.thumb-card').forEach((card, i) => {
+                if (card.classList.contains('selected')) newSelected.add(i);
+                card.dataset.index = i;
+                card.querySelector('.thumb-label').textContent = `${i + 1}`;
+            });
+            state.selectedPages = newSelected;
+            updateSelectionCount();
+
+            toast('Sayfa sırası ters çevrildi!', 'success');
+
+            // 6. Background PDF rebuild
+            try {
+                const srcDoc = await PDFDocument.load(state.pdfBytes);
+                const newDoc = await PDFDocument.create();
+                const pages = await newDoc.copyPages(srcDoc, state.pageOrder);
+                pages.forEach(p => newDoc.addPage(p));
+                await commitPdfBytes(await newDoc.save());
+            } catch(e) { toast('PDF güncellenemedi: ' + e.message, 'error'); }
+            return;
+        }
+
         if (state.currentTool === 'add-blank') {
             const grid = $('#thumbnail-grid');
             const refCanvas = grid.querySelector('.thumb-card canvas');
@@ -1415,6 +1524,18 @@
             toast('Hata: ' + err.message, 'error');
         }
         hideLoading();
+    }
+
+    /* ---- 0. Reverse Pages (for Arabic RTL prints) ---- */
+    async function execReversePages() {
+        // DOM-first logic is handled directly in applyTool; this is a safety fallback.
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        const newDoc = await PDFDocument.create();
+        const count = srcDoc.getPageCount();
+        const reversedOrder = Array.from({ length: count }, (_, i) => count - 1 - i);
+        const pages = await newDoc.copyPages(srcDoc, reversedOrder);
+        pages.forEach(p => newDoc.addPage(p));
+        return await newDoc.save();
     }
 
     /* ---- 1. Merge Pages N-by-N ---- */
@@ -2139,14 +2260,40 @@
             toast('Lütfen en az bir görsel seçin.', 'error'); return null;
         }
         const sizeMode = $('#opt-i2p-size').value;
-        // Mevcut PDF'i yükle ve görsel sayfaları ekle
-        const newDoc = await PDFDocument.load(state.pdfBytes);
+        const insertPos = document.querySelector('input[name="i2p-pos"]:checked')?.value || 'end';
+
+        // Ekleme indeksini belirle
+        const srcDoc = await PDFDocument.load(state.pdfBytes);
+        const totalPages = srcDoc.getPageCount();
+        let insertIdx;
+
+        if (insertPos === 'start') {
+            insertIdx = 0;
+        } else if (insertPos === 'end') {
+            insertIdx = totalPages;
+        } else if (insertPos === 'after-selected') {
+            if (state.selectedPages.size === 0) {
+                toast('Lütfen önce bir sayfa seçin.', 'error'); return null;
+            }
+            const sorted = [...state.selectedPages].sort((a, b) => a - b);
+            insertIdx = sorted[sorted.length - 1] + 1;
+        } else { // before-selected
+            if (state.selectedPages.size === 0) {
+                toast('Lütfen önce bir sayfa seçin.', 'error'); return null;
+            }
+            const sorted = [...state.selectedPages].sort((a, b) => a - b);
+            insertIdx = sorted[0];
+        }
+
+        // Görsel sayfaları oluştur (geçici doc üzerinde embed için)
+        const tempDoc = await PDFDocument.create();
+        const imagePagesToInsert = []; // { w, h, drawX, drawY, drawW, drawH, imgBytes, imgType }
 
         for (const file of state._imagesToPdfFiles) {
             let img;
             try {
-                if (file.type.includes('png')) img = await newDoc.embedPng(file.bytes);
-                else img = await newDoc.embedJpg(file.bytes);
+                if (file.type.includes('png')) img = await tempDoc.embedPng(file.bytes);
+                else img = await tempDoc.embedJpg(file.bytes);
             } catch (e) { console.warn('Görsel atlandı:', file.name, e); continue; }
 
             let pageW, pageH, drawW, drawH, drawX, drawY;
@@ -2160,8 +2307,33 @@
                 drawW = img.width; drawH = img.height;
                 drawX = 0; drawY = 0;
             }
-            const page = newDoc.addPage([pageW, pageH]);
-            page.drawImage(img, { x: drawX, y: drawY, width: drawW, height: drawH });
+            const tmpPage = tempDoc.addPage([pageW, pageH]);
+            tmpPage.drawImage(img, { x: drawX, y: drawY, width: drawW, height: drawH });
+        }
+
+        // Yeni belgeyi oluştur: mevcut sayfalar + görsel sayfalar doğru konumda
+        const newDoc = await PDFDocument.create();
+
+        // insertIdx'ten önce gelen mevcut sayfalar
+        if (insertIdx > 0) {
+            const beforeIndices = Array.from({ length: insertIdx }, (_, i) => i);
+            const beforePages = await newDoc.copyPages(srcDoc, beforeIndices);
+            beforePages.forEach(p => newDoc.addPage(p));
+        }
+
+        // Görsel sayfaları ekle
+        const imgPageCount = tempDoc.getPageCount();
+        if (imgPageCount > 0) {
+            const imgIndices = Array.from({ length: imgPageCount }, (_, i) => i);
+            const imgPages = await newDoc.copyPages(tempDoc, imgIndices);
+            imgPages.forEach(p => newDoc.addPage(p));
+        }
+
+        // insertIdx'ten sonra gelen mevcut sayfalar
+        if (insertIdx < totalPages) {
+            const afterIndices = Array.from({ length: totalPages - insertIdx }, (_, i) => insertIdx + i);
+            const afterPages = await newDoc.copyPages(srcDoc, afterIndices);
+            afterPages.forEach(p => newDoc.addPage(p));
         }
 
         state._imagesToPdfFiles = [];
@@ -2224,8 +2396,14 @@
     /* ============================================================
        DOWNLOAD
        ============================================================ */
-    function downloadPdf() {
+    async function downloadPdf() {
         if (!state.pdfBytes) return;
+        // Bekleyen sayfa sıralamasını önce PDF'e işle
+        if (state.pendingReorder) {
+            showLoading('Sayfa sırası uygulanıyor...');
+            await commitPageOrder();
+            hideLoading();
+        }
         const blob = new Blob([state.pdfBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         const a = el('a', { href: url, download: state.fileName.replace('.pdf', '_düzenlenmiş.pdf') });
