@@ -509,7 +509,31 @@
       'F': { char: 'F', x: 2, y: 2, type: 'circle', dx: 25, dy: 0, morse: '..-.' },
       'X': { char: 'X', x: -2, y: 4.5, type: 'hrect', dx: -35, dy: 0, morse: '-..-' },
 
-      'C': { char: 'C', x: -2, y: 4, type: 'circle', dx: 25, dy: 0, morse: '-.-.' }
+      'C': { char: 'C', x: -2, y: 4, type: 'circle', dx: 25, dy: 0, morse: '-.-.' },
+
+      // Gizli Karakterler (Haritada çizilmeyecek ama çalışacak)
+      '1': { char: '1', morse: '.----', hidden: true },
+      '2': { char: '2', morse: '..---', hidden: true },
+      '3': { char: '3', morse: '...--', hidden: true },
+      '4': { char: '4', morse: '....-', hidden: true },
+      '5': { char: '5', morse: '.....', hidden: true },
+      '6': { char: '6', morse: '-....', hidden: true },
+      '7': { char: '7', morse: '--...', hidden: true },
+      '8': { char: '8', morse: '---..', hidden: true },
+      '9': { char: '9', morse: '----.', hidden: true },
+      '0': { char: '0', morse: '-----', hidden: true },
+
+      'Ç': { char: 'Ç', morse: '-.-..', hidden: true },
+      'Ğ': { char: 'Ğ', morse: '--.-.', hidden: true },
+      'Ö': { char: 'Ö', morse: '---.', hidden: true },
+      'Ş': { char: 'Ş', morse: '.--..', hidden: true },
+      'Ü': { char: 'Ü', morse: '..--', hidden: true },
+
+      '.': { char: '.', morse: '.-.-.-', hidden: true },
+      ',': { char: ',', morse: '--..--', hidden: true },
+      '?': { char: '?', morse: '..--..', hidden: true },
+      '-': { char: '-', morse: '-....-', hidden: true },
+      '/': { char: '/', morse: '-..-.', hidden: true }
     };
 
     const X_STEP = 90;
@@ -525,6 +549,7 @@
     Object.keys(nodesData).forEach(key => {
       if (key === 'ROOT') return;
       const node = nodesData[key];
+      if (node.hidden) return;
       const parentMorse = node.morse.slice(0, -1);
       const parent = Object.values(nodesData).find(n => n.morse === parentMorse) || nodesData['ROOT'];
 
@@ -549,6 +574,7 @@
 
     Object.keys(nodesData).forEach(key => {
       const node = nodesData[key];
+      if (node.hidden) return;
       const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       g.setAttribute('class', 'tree-node');
       g.setAttribute('id', `node-${node.morse || 'root'}`);
