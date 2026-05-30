@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MorseTree</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+    :root {
+      --bg-color: #161618;
+      --dim-line: #4a4a4f;
+      --dim-node: #2a2a2e;
+      --glow-active: #ffdd00;
+      --text-dim: #999;
+      --text-glow: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      touch-action: manipulation;
+    }
+
+    .header {
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 14px;
+      color: #888;
+      position: relative;
+    }
+
+    .help-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #555;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      width: 24px;
+      height: 24px;
+      border: 2px solid #555;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .help-icon:hover {
+      color: var(--glow-active);
+      border-color: var(--glow-active);
+      box-shadow: 0 0 8px rgba(255, 221, 0, 0.4);
+    }
+
+    @media (pointer: coarse) {
+      .help-icon {
+        display: none;
+      }
+    }
+
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: #1c1c1e;
+      border: 1px solid #333;
+      padding: 25px 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      color: #ccc;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    .modal-overlay.show .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      color: var(--glow-active);
+      letter-spacing: 2px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .modal-content ul {
+      padding-left: 20px;
+      margin-bottom: 0;
+    }
+
+    .modal-content li {
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .modal-content kbd {
+      background: #333;
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 12px;
+      color: #fff;
+      border: 1px solid #555;
+      font-family: monospace;
+    }
+
+    .tree-container {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      max-width: 900px;
+      display: block;
+      user-select: none;
+    }
+
+    .tree-line {
+      fill: none;
+      stroke: var(--dim-line);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.1s ease;
+    }
+
+    .tree-line.active {
+      stroke: var(--glow-active);
+      filter: drop-shadow(0 0 6px rgba(255, 221, 0, 0.8));
+    }
+
+    .tree-node circle,
+    .tree-node rect {
+      fill: var(--dim-node);
+      stroke: var(--dim-line);
+      stroke-width: 3;
+      transition: all 0.1s ease;
+    }
+
+    .tree-node.active circle,
+    .tree-node.active rect {
+      fill: var(--glow-active);
+      stroke: var(--glow-active);
+      filter: drop-shadow(0 0 10px rgba(255, 221, 0, 0.8));
+    }
+
+    .tree-node text {
+      font-size: 22px;
+      font-weight: 700;
+      fill: var(--text-dim);
+      text-anchor: middle;
+      dominant-baseline: central;
+      transition: fill 0.1s ease;
+    }
+
+    .tree-node.active text {
+      fill: var(--text-glow);
+      text-shadow: 0 0 8px var(--glow-active);
+    }
+
+    .anten-icon {
+      stroke: var(--dim-line);
+      stroke-width: 4;
+      fill: none;
+      transition: stroke 0.1s ease;
+    }
+
+    .tree-node.active .anten-icon {
+      stroke: var(--glow-active);
+      filter: drop-shadow(0 0 8px rgba(255, 221, 0, 0.8));
+    }
+
+    .controls-container {
+      background: #111;
+      padding: 15px 20px 30px;
+      border-top: 2px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .display-area {
+      text-align: center;
+      margin-bottom: 15px;
+      min-height: 70px;
+    }
+
+    .output-text {
+      font-size: 24px;
+      color: #fff;
+      letter-spacing: 4px;
+      min-height: 30px;
+      word-wrap: break-word;
+    }
+
+    .current-seq {
+      font-size: 32px;
+      color: var(--glow-active);
+      font-weight: bold;
+      min-height: 40px;
+      letter-spacing: 8px;
+    }
+
+    .morse-key-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .morse-key {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #2a2a2e, #1c1c1e);
+      box-shadow:
+        8px 8px 16px rgba(0, 0, 0, 0.6),
+        -4px -4px 10px rgba(255, 255, 255, 0.05),
+        inset 0px 4px 6px rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      touch-action: none;
+      transition: all 0.1s ease;
+    }
+
+    .morse-key::before {
+      content: '';
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1c1c1e, #2a2a2e);
+      box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.5), inset -2px -2px 4px rgba(255, 255, 255, 0.05);
+    }
+
+    .morse-key.pressed {
+      box-shadow:
+        4px 4px 8px rgba(0, 0, 0, 0.6),
+        -2px -2px 5px rgba(255, 255, 255, 0.02),
+        inset 0px -2px 4px rgba(0, 0, 0, 0.4);
+      transform: translateY(2px);
+    }
+
+    .morse-key.pressed::after {
+      content: '';
+      position: absolute;
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: var(--glow-active);
+      box-shadow: 0 0 15px var(--glow-active);
+      opacity: 0.8;
+    }
+
+    .settings-row {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 0 10px;
+    }
+
+    .speed-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #888;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .speed-control input[type="range"] {
+      -webkit-appearance: none;
+      width: 80px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .speed-control input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--glow-active);
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, transform 0.1s;
+      outline: none;
+    }
+
+    .icon-btn:hover {
+      color: var(--glow-active);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.9);
+    }
+
+    .icon-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    MorseTree
+    <div class="help-icon" id="help-btn" title="Klavye Kısayolları">?</div>
+  </div>
+
+  <div class="tree-container">
+    <svg id="tree-svg" viewBox="-360 -100 820 750">
+      <g id="lines-layer"></g>
+      <g id="nodes-layer"></g>
+    </svg>
+  </div>
+
+  <div class="controls-container">
+    <div class="display-area">
+      <div class="output-text" id="output-text"></div>
+      <div class="current-seq" id="current-seq"></div>
+    </div>
+
+    <div class="settings-row">
+      <div class="speed-control">
+        <label for="speed-slider" id="label-speed">HIZ:</label>
+        <input type="range" id="speed-slider" min="1" max="10" value="5" step="1">
+        <span id="speed-label">5</span>
+      </div>
+      <button id="reset-btn" class="icon-btn" title="Metni Temizle">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="morse-key-wrapper">
+      <div class="morse-key" id="manipile"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="help-modal">
+    <div class="modal-content">
+      <h3 id="modal-title">MASAÜSTÜ KONTROLLERİ</h3>
+      <ul id="modal-list">
+        <li><kbd>Boşluk</kbd> Basılı tutarak mors sinyali gönderin. Sinyaller arası beklediğinizde harf otomatik
+          onaylanır.</li>
+        <li><kbd>ESC</kbd> Ekrandaki metni ve yarım kalan sinyali sıfırlar.</li>
+        <li><kbd>Backspace</kbd> Girdiğiniz son sinyali veya onaylanmış son harfi siler.</li>
+        <li><kbd>+</kbd> / <kbd>-</kbd> veya <kbd>0</kbd>-<kbd>9</kbd> Hız ayarını değiştirir.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const lang = navigator.language.startsWith('tr') ? 'tr' : 'en';
+    const translations = {
+      tr: {
+        helpTitle: "Klavye Kısayolları",
+        speed: "HIZ:",
+        clearText: "Metni Temizle",
+        modalTitle: "MASAÜSTÜ KONTROLLERİ",
+        modalList: `
+          <li><kbd>Boşluk</kbd> Basılı tutarak mors sinyali gönderin. Sinyaller arası beklediğinizde harf otomatik onaylanır.</li>
+          <li><kbd>ESC</kbd> Ekrandaki metni ve yarım kalan sinyali sıfırlar.</li>
+          <li><kbd>Backspace</kbd> Girdiğiniz son sinyali veya onaylanmış son harfi siler.</li>
+          <li><kbd>+</kbd> / <kbd>-</kbd> veya <kbd>0</kbd>-<kbd>9</kbd> Hız ayarını değiştirir.</li>
+        `
+      },
+      en: {
+        helpTitle: "Keyboard Shortcuts",
+        speed: "SPEED:",
+        clearText: "Clear Text",
+        modalTitle: "DESKTOP CONTROLS",
+        modalList: `
+          <li><kbd>Space</kbd> Hold to send morse signal. The letter is automatically confirmed when you wait between signals.</li>
+          <li><kbd>ESC</kbd> Clears the text on screen and the current signal sequence.</li>
+          <li><kbd>Backspace</kbd> Deletes the last entered signal or the last confirmed letter.</li>
+          <li><kbd>+</kbd> / <kbd>-</kbd> or <kbd>0</kbd>-<kbd>9</kbd> Changes the speed setting.</li>
+        `
+      }
+    };
+
+    document.getElementById('help-btn').title = translations[lang].helpTitle;
+    document.getElementById('label-speed').innerText = translations[lang].speed;
+    document.getElementById('reset-btn').title = translations[lang].clearText;
+    document.getElementById('modal-title').innerText = translations[lang].modalTitle;
+    document.getElementById('modal-list').innerHTML = translations[lang].modalList;
+
+    const helpBtn = document.getElementById('help-btn');
+    const helpModal = document.getElementById('help-modal');
+
+    if (helpBtn && helpModal) {
+      helpBtn.addEventListener('click', () => {
+        helpModal.classList.add('show');
+      });
+      helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) {
+          helpModal.classList.remove('show');
+        }
+      });
+    }
+    // Gerçek resimdeki/videodaki düzene sadık kalınarak oluşturulmuş koordinat ve şekil haritası
+    const nodesData = {
+      'ROOT': { char: '', x: 0, y: -0.6, type: 'anten', dx: 0, dy: 0, morse: '' },
+
+      'E': { char: 'E', x: 1, y: 0, type: 'circle', dx: 0, dy: -25, morse: '.' },
+      'T': { char: 'T', x: -1, y: 0, type: 'hrect', dx: 0, dy: -25, morse: '-' },
+      'I': { char: 'I', x: 2, y: 0, type: 'circle', dx: 0, dy: -25, morse: '..' },
+      'M': { char: 'M', x: -2, y: 0, type: 'hrect', dx: 0, dy: -25, morse: '--' },
+      'S': { char: 'S', x: 3, y: 0, type: 'circle', dx: 0, dy: -25, morse: '...' },
+      'O': { char: 'O', x: -3, y: 0, type: 'hrect', dx: 0, dy: -25, morse: '---' },
+      'H': { char: 'H', x: 4, y: 0, type: 'circle', dx: 0, dy: -25, morse: '....' },
+
+      'A': { char: 'A', x: 1, y: 3, type: 'vrect', dx: -25, dy: 0, morse: '.-' },
+      'N': { char: 'N', x: -1, y: 3, type: 'circle', dx: 25, dy: 0, morse: '-.' },
+
+      'U': { char: 'U', x: 2, y: 1, type: 'vrect', dx: -25, dy: 0, morse: '..-' },
+      'D': { char: 'D', x: -1, y: 4.5, type: 'circle', dx: 25, dy: 0, morse: '-..' },
+
+      'V': { char: 'V', x: 3, y: 1, type: 'vrect', dx: 25, dy: 0, morse: '...-' },
+      'B': { char: 'B', x: -1, y: 6, type: 'circle', dx: 25, dy: 0, morse: '-...' },
+
+      'W': { char: 'W', x: 1, y: 4.5, type: 'vrect', dx: -25, dy: 0, morse: '.--' },
+      'K': { char: 'K', x: -2, y: 3, type: 'hrect', dx: 0, dy: -25, morse: '-.-' },
+
+      'J': { char: 'J', x: 1, y: 6, type: 'vrect', dx: 25, dy: 0, morse: '.---' },
+      'Y': { char: 'Y', x: -3, y: 3, type: 'hrect', dx: 0, dy: -25, morse: '-.--' },
+
+      'R': { char: 'R', x: 2, y: 3, type: 'circle', dx: 0, dy: 25, morse: '.-.' },
+      'G': { char: 'G', x: -2, y: 1, type: 'circle', dx: 25, dy: 0, morse: '--.' },
+
+      'L': { char: 'L', x: 3, y: 3, type: 'circle', dx: 25, dy: 0, morse: '.-..' },
+      'Z': { char: 'Z', x: -2, y: 2, type: 'circle', dx: 25, dy: 0, morse: '--..' },
+
+      'P': { char: 'P', x: 2, y: 4.5, type: 'circle', dx: 25, dy: 0, morse: '.--.' },
+      'Q': { char: 'Q', x: -3, y: 1, type: 'hrect', dx: 0, dy: 25, morse: '--.-' },
+
+      'F': { char: 'F', x: 2, y: 2, type: 'circle', dx: 25, dy: 0, morse: '..-.' },
+      'X': { char: 'X', x: -2, y: 4.5, type: 'hrect', dx: -35, dy: 0, morse: '-..-' },
+
+      'C': { char: 'C', x: -2, y: 4, type: 'circle', dx: 25, dy: 0, morse: '-.-.' }
+    };
+
+    const X_STEP = 90;
+    const Y_STEP = 90;
+
+    const linesLayer = document.getElementById('lines-layer');
+    const nodesLayer = document.getElementById('nodes-layer');
+    const seqDisplay = document.getElementById('current-seq');
+    const outDisplay = document.getElementById('output-text');
+    const btn = document.getElementById('manipile');
+
+    // Ağacı Çiz
+    Object.keys(nodesData).forEach(key => {
+      if (key === 'ROOT') return;
+      const node = nodesData[key];
+      const parentMorse = node.morse.slice(0, -1);
+      const parent = Object.values(nodesData).find(n => n.morse === parentMorse) || nodesData['ROOT'];
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const x1 = parent.x * X_STEP;
+      const y1 = parent.y * Y_STEP;
+      const x2 = node.x * X_STEP;
+      const y2 = node.y * Y_STEP;
+
+      if (x1 === x2) {
+        path.setAttribute('d', `M ${x1} ${y1} V ${y2}`);
+      } else if (y1 === y2) {
+        path.setAttribute('d', `M ${x1} ${y1} H ${x2}`);
+      } else {
+        path.setAttribute('d', `M ${x1} ${y1} V ${y2} H ${x2}`);
+      }
+
+      path.setAttribute('class', 'tree-line');
+      path.setAttribute('id', `line-${node.morse}`);
+      linesLayer.appendChild(path);
+    });
+
+    Object.keys(nodesData).forEach(key => {
+      const node = nodesData[key];
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('class', 'tree-node');
+      g.setAttribute('id', `node-${node.morse || 'root'}`);
+      g.setAttribute('transform', `translate(${node.x * X_STEP}, ${node.y * Y_STEP})`);
+
+      if (node.type === 'circle') {
+        const shape = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        shape.setAttribute('r', '12');
+        g.appendChild(shape);
+      } else if (node.type === 'hrect') {
+        const shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        shape.setAttribute('x', '-18');
+        shape.setAttribute('y', '-8');
+        shape.setAttribute('width', '36');
+        shape.setAttribute('height', '16');
+        shape.setAttribute('rx', '8');
+        g.appendChild(shape);
+      } else if (node.type === 'vrect') {
+        const shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        shape.setAttribute('x', '-8');
+        shape.setAttribute('y', '-18');
+        shape.setAttribute('width', '16');
+        shape.setAttribute('height', '36');
+        shape.setAttribute('rx', '8');
+        g.appendChild(shape);
+      } else if (node.type === 'anten') {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        // Anten şekli
+        path.setAttribute('d', 'M 0,-15 L -20,-40 M 0,-15 L 20,-40 M 0,-15 V 0 M -10,-40 H 10');
+        path.setAttribute('class', 'anten-icon');
+        g.appendChild(path);
+      }
+
+      if (node.char) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.textContent = node.char;
+        text.setAttribute('x', node.dx);
+        text.setAttribute('y', node.dy);
+        g.appendChild(text);
+      }
+
+      nodesLayer.appendChild(g);
+    });
+
+    // Ses ve Etkileşim Mantığı
+    let pressTime = 0;
+    let sequence = '';
+    let letterTimeoutId = null;
+    let wordTimeoutId = null;
+    let speedMultiplier = 1.0;
+
+    const DOT_THRESHOLD = 200; // Nokta/Çizgi ayrımı (ms)
+    const LETTER_GAP = 600;    // Harf onay süresi (ms)
+    const WORD_GAP = 1500;     // Kelime boşluk süresi (ms)
+
+    let AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+    let oscillator;
+    let gainNode;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function startBeep() {
+      initAudio();
+      oscillator = audioCtx.createOscillator();
+      oscillator.type = 'sine';
+      oscillator.frequency.value = 750;
+
+      gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.start();
+    }
+
+    function stopBeep() {
+      if (gainNode && oscillator) {
+        gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+        oscillator.stop(audioCtx.currentTime + 0.05);
+        oscillator = null;
+        gainNode = null;
+      }
+    }
+
+    function updateTreeVisuals(seq) {
+      document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+      let currentSeq = '';
+
+      for (let char of seq) {
+        currentSeq += char;
+        const n = document.getElementById(`node-${currentSeq}`);
+        const l = document.getElementById(`line-${currentSeq}`);
+        if (n) n.classList.add('active');
+        if (l) l.classList.add('active');
+      }
+
+      seqDisplay.innerText = seq.split('').map(c => c === '.' ? '•' : '—').join(' ');
+    }
+
+    function confirmLetter() {
+      const node = Object.values(nodesData).find(n => n.morse === sequence);
+      if (node && node.char) {
+        outDisplay.innerText += node.char;
+      } else if (sequence.length > 0) {
+        // Hatalı veya olmayan bir dizi girildiyse
+        outDisplay.innerText += '?';
+      }
+
+      sequence = '';
+      updateTreeVisuals(sequence);
+
+      // Kelime arası boşluk için zamanlayıcı başlat
+      wordTimeoutId = setTimeout(() => {
+        outDisplay.innerText += ' ';
+      }, (WORD_GAP * speedMultiplier) - (LETTER_GAP * speedMultiplier));
+    }
+
+    const handlePress = (e) => {
+      if (e && e.type === 'touchstart') e.preventDefault();
+
+      clearTimeout(letterTimeoutId);
+      clearTimeout(wordTimeoutId);
+
+      if (!pressTime) {
+        pressTime = Date.now();
+        startBeep();
+        btn.classList.add('pressed');
+        document.getElementById('node-root').classList.add('active');
+      }
+    };
+
+    const handleRelease = (e) => {
+      if (e && e.type === 'touchend' && e.cancelable) e.preventDefault();
+
+      if (pressTime) {
+        const duration = Date.now() - pressTime;
+        stopBeep();
+        btn.classList.remove('pressed');
+        document.getElementById('node-root').classList.remove('active');
+
+        const symbol = duration < (DOT_THRESHOLD * speedMultiplier) ? '.' : '-';
+        sequence += symbol;
+
+        updateTreeVisuals(sequence);
+
+        pressTime = 0;
+
+        // Harfi onaylamak için bekleme süresi başlat (Kullanıcı giriş yapmaya devam ederse süre sıfırlanır)
+        letterTimeoutId = setTimeout(confirmLetter, LETTER_GAP * speedMultiplier);
+      }
+    };
+
+    document.getElementById('speed-slider').addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      document.getElementById('speed-label').innerText = val;
+      speedMultiplier = 1.5 - ((val - 1) * (1.0 / 9));
+    });
+
+    function doReset(e) {
+      if (e && e.type === 'touchstart') e.preventDefault();
+      outDisplay.innerText = '';
+      sequence = '';
+      updateTreeVisuals(sequence);
+      clearTimeout(letterTimeoutId);
+      clearTimeout(wordTimeoutId);
+    }
+
+    document.getElementById('reset-btn').addEventListener('click', doReset);
+    document.getElementById('reset-btn').addEventListener('touchstart', doReset, { passive: false });
+
+    btn.addEventListener('mousedown', handlePress);
+    btn.addEventListener('touchstart', handlePress, { passive: false });
+    window.addEventListener('mouseup', handleRelease);
+    window.addEventListener('touchend', handleRelease, { passive: false });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (!e.repeat) handlePress();
+      } else if (e.key === 'Escape') {
+        doReset();
+        const helpModal = document.getElementById('help-modal');
+        if (helpModal) helpModal.classList.remove('show');
+      } else if (e.key === 'Backspace') {
+        // Backspace tuşu ile silme (Hem sinyal hem harf siler)
+        if (sequence.length > 0) {
+          sequence = sequence.slice(0, -1);
+          updateTreeVisuals(sequence);
+        } else if (outDisplay.innerText.length > 0) {
+          outDisplay.innerText = outDisplay.innerText.slice(0, -1);
+        }
+      } else if (e.key === '+' || e.key === '=') {
+        const slider = document.getElementById('speed-slider');
+        let val = parseInt(slider.value);
+        if (val < 10) {
+          slider.value = val + 1;
+          slider.dispatchEvent(new Event('input'));
+        }
+      } else if (e.key === '-' || e.key === '_') {
+        const slider = document.getElementById('speed-slider');
+        let val = parseInt(slider.value);
+        if (val > 1) {
+          slider.value = val - 1;
+          slider.dispatchEvent(new Event('input'));
+        }
+      } else if (e.key >= '0' && e.key <= '9') {
+        let val = parseInt(e.key);
+        if (val === 0) val = 10;
+        const slider = document.getElementById('speed-slider');
+        slider.value = val;
+        slider.dispatchEvent(new Event('input'));
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        handleRelease();
+      }
+    });
+  </script>
+</body>
+
+</html>
