@@ -29,6 +29,7 @@
         { id: 'images-to-pdf', name: 'Görselden PDF', icon: '🏞️', desc: 'Mevcut PDF\'e görsel sayfa ekle' },
         { id: 'compress', name: 'Sıkıştır', icon: '📦', desc: 'Dosya boyutunu küçült' },
         { id: 'metadata', name: 'PDF Bilgileri', icon: 'ℹ️', desc: 'Metadata görüntüle/düzenle' },
+        { id: 'extract-md', name: 'Yapay Zeka İçin Çıkar', icon: '🤖', desc: 'Metni Markdown (.md) olarak ayıkla' },
     ];
 
     const PAGE_PRESETS = {
@@ -480,12 +481,13 @@
             'images-to-pdf': panelImagesToPdf,
             'compress': panelCompress,
             'metadata': panelMetadata,
+            'extract-md': panelExtractMD,
         };
 
         if (panels[toolId]) panels[toolId](body);
 
         // Special: hide footer for tools that don't use the apply button
-        if (['export-images', 'metadata'].includes(toolId)) footer.style.display = 'none';
+        if (['export-images', 'metadata', 'extract-md'].includes(toolId)) footer.style.display = 'none';
 
         panel.classList.add('open');
 
@@ -493,7 +495,7 @@
         state._previewBase = state.pdfBytes;
         state._previewActive = false;
         state._previewResult = null;
-        const noPreview = ['export-images', 'images-to-pdf', 'metadata', 'merge-pdfs', 'compress', 'add-image', 'reverse-pages'];
+        const noPreview = ['export-images', 'images-to-pdf', 'metadata', 'merge-pdfs', 'compress', 'add-image', 'reverse-pages', 'extract-md'];
         if (!noPreview.includes(toolId)) {
             setTimeout(() => attachPreviewListeners(), 150);
         }
@@ -2668,6 +2670,141 @@
         // Global drop prevention
         document.addEventListener('dragover', e => e.preventDefault());
         document.addEventListener('drop', e => e.preventDefault());
+    }
+
+    function panelExtractMD(body) {
+        body.innerHTML = `
+            <div class="info-box info-primary">Bu araç, PDF içindeki yazıları yapay zeka (ChatGPT, Claude, Gemini) için en ideal format olan <strong>Markdown (.md)</strong> formatına çevirir. Başlıklar ve paragraflar otomatik olarak ayrıştırılır.</div>
+            <button class="btn btn-primary btn-block" id="btn-extract-md" style="margin-top: 16px;">
+                ⬇️ Markdown (.md) Olarak İndir
+            </button>`;
+        
+        $('#btn-extract-md').addEventListener('click', async () => {
+            if (!state.pdfJsDoc) return;
+            showLoading('Metinler ayıklanıyor...');
+            try {
+                await extractMarkdownFromPdf();
+                toast('Markdown dosyası başarıyla oluşturuldu!', 'success');
+            } catch (err) {
+                console.error(err);
+                toast('Metin ayıklanırken hata oluştu.', 'error');
+            }
+            hideLoading();
+        });
+    }
+
+    async function extractMarkdownFromPdf() {
+        let mdContent = "";
+        
+        for (let i = 1; i <= state.pageCount; i++) {
+            const page = await state.pdfJsDoc.getPage(i);
+            const textContent = await page.getTextContent();
+            let items = textContent.items;
+            const styles = textContent.styles || {};
+            
+            if (items.length === 0) continue;
+            
+            // Koordinat Bazlı Sıralama (Y Koordinatı Azalan [yukarıdan aşağı], X Koordinatı Artan [soldan sağa])
+            items.sort((a, b) => {
+                // Aynı satırdaki (çok küçük sapmalı) yazıları aynı grupta toplamak için Y'yi yuvarlıyoruz
+                const yA = Math.round(a.transform[5] / 4) * 4;
+                const yB = Math.round(b.transform[5] / 4) * 4;
+                if (yB !== yA) return yB - yA;
+                return a.transform[4] - b.transform[4];
+            });
+            
+            let lastY = null;
+            let lastX = null;
+            let lastWidth = null;
+            let medianHeight = 0;
+            
+            // Ortalama height hesapla (başlıkları tespit etmek için)
+            if (items.length > 0) {
+                const heights = items.map(item => item.height).sort((a,b) => a-b);
+                medianHeight = heights[Math.floor(heights.length / 2)];
+            }
+
+            // Sayfalar arasına yatay çizgi ekle
+            if (i > 1) mdContent += "\n\n---\n\n";
+            mdContent += `<!-- Sayfa ${i} -->\n\n`;
+
+            for (let j = 0; j < items.length; j++) {
+                const item = items[j];
+                const x = item.transform[4];
+                const y = Math.round(item.transform[5]); 
+                let text = item.str;
+                const fontName = item.fontName || "";
+                const style = styles[fontName] || {};
+                
+                // Anlamsız karakterleri (Wingdings vb.) Markdown madde işaretine çevir
+                text = text.replace(/[•◦]/g, '- ');
+
+                // Satır Atlama Kontrolü
+                if (lastY !== null) {
+                    const yDiff = Math.abs(lastY - y);
+                    if (yDiff > 4) {
+                        // Yeni satıra geçiş tespit edildi
+                        if (yDiff > medianHeight * 1.5) {
+                            mdContent += "\n\n"; // Geniş paragraf boşluğu
+                        } else {
+                            mdContent += "\n"; // Normal alt satır
+                        }
+                    } else if (lastX !== null && lastWidth !== null) {
+                        // Aynı satırdaysa aradaki boşluğu (gap) kontrol et
+                        const gap = x - (lastX + lastWidth);
+                        if (gap > (item.height * 0.2) && !text.startsWith(" ") && !mdContent.endsWith(" ") && !mdContent.endsWith("\n")) {
+                            mdContent += " ";
+                        }
+                    }
+                }
+                
+                let processedText = text;
+                
+                if (processedText.trim().length > 0) {
+                    const isStartOfLine = mdContent === "" || mdContent.endsWith("\n") || mdContent.endsWith("\n\n");
+                    
+                    // Başlık algılama (boyut ortalamadan büyükse)
+                    if (item.height > medianHeight * 1.3) {
+                        // Sadece satırın en başında `#` ekle (kelimeler bölündüğünde ortada tekrar etmesini önler)
+                        if (isStartOfLine) {
+                            if (item.height > medianHeight * 1.8) {
+                                processedText = "# " + processedText; // Büyük başlık
+                            } else {
+                                processedText = "## " + processedText; // Alt başlık
+                            }
+                        }
+                    } 
+                    else {
+                        // Kalın/İtalik algılama (Hem font adına hem de fontFamily özelliklerine bakılır)
+                        const fontFamily = (style.fontFamily || "").toLowerCase();
+                        const isBold = fontName.toLowerCase().includes("bold") || fontFamily.includes("bold");
+                        const isItalic = fontName.toLowerCase().includes("italic") || fontFamily.includes("italic");
+                        
+                        if (isBold && isItalic) processedText = `***${processedText}***`;
+                        else if (isBold) processedText = `**${processedText}**`;
+                        else if (isItalic) processedText = `*${processedText}*`;
+                    }
+                }
+
+                mdContent += processedText;
+                
+                lastY = y;
+                lastX = x;
+                lastWidth = item.width || 0;
+            }
+        }
+        
+        // Blob oluştur ve indir
+        const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        const originalName = state.fileName ? state.fileName.replace(/\.pdf$/i, "") : "belge";
+        a.download = `${originalName}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 
     // Expose internals for page-editor.js

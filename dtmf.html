@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal DTMF Tool</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --accent: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .settings-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .settings-bar label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .settings-bar input[type="number"] {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            width: 100px;
+            text-align: center;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .settings-bar input[type="number"]:focus {
+            border-color: var(--primary);
+        }
+
+        .auto-detect-box {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--accent);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .auto-detect-box:hover {
+            background: rgba(139, 92, 246, 0.4);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Decoder Section */
+        .decoder-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .decoder-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover { background: rgba(56, 189, 248, 0.1); }
+
+        .decoder-display {
+            font-family: monospace;
+            font-size: 2rem;
+            letter-spacing: 5px;
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success);
+            word-break: break-all;
+            margin-bottom: 15px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            height: 20px;
+        }
+
+        /* Generator Section */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .key {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            font-size: 1.5rem;
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            user-select: none;
+            text-align: center;
+        }
+
+        .key:hover { background: rgba(255, 255, 255, 0.2); }
+        .key:active { background: var(--primary); transform: scale(0.95); }
+
+        .sequence-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .sequence-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            outline: none;
+            font-family: monospace;
+        }
+        .sequence-input:focus { border-color: var(--primary); }
+
+        /* Records Section */
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .record-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .record-item:hover { border-color: rgba(255,255,255,0.3); }
+
+        .record-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .record-info p {
+            font-family: monospace;
+            color: var(--primary);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        .record-actions { display: flex; gap: 8px; }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .action-btn:hover { background: var(--primary); }
+        .action-btn.del:hover { background: var(--danger); }
+
+        /* Save Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--panel-bg);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-content h2 { margin-bottom: 15px; }
+        .modal-content input {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            outline: none;
+        }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        
+        input[type="file"] { display: none; }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.5rem; }
+            .decoder-controls { flex-direction: column; gap: 10px; }
+            .decoder-controls .btn, .decoder-controls label { width: 100%; justify-content: center; margin: 0 !important; }
+            .sequence-input-group { flex-wrap: wrap; }
+            .sequence-input { width: 100%; flex: none; margin-bottom: 5px; }
+            .sequence-input-group .btn { flex: 1; justify-content: center; padding: 10px 5px; font-size: 0.9rem; }
+            .record-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .record-actions { width: 100%; justify-content: space-between; }
+            .action-btn { flex: 1; }
+            .settings-bar { flex-direction: column; gap: 10px; }
+            .tabs { flex-wrap: wrap; }
+            .tab-btn { flex: 1 1 100%; margin-bottom: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>DTMF Master</h1>
+            <div class="settings-bar">
+                <label>Pitch Scale:</label>
+                <input type="number" id="scale-input" value="1.0000" step="0.0001" min="0.5" max="3">
+                <label class="auto-detect-box" title="Sesi dinlerken doğru tizleşme oranını otomatik bulur.">
+                    <input type="checkbox" id="auto-scale" checked> Auto-Detect
+                </label>
+                <button class="action-btn" style="background: rgba(255,255,255,0.1); width: 34px; height: 34px;" onclick="resetScale()" title="Oranı Sıfırla">↺</button>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('decoder')">Çözücü</button>
+            <button class="tab-btn" onclick="switchTab('generator')">Üretici</button>
+            <button class="tab-btn" onclick="switchTab('records')">Kayıtlar</button>
+        </div>
+
+        <!-- Decoder Tab -->
+        <div id="tab-decoder" class="tab-content active">
+            <div class="decoder-card">
+                <div class="decoder-display" id="decode-display">Bekleniyor...</div>
+                <div class="status-text" id="decode-status">Mikrofon veya Dosya seçin</div>
+                
+                <div class="decoder-controls">
+                    <button class="btn btn-primary" id="btn-mic" onclick="toggleMic()">🎙️ Dinle</button>
+                    <label class="btn btn-outline" style="margin:0;">
+                        📁 Dosya Yükle
+                        <input type="file" id="file-input" accept="audio/*">
+                    </label>
+                    <button class="btn btn-danger" onclick="resetDecoder()" style="padding: 12px 15px;">🗑️ Sıfırla</button>
+                </div>
+                <button class="btn btn-success" style="background:var(--success); color:white; width:100%; display:none;" id="btn-save-decoded" onclick="openSaveModal('decoded')">💾 Bu Kodu Kaydet</button>
+            </div>
+        </div>
+
+        <!-- Generator Tab -->
+        <div id="tab-generator" class="tab-content">
+            <div class="decoder-card" style="margin-bottom:20px;">
+                <div class="sequence-input-group">
+                    <input type="text" id="gen-sequence" class="sequence-input" placeholder="Örn: 1234*" oninput="this.value = this.value.replace(/[^0-9A-D*#]/gi, '').toUpperCase()">
+                    <button class="btn btn-primary" onclick="playSequenceInput()">▶ Çal</button>
+                    <button class="btn btn-outline" onclick="openSaveModal('generator')">💾 Kaydet</button>
+                    <button class="btn btn-danger" onclick="resetGenerator()" title="Temizle">🗑️</button>
+                </div>
+            </div>
+            
+            <div class="keypad" id="keypad">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <!-- Records Tab -->
+        <div id="tab-records" class="tab-content">
+            <div class="record-list" id="record-list">
+                <!-- Populated by JS -->
+                <div style="text-align:center; color:#94a3b8; padding:20px;">Kayıt bulunamadı.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Modal -->
+    <div class="modal" id="save-modal">
+        <div class="modal-content">
+            <h2>Kodu Kaydet</h2>
+            <input type="text" id="save-name" placeholder="Örn: Ana Kapı">
+            <input type="hidden" id="save-code">
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeSaveModal()">İptal</button>
+                <button class="btn btn-primary" onclick="saveRecord()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    /* =========================================
+       CORE AUDIO & FREQUENCIES
+    ========================================= */
+    const DTMF_FREQS = {
+        '1': [697, 1209], '2': [697, 1336], '3': [697, 1477], 'A': [697, 1633],
+        '4': [770, 1209], '5': [770, 1336], '6': [770, 1477], 'B': [770, 1633],
+        '7': [852, 1209], '8': [852, 1336], '9': [852, 1477], 'C': [852, 1633],
+        '*': [941, 1209], '0': [941, 1336], '#': [941, 1477], 'D': [941, 1633]
+    };
+
+    let audioCtx = null;
+    let activeOscillators = [];
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function getScale() {
+        return parseFloat(document.getElementById('scale-input').value) || 1.0;
+    }
+
+    /* =========================================
+       GENERATOR (ENCODE)
+    ========================================= */
+    function playTone(digit, durationMs = null, scale = null) {
+        initAudio();
+        stopTones(); 
+        
+        if (!DTMF_FREQS[digit]) return;
+        
+        const s = scale || getScale();
+        const f1 = DTMF_FREQS[digit][0] * s;
+        const f2 = DTMF_FREQS[digit][1] * s;
+
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        osc1.type = 'sine';
+        osc1.frequency.value = f1;
+        osc2.type = 'sine';
+        osc2.frequency.value = f2;
+
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01);
+
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc1.start();
+        osc2.start();
+
+        activeOscillators.push({o1: osc1, o2: osc2, g: gainNode});
+
+        if (durationMs) {
+            setTimeout(() => {
+                stopToneNodes(osc1, osc2, gainNode);
+            }, durationMs);
+        }
+    }
+
+    function stopTones() {
+        activeOscillators.forEach(nodes => {
+            stopToneNodes(nodes.o1, nodes.o2, nodes.g);
+        });
+        activeOscillators = [];
+    }
+
+    function stopToneNodes(o1, o2, g) {
+        try {
+            g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.01);
+            setTimeout(() => {
+                o1.stop(); o2.stop();
+                o1.disconnect(); o2.disconnect(); g.disconnect();
+            }, 15);
+        } catch(e){}
+    }
+
+    async function playSequence(sequence, scale = null) {
+        initAudio();
+        const chars = sequence.split('');
+        for (let i = 0; i < chars.length; i++) {
+            playTone(chars[i], 120, scale);
+            await new Promise(r => setTimeout(r, 120 + 220)); 
+        }
+    }
+
+    function playSequenceInput() {
+        const seq = document.getElementById('gen-sequence').value.trim();
+        if(seq) playSequence(seq);
+    }
+
+    function resetGenerator() {
+        document.getElementById('gen-sequence').value = '';
+    }
+
+    function resetScale() {
+        document.getElementById('scale-input').value = "1.0000";
+        document.getElementById('auto-scale').checked = true;
+    }
+
+    // Build Keypad
+    const keys = ['1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'];
+    const keypadDiv = document.getElementById('keypad');
+    keys.forEach(k => {
+        const btn = document.createElement('div');
+        btn.className = 'key';
+        btn.innerText = k;
+        
+        btn.addEventListener('mousedown', () => { playTone(k); document.getElementById('gen-sequence').value += k; });
+        btn.addEventListener('mouseup', stopTones);
+        btn.addEventListener('mouseleave', stopTones);
+        
+        btn.addEventListener('touchstart', (e) => { e.preventDefault(); playTone(k); document.getElementById('gen-sequence').value += k; });
+        btn.addEventListener('touchend', (e) => { e.preventDefault(); stopTones(); });
+        
+        keypadDiv.appendChild(btn);
+    });
+
+    /* =========================================
+       DECODER (GOERTZEL ALGORITHM + AUTO DETECT)
+    ========================================= */
+    let isMicActive = false;
+    let micStream = null;
+    let decodeInterval = null;
+    let decodedText = "";
+    let lastDetectedDigit = null;
+    let silenceCounter = 0;
+
+    const LOW_FREQS = [697, 770, 852, 941];
+    const HIGH_FREQS = [1209, 1336, 1477, 1633];
+
+    function goertzel(samples, sampleRate, targetFreq) {
+        const k = Math.round((targetFreq * samples.length) / sampleRate);
+        const w = (2.0 * Math.PI * k) / samples.length;
+        const cosine = Math.cos(w);
+        const coeff = 2.0 * cosine;
+        
+        let q0 = 0, q1 = 0, q2 = 0;
+        for (let i = 0; i < samples.length; i++) {
+            q0 = coeff * q1 - q2 + samples[i];
+            q2 = q1;
+            q1 = q0;
+        }
+        return Math.sqrt(q1*q1 + q2*q2 - q1*q2*coeff);
+    }
+
+    async function toggleMic() {
+        const btn = document.getElementById('btn-mic');
+        const status = document.getElementById('decode-status');
+        const display = document.getElementById('decode-display');
+        
+        if (isMicActive) {
+            stopMic();
+            return;
+        }
+
+        try {
+            initAudio();
+            micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const source = audioCtx.createMediaStreamSource(micStream);
+            const analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 2048; 
+            source.connect(analyser);
+            
+            isMicActive = true;
+            btn.innerHTML = '⏹️ Durdur';
+            btn.classList.replace('btn-primary', 'btn-danger');
+            status.innerText = 'Mikrofon dinleniyor...';
+            display.innerText = '';
+            decodedText = '';
+            document.getElementById('btn-save-decoded').style.display = 'none';
+
+            const sampleRate = audioCtx.sampleRate;
+            const bufferLength = analyser.fftSize;
+            const dataArray = new Float32Array(bufferLength);
+
+            decodeInterval = setInterval(() => {
+                analyser.getFloatTimeDomainData(dataArray);
+                processAudioChunk(dataArray, sampleRate);
+            }, 40);
+
+        } catch (err) {
+            alert('Mikrofon erişimi reddedildi veya hata oluştu. Localhost / HTTPS gerekli.');
+            console.error(err);
+        }
+    }
+
+    function stopMic() {
+        if (decodeInterval) clearInterval(decodeInterval);
+        if (micStream) micStream.getTracks().forEach(t => t.stop());
+        isMicActive = false;
+        const btn = document.getElementById('btn-mic');
+        btn.innerHTML = '🎙️ Dinle';
+        btn.classList.replace('btn-danger', 'btn-primary');
+        document.getElementById('decode-status').innerText = 'Duraklatıldı';
+        
+        if (decodedText.length > 0) {
+            document.getElementById('btn-save-decoded').style.display = 'block';
+        }
+    }
+
+    function resetDecoder() {
+        decodedText = "";
+        lastDetectedDigit = null;
+        document.getElementById('decode-display').innerText = "Bekleniyor...";
+        document.getElementById('decode-status').innerText = "Ekran temizlendi.";
+        document.getElementById('btn-save-decoded').style.display = 'none';
+    }
+
+    function processAudioChunk(samples, sampleRate) {
+        let currentScale = getScale();
+        const autoDetect = document.getElementById('auto-scale').checked;
+
+        let bestMagSum = 0;
+        let bestDetected = null;
+        let bestScale = currentScale;
+
+        // If Auto-Detect is enabled, sweep across scales to find the best match
+        let scalesToTest = [];
+        if (autoDetect) {
+            for(let s = 0.5; s <= 2.5; s += 0.05) {
+                scalesToTest.push(s);
+            }
+        } else {
+            scalesToTest.push(currentScale);
+        }
+
+        const threshold = 15.0; // Magic threshold for Goertzel on raw floats
+
+        for (let s of scalesToTest) {
+            let bestLow = { freq: 0, mag: 0 };
+            LOW_FREQS.forEach(f => {
+                const mag = goertzel(samples, sampleRate, f * s);
+                if (mag > bestLow.mag) bestLow = { freq: f, mag: mag };
+            });
+
+            let bestHigh = { freq: 0, mag: 0 };
+            HIGH_FREQS.forEach(f => {
+                const mag = goertzel(samples, sampleRate, f * s);
+                if (mag > bestHigh.mag) bestHigh = { freq: f, mag: mag };
+            });
+
+            if (bestLow.mag > threshold && bestHigh.mag > threshold) {
+                let magSum = bestLow.mag + bestHigh.mag;
+                if (magSum > bestMagSum) {
+                    bestMagSum = magSum;
+                    bestScale = s;
+                    for (let k in DTMF_FREQS) {
+                        if (DTMF_FREQS[k][0] === bestLow.freq && DTMF_FREQS[k][1] === bestHigh.freq) {
+                            bestDetected = k;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (bestDetected) {
+            // We found a signal!
+            if (autoDetect) {
+                // Fine-tune the scale discovery for ultimate precision
+                let fineScale = bestScale;
+                let maxFineMag = 0;
+                for(let fs = bestScale - 0.05; fs <= bestScale + 0.05; fs += 0.005) {
+                    let m1 = goertzel(samples, sampleRate, DTMF_FREQS[bestDetected][0] * fs);
+                    let m2 = goertzel(samples, sampleRate, DTMF_FREQS[bestDetected][1] * fs);
+                    if (m1 + m2 > maxFineMag) {
+                        maxFineMag = m1 + m2;
+                        fineScale = fs;
+                    }
+                }
+                
+                // Lock the UI scale
+                const scaleInput = document.getElementById('scale-input');
+                scaleInput.value = fineScale.toFixed(4);
+                
+                // Visual feedback for scale lock
+                scaleInput.style.borderColor = "var(--success)";
+                scaleInput.style.color = "var(--success)";
+                setTimeout(() => { 
+                    scaleInput.style.borderColor = ""; 
+                    scaleInput.style.color = "";
+                }, 1000);
+
+                // Disable auto-detect so it doesn't drift on the next tone
+                document.getElementById('auto-scale').checked = false;
+                document.getElementById('decode-status').innerHTML = `<span style="color:var(--success);">Oran Bulundu ve Kilitlendi: ${fineScale.toFixed(4)}</span>`;
+            }
+
+            if (bestDetected !== lastDetectedDigit) {
+                decodedText += bestDetected;
+                document.getElementById('decode-display').innerText = decodedText;
+                lastDetectedDigit = bestDetected;
+            }
+            silenceCounter = 0;
+        } else {
+            silenceCounter++;
+            if (silenceCounter > 2) { // Allow tiny noise gaps (~80ms)
+                lastDetectedDigit = null;
+            }
+        }
+    }
+
+    // File Upload Decoder
+    document.getElementById('file-input').addEventListener('change', async function(e) {
+        if (!e.target.files.length) return;
+        const file = e.target.files[0];
+        const display = document.getElementById('decode-display');
+        const status = document.getElementById('decode-status');
+        
+        initAudio();
+        status.innerText = 'Dosya analiz ediliyor...';
+        display.innerText = '';
+        decodedText = '';
+        lastDetectedDigit = null;
+        document.getElementById('btn-save-decoded').style.display = 'none';
+
+        const arrayBuffer = await file.arrayBuffer();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+        
+        const samples = audioBuffer.getChannelData(0); // Mono
+        const sampleRate = audioBuffer.sampleRate;
+        const chunkSize = 2048;
+        
+        for (let i = 0; i < samples.length; i += chunkSize) {
+            if (i + chunkSize > samples.length) break;
+            const chunk = samples.slice(i, i + chunkSize);
+            processAudioChunk(chunk, sampleRate);
+        }
+        
+        if(!document.getElementById('auto-scale').checked && decodedText.length > 0) {
+            status.innerText = 'Analiz tamamlandı.';
+        } else if (decodedText.length === 0) {
+            display.innerText = 'Sinyal bulunamadı.';
+            status.innerText = 'Sonuç yok.';
+        }
+        
+        if (decodedText.length > 0) {
+            document.getElementById('btn-save-decoded').style.display = 'block';
+        }
+        
+        // Reset file input so same file can be clicked again
+        e.target.value = '';
+    });
+
+    /* =========================================
+       RECORDS & STORAGE & WAV EXPORT
+    ========================================= */
+    function loadRecords() {
+        const records = JSON.parse(localStorage.getItem('dtmf_records') || '[]');
+        const list = document.getElementById('record-list');
+        list.innerHTML = '';
+        
+        if(records.length === 0) {
+            list.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px;">Kayıt bulunamadı.</div>';
+            return;
+        }
+
+        records.forEach((rec, index) => {
+            const div = document.createElement('div');
+            div.className = 'record-item';
+            div.innerHTML = `
+                <div class="record-info">
+                    <h3>${rec.name}</h3>
+                    <p>${rec.code} <span style="font-size:0.8rem; color:#94a3b8;">(Scale: ${rec.scale})</span></p>
+                </div>
+                <div class="record-actions">
+                    <button class="action-btn" title="Çal" onclick="playSequence('${rec.code}', ${rec.scale})">▶️</button>
+                    <button class="action-btn" title="İndir (WAV)" onclick="exportWav('${rec.code}', ${rec.scale}, '${rec.name}')">⬇️</button>
+                    <button class="action-btn del" title="Sil" onclick="deleteRecord(${index})">🗑️</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function deleteRecord(index) {
+        if(confirm('Bu kaydı silmek istediğinize emin misiniz?')) {
+            const records = JSON.parse(localStorage.getItem('dtmf_records') || '[]');
+            records.splice(index, 1);
+            localStorage.setItem('dtmf_records', JSON.stringify(records));
+            loadRecords();
+        }
+    }
+
+    function openSaveModal(source) {
+        let code = "";
+        if(source === 'decoded') code = decodedText;
+        if(source === 'generator') code = document.getElementById('gen-sequence').value.trim();
+        
+        if(!code) return alert("Kaydedilecek geçerli bir kod yok.");
+        
+        document.getElementById('save-code').value = code;
+        document.getElementById('save-name').value = '';
+        document.getElementById('save-modal').classList.add('active');
+    }
+
+    function closeSaveModal() {
+        document.getElementById('save-modal').classList.remove('active');
+    }
+
+    function saveRecord() {
+        const name = document.getElementById('save-name').value.trim() || 'İsimsiz Kayıt';
+        const code = document.getElementById('save-code').value;
+        const scale = getScale();
+        
+        const records = JSON.parse(localStorage.getItem('dtmf_records') || '[]');
+        records.push({ name, code, scale });
+        localStorage.setItem('dtmf_records', JSON.stringify(records));
+        
+        closeSaveModal();
+        switchTab('records');
+    }
+
+    // WAV Export using OfflineAudioContext
+    async function exportWav(sequence, scale, name) {
+        const sampleRate = 48000;
+        const toneDur = 0.12;
+        const pauseDur = 0.22;
+        const totalDuration = sequence.length * (toneDur + pauseDur) + 0.5; // padding
+        
+        const offCtx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, sampleRate * totalDuration, sampleRate);
+        
+        let startTime = 0.1;
+        for(let i=0; i<sequence.length; i++) {
+            const digit = sequence[i];
+            if(DTMF_FREQS[digit]) {
+                const f1 = DTMF_FREQS[digit][0] * scale;
+                const f2 = DTMF_FREQS[digit][1] * scale;
+                
+                const osc1 = offCtx.createOscillator();
+                const osc2 = offCtx.createOscillator();
+                const gain = offCtx.createGain();
+                
+                osc1.frequency.value = f1;
+                osc2.frequency.value = f2;
+                
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(0.5, startTime + 0.005);
+                gain.gain.setValueAtTime(0.5, startTime + toneDur - 0.005);
+                gain.gain.linearRampToValueAtTime(0, startTime + toneDur);
+                
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(offCtx.destination);
+                
+                osc1.start(startTime);
+                osc2.start(startTime);
+                osc1.stop(startTime + toneDur);
+                osc2.stop(startTime + toneDur);
+            }
+            startTime += (toneDur + pauseDur);
+        }
+        
+        const renderedBuffer = await offCtx.startRendering();
+        downloadWav(renderedBuffer, name + ".wav");
+    }
+
+    function downloadWav(audioBuffer, filename) {
+        const numChannels = audioBuffer.numberOfChannels;
+        const sampleRate = audioBuffer.sampleRate;
+        const format = 1; // PCM
+        const bitDepth = 16;
+        const data = audioBuffer.getChannelData(0);
+        
+        const buffer = new ArrayBuffer(44 + data.length * 2);
+        const view = new DataView(buffer);
+        
+        const writeString = (view, offset, string) => {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        };
+        
+        writeString(view, 0, 'RIFF');
+        view.setUint32(4, 36 + data.length * 2, true);
+        writeString(view, 8, 'WAVE');
+        writeString(view, 12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, format, true);
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
+        view.setUint16(32, numChannels * (bitDepth / 8), true);
+        view.setUint16(34, bitDepth, true);
+        writeString(view, 36, 'data');
+        view.setUint32(40, data.length * 2, true);
+        
+        let offset = 44;
+        for (let i = 0; i < data.length; i++, offset += 2) {
+            let s = Math.max(-1, Math.min(1, data[i]));
+            view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        }
+        
+        const blob = new Blob([view], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    /* =========================================
+       UI & TABS
+    ========================================= */
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+        
+        document.getElementById('tab-' + tabId).classList.add('active');
+        event.target.classList.add('active');
+        
+        if(tabId === 'records') loadRecords();
+    }
+
+    // Initialize
+    loadRecords();
+</script>
+</body>
+</html>
