@@ -406,6 +406,15 @@
             .settings-bar { flex-direction: column; gap: 10px; }
             .tabs { flex-wrap: wrap; }
             .tab-btn { flex: 1 1 100%; margin-bottom: 5px; }
+            
+            /* Advanced Panel & Slider Mobile Fixes */
+            .slider-group { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .slider-group input[type="range"] { width: 100%; }
+            .slider-group span { width: auto; text-align: left; }
+            .adv-panel { padding: 10px; }
+            #basic-panel { flex-wrap: wrap; justify-content: center; }
+            #basic-panel label { width: 100%; white-space: normal !important; text-align: center; font-size: 0.85rem !important; }
+            #basic-panel input { width: 100%; flex: none !important; }
         }
     </style>
 </head>
@@ -419,7 +428,7 @@
                     <label>Pitch Scale:</label>
                     <input type="number" id="scale-input" value="1.0000" step="0.0001" min="0.5" max="3">
                     <label class="auto-detect-box" title="Sesi dinlerken doğru tizleşme oranını otomatik bulur.">
-                        <input type="checkbox" id="auto-scale" checked> Auto-Detect
+                        <input type="checkbox" id="auto-scale"> Auto-Detect
                     </label>
                     <button class="action-btn" style="background: rgba(255,255,255,0.1); width: 34px; height: 34px;" onclick="resetScale()" title="Oranı Sıfırla">↺</button>
                 </div>
@@ -739,9 +748,19 @@
             const sampleRate = audioCtx.sampleRate;
             const bufferLength = analyser.fftSize;
             const dataArray = new Float32Array(bufferLength);
+            const freqArray = new Float32Array(analyser.frequencyBinCount);
 
             decodeInterval = setInterval(() => {
                 analyser.getFloatTimeDomainData(dataArray);
+                
+                if (document.getElementById('auto-scale').checked) {
+                    analyser.getFloatFrequencyData(freqArray);
+                    let scale = analyzeFFT(freqArray, sampleRate, analyser.fftSize);
+                    if (scale) {
+                        lockScale(scale, dataArray, sampleRate);
+                    }
+                }
+                
                 processAudioChunk(dataArray, sampleRate);
             }, 40);
 
@@ -773,98 +792,178 @@
         document.getElementById('btn-save-decoded').style.display = 'none';
     }
 
+    // FFT Auto-Detect Functions
+    function analyzeFFT(freqs, sampleRate, fftSize) {
+        let peak1 = { bin: -1, val: -Infinity };
+        let peak2 = { bin: -1, val: -Infinity };
+        
+        const binFreq = sampleRate / fftSize;
+        const minBin = Math.floor(400 / binFreq); 
+        const maxBin = Math.floor(3000 / binFreq);
+        
+        for(let i = minBin; i <= maxBin; i++) {
+            if(freqs[i] > peak1.val) {
+                peak1.val = freqs[i];
+                peak1.bin = i;
+            }
+        }
+        
+        const minDistance = Math.floor(200 / binFreq);
+        for(let i = minBin; i <= maxBin; i++) {
+            if(Math.abs(i - peak1.bin) > minDistance) {
+                if(freqs[i] > peak2.val) {
+                    peak2.val = freqs[i];
+                    peak2.bin = i;
+                }
+            }
+        }
+        
+        if (peak1.val < -70 || peak2.val < -70) return null;
+        
+        let f1 = peak1.bin * binFreq;
+        let f2 = peak2.bin * binFreq;
+        
+        if (f1 > f2) { let temp = f1; f1 = f2; f2 = temp; }
+        
+        const ratio = f2 / f1;
+        const validRatios = [1.284, 1.419, 1.568, 1.570, 1.733, 1.734, 1.735, 1.916, 1.918, 2.119, 2.120, 2.342];
+        
+        let isValid = false;
+        for(let r of validRatios) {
+            if(Math.abs(ratio - r) < 0.05) { isValid = true; break; }
+        }
+        
+        if (isValid) {
+            let bestScale = null;
+            let minError = Infinity;
+            for(let key in DTMF_FREQS) {
+                let stdF1 = DTMF_FREQS[key][0];
+                let stdF2 = DTMF_FREQS[key][1];
+                let scale1 = f1 / stdF1;
+                let scale2 = f2 / stdF2;
+                let error = Math.abs(scale1 - scale2);
+                if (error < minError) {
+                    minError = error;
+                    bestScale = (scale1 + scale2) / 2;
+                }
+            }
+            if (minError < 0.08 && bestScale > 0.4 && bestScale < 3.0) {
+                return bestScale;
+            }
+        }
+        return null;
+    }
+
+    function lockScale(approxScale, samples, sampleRate) {
+        let fineScale = approxScale;
+        let maxFineMag = 0;
+        
+        for(let fs = approxScale - 0.05; fs <= approxScale + 0.05; fs += 0.005) {
+            let magSum = 0;
+            for(let key in DTMF_FREQS) {
+                let m1 = goertzel(samples, sampleRate, DTMF_FREQS[key][0] * fs);
+                let m2 = goertzel(samples, sampleRate, DTMF_FREQS[key][1] * fs);
+                if (m1 + m2 > magSum) magSum = m1 + m2;
+            }
+            if (magSum > maxFineMag) {
+                maxFineMag = magSum;
+                fineScale = fs;
+            }
+        }
+        
+        const scaleInput = document.getElementById('scale-input');
+        scaleInput.value = fineScale.toFixed(4);
+        
+        scaleInput.style.borderColor = "var(--success)";
+        scaleInput.style.color = "var(--success)";
+        setTimeout(() => { 
+            scaleInput.style.borderColor = ""; 
+            scaleInput.style.color = "";
+        }, 1000);
+
+        document.getElementById('auto-scale').checked = false;
+        document.getElementById('decode-status').innerHTML = `<span style="color:var(--success);">Oran Kilitlendi: ${fineScale.toFixed(4)}</span>`;
+    }
+
+    async function autoDetectScaleFromFile(audioBuffer) {
+        const sr = audioBuffer.sampleRate;
+        const testLen = Math.min(sr * 3, audioBuffer.length);
+        const offCtx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, testLen, sr);
+        const src = offCtx.createBufferSource();
+        src.buffer = audioBuffer;
+        
+        const analyser = offCtx.createAnalyser();
+        analyser.fftSize = 4096;
+        
+        src.connect(analyser);
+        analyser.connect(offCtx.destination);
+        src.start(0);
+        
+        let bestScaleFound = null;
+        const times = [0.5, 1.0, 1.5, 2.0, 2.5].filter(t => t < testLen / sr);
+        
+        for(let t of times) {
+            offCtx.suspend(t).then(() => {
+                if(!bestScaleFound) {
+                    const freqs = new Float32Array(analyser.frequencyBinCount);
+                    analyser.getFloatFrequencyData(freqs);
+                    let scale = analyzeFFT(freqs, sr, analyser.fftSize);
+                    if (scale) {
+                        bestScaleFound = scale;
+                    }
+                }
+                offCtx.resume();
+            });
+        }
+        
+        try {
+            await offCtx.startRendering();
+        } catch(e) {}
+        
+        return bestScaleFound;
+    }
+
     function processAudioChunk(samples, sampleRate) {
         let currentScale = getScale();
-        const autoDetect = document.getElementById('auto-scale').checked;
 
         let bestMagSum = 0;
         let bestDetected = null;
-        let bestScale = currentScale;
-
-        // If Auto-Detect is enabled, sweep across scales to find the best match
-        let scalesToTest = [];
-        if (autoDetect) {
-            for(let s = 0.5; s <= 2.5; s += 0.05) {
-                scalesToTest.push(s);
-            }
-        } else {
-            scalesToTest.push(currentScale);
-        }
 
         let activeThresh = parseFloat(document.getElementById('adv-thresh').value) || 20.0;
         let activeSnr = parseFloat(document.getElementById('adv-snr').value) || 2.5;
 
-        for (let s of scalesToTest) {
-            let bestLow = { freq: 0, mag: 0 };
-            let totalLowMag = 0;
-            LOW_FREQS.forEach(f => {
-                const mag = goertzel(samples, sampleRate, f * s);
-                totalLowMag += mag;
-                if (mag > bestLow.mag) bestLow = { freq: f, mag: mag };
-            });
+        let bestLow = { freq: 0, mag: 0 };
+        let totalLowMag = 0;
+        LOW_FREQS.forEach(f => {
+            const mag = goertzel(samples, sampleRate, f * currentScale);
+            totalLowMag += mag;
+            if (mag > bestLow.mag) bestLow = { freq: f, mag: mag };
+        });
 
-            let bestHigh = { freq: 0, mag: 0 };
-            let totalHighMag = 0;
-            HIGH_FREQS.forEach(f => {
-                const mag = goertzel(samples, sampleRate, f * s);
-                totalHighMag += mag;
-                if (mag > bestHigh.mag) bestHigh = { freq: f, mag: mag };
-            });
+        let bestHigh = { freq: 0, mag: 0 };
+        let totalHighMag = 0;
+        HIGH_FREQS.forEach(f => {
+            const mag = goertzel(samples, sampleRate, f * currentScale);
+            totalHighMag += mag;
+            if (mag > bestHigh.mag) bestHigh = { freq: f, mag: mag };
+        });
 
-            if (bestLow.mag > activeThresh && bestHigh.mag > activeThresh) {
-                // SNR Check: Compare target freq magnitudes against the rest of the DTMF frequencies
-                let targetMag = bestLow.mag + bestHigh.mag;
-                let otherMag = (totalLowMag + totalHighMag) - targetMag;
-                let currentSnr = targetMag / (otherMag + 0.001); // avoid div by 0
+        if (bestLow.mag > activeThresh && bestHigh.mag > activeThresh) {
+            let targetMag = bestLow.mag + bestHigh.mag;
+            let otherMag = (totalLowMag + totalHighMag) - targetMag;
+            let currentSnr = targetMag / (otherMag + 0.001);
 
-                if (currentSnr > activeSnr) {
-                    let magSum = bestLow.mag + bestHigh.mag;
-                    if (magSum > bestMagSum) {
-                        bestMagSum = magSum;
-                        bestScale = s;
-                        for (let k in DTMF_FREQS) {
-                            if (DTMF_FREQS[k][0] === bestLow.freq && DTMF_FREQS[k][1] === bestHigh.freq) {
-                                bestDetected = k;
-                                break;
-                            }
-                        }
+            if (currentSnr > activeSnr) {
+                for (let k in DTMF_FREQS) {
+                    if (DTMF_FREQS[k][0] === bestLow.freq && DTMF_FREQS[k][1] === bestHigh.freq) {
+                        bestDetected = k;
+                        break;
                     }
                 }
             }
         }
 
         if (bestDetected) {
-            // We found a signal!
-            if (autoDetect) {
-                // Fine-tune the scale discovery for ultimate precision
-                let fineScale = bestScale;
-                let maxFineMag = 0;
-                for(let fs = bestScale - 0.05; fs <= bestScale + 0.05; fs += 0.005) {
-                    let m1 = goertzel(samples, sampleRate, DTMF_FREQS[bestDetected][0] * fs);
-                    let m2 = goertzel(samples, sampleRate, DTMF_FREQS[bestDetected][1] * fs);
-                    if (m1 + m2 > maxFineMag) {
-                        maxFineMag = m1 + m2;
-                        fineScale = fs;
-                    }
-                }
-                
-                // Lock the UI scale
-                const scaleInput = document.getElementById('scale-input');
-                scaleInput.value = fineScale.toFixed(4);
-                
-                // Visual feedback for scale lock
-                scaleInput.style.borderColor = "var(--success)";
-                scaleInput.style.color = "var(--success)";
-                setTimeout(() => { 
-                    scaleInput.style.borderColor = ""; 
-                    scaleInput.style.color = "";
-                }, 1000);
-
-                // Disable auto-detect so it doesn't drift on the next tone
-                document.getElementById('auto-scale').checked = false;
-                document.getElementById('decode-status').innerHTML = `<span style="color:var(--success);">Oran Bulundu ve Kilitlendi: ${fineScale.toFixed(4)}</span>`;
-            }
-
             if (bestDetected !== lastDetectedDigit) {
                 decodedText += bestDetected;
                 document.getElementById('decode-display').innerText = decodedText;
@@ -873,7 +972,7 @@
             silenceCounter = 0;
         } else {
             silenceCounter++;
-            if (silenceCounter > 2) { // Allow tiny noise gaps (~80ms)
+            if (silenceCounter > 2) { 
                 lastDetectedDigit = null;
             }
         }
@@ -896,9 +995,27 @@
         const arrayBuffer = await file.arrayBuffer();
         const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
         
+        // Auto-Detect logic for file
+        if (document.getElementById('auto-scale').checked) {
+            status.innerText = 'Oran hesaplanıyor...';
+            const detectedScale = await autoDetectScaleFromFile(audioBuffer);
+            if (detectedScale) {
+                // Fine tune
+                const dummySamples = audioBuffer.getChannelData(0).slice(0, 4096);
+                lockScale(detectedScale, dummySamples, audioBuffer.sampleRate);
+                await new Promise(r => setTimeout(r, 600)); // Pause to show UI update
+            } else {
+                status.innerText = 'Oran bulunamadı, varsayılan ile devam ediliyor...';
+                document.getElementById('auto-scale').checked = false;
+                await new Promise(r => setTimeout(r, 600));
+            }
+        }
+        
         const samples = audioBuffer.getChannelData(0); // Mono
         const sampleRate = audioBuffer.sampleRate;
         const chunkSize = 2048;
+        
+        status.innerText = 'Çözülüyor...';
         
         for (let i = 0; i < samples.length; i += chunkSize) {
             if (i + chunkSize > samples.length) break;
@@ -906,18 +1023,13 @@
             processAudioChunk(chunk, sampleRate);
         }
         
-        if(!document.getElementById('auto-scale').checked && decodedText.length > 0) {
-            status.innerText = 'Analiz tamamlandı.';
-        } else if (decodedText.length === 0) {
+        status.innerText = 'Analiz tamamlandı.';
+        if (decodedText.length === 0) {
             display.innerText = 'Sinyal bulunamadı.';
-            status.innerText = 'Sonuç yok.';
-        }
-        
-        if (decodedText.length > 0) {
+        } else {
             document.getElementById('btn-save-decoded').style.display = 'block';
         }
         
-        // Reset file input so same file can be clicked again
         e.target.value = '';
     });
 
