@@ -112,6 +112,53 @@
             background: rgba(139, 92, 246, 0.4);
         }
 
+        .adv-toggle {
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-decoration: underline;
+            margin-left: 10px;
+            user-select: none;
+        }
+
+        .adv-panel {
+            display: none;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            width: 100%;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .adv-panel.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .slider-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .slider-group label {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .slider-group input[type="range"] {
+            flex: 2;
+            cursor: pointer;
+        }
+        .slider-group span {
+            width: 40px;
+            text-align: right;
+            font-family: monospace;
+            color: var(--primary);
+        }
+
         .tabs {
             display: flex;
             gap: 10px;
@@ -361,13 +408,40 @@
     <div class="container">
         <header>
             <h1>DTMF Master</h1>
-            <div class="settings-bar">
-                <label>Pitch Scale:</label>
-                <input type="number" id="scale-input" value="1.0000" step="0.0001" min="0.5" max="3">
-                <label class="auto-detect-box" title="Sesi dinlerken doğru tizleşme oranını otomatik bulur.">
-                    <input type="checkbox" id="auto-scale" checked> Auto-Detect
-                </label>
-                <button class="action-btn" style="background: rgba(255,255,255,0.1); width: 34px; height: 34px;" onclick="resetScale()" title="Oranı Sıfırla">↺</button>
+            <div class="settings-bar" style="flex-direction: column; align-items: stretch;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                    <label>Pitch Scale:</label>
+                    <input type="number" id="scale-input" value="1.0000" step="0.0001" min="0.5" max="3">
+                    <label class="auto-detect-box" title="Sesi dinlerken doğru tizleşme oranını otomatik bulur.">
+                        <input type="checkbox" id="auto-scale" checked> Auto-Detect
+                    </label>
+                    <button class="action-btn" style="background: rgba(255,255,255,0.1); width: 34px; height: 34px;" onclick="resetScale()" title="Oranı Sıfırla">↺</button>
+                </div>
+                
+                <!-- Sensitivity Controls -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 5px; flex-wrap: wrap;">
+                    <label title="1: Çok Hassas (Gürültüyü de algılar) | 10: Sadece Çok Net Sesler">Hassasiyet:</label>
+                    <input type="range" id="main-sens" min="1" max="10" value="5" style="width: 150px; cursor: pointer;" oninput="updateSens()">
+                    <span id="main-sens-val" style="color:var(--primary); font-family:monospace; width: 20px; text-align:center; font-weight:bold;">5</span>
+                    <span class="adv-toggle" onclick="toggleAdv()">⚙️ Gelişmiş</span>
+                </div>
+
+                <!-- Advanced Panel -->
+                <div class="adv-panel" id="adv-panel">
+                    <label style="margin-bottom: 5px; cursor:pointer;">
+                        <input type="checkbox" id="use-adv" onchange="updateSens()"> Gelişmiş Ayarları Kullan (Ana hassasiyeti devre dışı bırakır)
+                    </label>
+                    <div class="slider-group">
+                        <label title="Sinyalin algılanması için gereken minimum ses/enerji miktarı">Ses Eşiği (Threshold):</label>
+                        <input type="range" id="adv-thresh" min="5" max="100" value="20" oninput="updateAdv()">
+                        <span id="adv-thresh-val">20</span>
+                    </div>
+                    <div class="slider-group">
+                        <label title="Sesin ne kadarının saf DTMF olması gerektiği (Gürültü toleransı)">Sinyal Kalitesi (SNR):</label>
+                        <input type="range" id="adv-snr" min="1.0" max="10.0" step="0.5" value="2.5" oninput="updateAdv()">
+                        <span id="adv-snr-val">2.5</span>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -541,6 +615,38 @@
         document.getElementById('auto-scale').checked = true;
     }
 
+    /* Sensitivity UI Logic */
+    function toggleAdv() {
+        document.getElementById('adv-panel').classList.toggle('active');
+    }
+
+    function updateSens() {
+        const mainVal = parseInt(document.getElementById('main-sens').value);
+        document.getElementById('main-sens-val').innerText = mainVal;
+        
+        // Level 1: Thresh 5, SNR 1.0
+        // Level 10: Thresh 80, SNR 8.0
+        let t = 5 + (mainVal - 1) * (75 / 9);
+        let s = 1.0 + (mainVal - 1) * (7.0 / 9);
+        
+        if (!document.getElementById('use-adv').checked) {
+            document.getElementById('adv-thresh').value = Math.round(t);
+            document.getElementById('adv-snr').value = s.toFixed(1);
+            updateAdv(true);
+        }
+    }
+
+    function updateAdv(fromMain = false) {
+        if(!fromMain) {
+            document.getElementById('use-adv').checked = true;
+        }
+        document.getElementById('adv-thresh-val').innerText = document.getElementById('adv-thresh').value;
+        document.getElementById('adv-snr-val').innerText = parseFloat(document.getElementById('adv-snr').value).toFixed(1);
+    }
+    
+    // Initialize UI
+    setTimeout(updateSens, 100);
+
     // Build Keypad
     const keys = ['1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'];
     const keypadDiv = document.getElementById('keypad');
@@ -668,30 +774,42 @@
             scalesToTest.push(currentScale);
         }
 
-        const threshold = 15.0; // Magic threshold for Goertzel on raw floats
+        let activeThresh = parseFloat(document.getElementById('adv-thresh').value) || 20.0;
+        let activeSnr = parseFloat(document.getElementById('adv-snr').value) || 2.5;
 
         for (let s of scalesToTest) {
             let bestLow = { freq: 0, mag: 0 };
+            let totalLowMag = 0;
             LOW_FREQS.forEach(f => {
                 const mag = goertzel(samples, sampleRate, f * s);
+                totalLowMag += mag;
                 if (mag > bestLow.mag) bestLow = { freq: f, mag: mag };
             });
 
             let bestHigh = { freq: 0, mag: 0 };
+            let totalHighMag = 0;
             HIGH_FREQS.forEach(f => {
                 const mag = goertzel(samples, sampleRate, f * s);
+                totalHighMag += mag;
                 if (mag > bestHigh.mag) bestHigh = { freq: f, mag: mag };
             });
 
-            if (bestLow.mag > threshold && bestHigh.mag > threshold) {
-                let magSum = bestLow.mag + bestHigh.mag;
-                if (magSum > bestMagSum) {
-                    bestMagSum = magSum;
-                    bestScale = s;
-                    for (let k in DTMF_FREQS) {
-                        if (DTMF_FREQS[k][0] === bestLow.freq && DTMF_FREQS[k][1] === bestHigh.freq) {
-                            bestDetected = k;
-                            break;
+            if (bestLow.mag > activeThresh && bestHigh.mag > activeThresh) {
+                // SNR Check: Compare target freq magnitudes against the rest of the DTMF frequencies
+                let targetMag = bestLow.mag + bestHigh.mag;
+                let otherMag = (totalLowMag + totalHighMag) - targetMag;
+                let currentSnr = targetMag / (otherMag + 0.001); // avoid div by 0
+
+                if (currentSnr > activeSnr) {
+                    let magSum = bestLow.mag + bestHigh.mag;
+                    if (magSum > bestMagSum) {
+                        bestMagSum = magSum;
+                        bestScale = s;
+                        for (let k in DTMF_FREQS) {
+                            if (DTMF_FREQS[k][0] === bestLow.freq && DTMF_FREQS[k][1] === bestHigh.freq) {
+                                bestDetected = k;
+                                break;
+                            }
                         }
                     }
                 }
