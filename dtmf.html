@@ -116,9 +116,15 @@
             cursor: pointer;
             font-size: 0.9rem;
             color: var(--primary);
-            text-decoration: underline;
             margin-left: 10px;
             user-select: none;
+            padding: 5px 10px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .adv-toggle:hover {
+            background: rgba(56, 189, 248, 0.2);
         }
 
         .adv-panel {
@@ -418,28 +424,32 @@
                     <button class="action-btn" style="background: rgba(255,255,255,0.1); width: 34px; height: 34px;" onclick="resetScale()" title="Oranı Sıfırla">↺</button>
                 </div>
                 
-                <!-- Sensitivity Controls -->
-                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 5px; flex-wrap: wrap;">
-                    <label title="1: Çok Hassas (Gürültüyü de algılar) | 10: Sadece Çok Net Sesler">Hassasiyet:</label>
-                    <input type="range" id="main-sens" min="1" max="10" value="5" style="width: 150px; cursor: pointer;" oninput="updateSens()">
-                    <span id="main-sens-val" style="color:var(--primary); font-family:monospace; width: 20px; text-align:center; font-weight:bold;">5</span>
-                    <span class="adv-toggle" onclick="toggleAdv()">⚙️ Gelişmiş</span>
-                </div>
-
-                <!-- Advanced Panel -->
-                <div class="adv-panel" id="adv-panel">
-                    <label style="margin-bottom: 5px; cursor:pointer;">
-                        <input type="checkbox" id="use-adv" onchange="updateSens()"> Gelişmiş Ayarları Kullan (Ana hassasiyeti devre dışı bırakır)
-                    </label>
-                    <div class="slider-group">
-                        <label title="Sinyalin algılanması için gereken minimum ses/enerji miktarı">Ses Eşiği (Threshold):</label>
-                        <input type="range" id="adv-thresh" min="5" max="100" value="20" oninput="updateAdv()">
-                        <span id="adv-thresh-val">20</span>
+                <!-- Sensitivity Controls Wrapper -->
+                <div style="margin-top: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <span style="font-weight: 600; color: var(--text-muted); font-size: 0.95rem;">Algılama Ayarları</span>
+                        <span class="adv-toggle" id="adv-btn" onclick="toggleAdv()">⚙️ Gelişmiş Mod</span>
                     </div>
-                    <div class="slider-group">
-                        <label title="Sesin ne kadarının saf DTMF olması gerektiği (Gürültü toleransı)">Sinyal Kalitesi (SNR):</label>
-                        <input type="range" id="adv-snr" min="1.0" max="10.0" step="0.5" value="2.5" oninput="updateAdv()">
-                        <span id="adv-snr-val">2.5</span>
+
+                    <!-- Basic Slider -->
+                    <div id="basic-panel" style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+                        <label title="1: Çok Hassas (Gürültüyü de algılar) | 10: Sadece Çok Net Sesler" style="white-space: nowrap; font-size: 0.9rem; color: var(--text-muted);">Genel Hassasiyet (1-10):</label>
+                        <input type="range" id="main-sens" min="1" max="10" value="5" style="flex: 1; cursor: pointer;" oninput="updateSens()">
+                        <span id="main-sens-val" style="color:var(--primary); font-family:monospace; width: 20px; text-align:right; font-weight:bold;">5</span>
+                    </div>
+
+                    <!-- Advanced Panel -->
+                    <div class="adv-panel" id="adv-panel" style="margin-top: 15px; border:none; padding:0; background:transparent;">
+                        <div class="slider-group">
+                            <label title="Sinyalin algılanması için gereken minimum ses/enerji miktarı">Ses Eşiği (Threshold):</label>
+                            <input type="range" id="adv-thresh" min="5" max="100" value="20" oninput="updateAdv()">
+                            <span id="adv-thresh-val">20</span>
+                        </div>
+                        <div class="slider-group">
+                            <label title="Sesin ne kadarının saf DTMF olması gerektiği (Gürültü toleransı)">Sinyal Kalitesi (SNR):</label>
+                            <input type="range" id="adv-snr" min="1.0" max="10.0" step="0.5" value="2.5" oninput="updateAdv()">
+                            <span id="adv-snr-val">2.5</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -616,30 +626,37 @@
     }
 
     /* Sensitivity UI Logic */
+    let isAdvanced = false;
+
     function toggleAdv() {
-        document.getElementById('adv-panel').classList.toggle('active');
+        isAdvanced = !isAdvanced;
+        document.getElementById('adv-panel').classList.toggle('active', isAdvanced);
+        document.getElementById('basic-panel').style.display = isAdvanced ? 'none' : 'flex';
+        document.getElementById('adv-btn').innerHTML = isAdvanced ? '🔙 Basit Mod' : '⚙️ Gelişmiş Mod';
+        
+        if (!isAdvanced) {
+            updateSens();
+        } else {
+            updateAdv();
+        }
     }
 
     function updateSens() {
         const mainVal = parseInt(document.getElementById('main-sens').value);
         document.getElementById('main-sens-val').innerText = mainVal;
         
-        // Level 1: Thresh 5, SNR 1.0
-        // Level 10: Thresh 80, SNR 8.0
         let t = 5 + (mainVal - 1) * (75 / 9);
         let s = 1.0 + (mainVal - 1) * (7.0 / 9);
         
-        if (!document.getElementById('use-adv').checked) {
+        if (!isAdvanced) {
             document.getElementById('adv-thresh').value = Math.round(t);
             document.getElementById('adv-snr').value = s.toFixed(1);
-            updateAdv(true);
+            document.getElementById('adv-thresh-val').innerText = Math.round(t);
+            document.getElementById('adv-snr-val').innerText = s.toFixed(1);
         }
     }
 
-    function updateAdv(fromMain = false) {
-        if(!fromMain) {
-            document.getElementById('use-adv').checked = true;
-        }
+    function updateAdv() {
         document.getElementById('adv-thresh-val').innerText = document.getElementById('adv-thresh').value;
         document.getElementById('adv-snr-val').innerText = parseFloat(document.getElementById('adv-snr').value).toFixed(1);
     }
